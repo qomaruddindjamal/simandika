@@ -276,6 +276,7 @@
                 if (el) {
                     el.removeAttribute('data-nis');
                     el.removeAttribute('data-nama');
+                    el.removeAttribute('data-foto');
                     el.dataset.anjTermuat = '';
                     /* Sesi yang baru ditutup tidak boleh langsung dipulihkan otomatis. */
                     el.dataset.anjPulih = '9';
@@ -310,7 +311,7 @@
             .then(function (data) {
                 if (!data || !data.sukses) throw new Error((data && data.pesan) || 'NISN atau PIN salah.');
                 tutupModal();
-                ubahTombolMasuk(true, data.nis, data.nama);
+                ubahTombolMasuk(true, data.nis, data.nama, data.berfoto);
                 bukaIsiSiswa(data.nis);
             })
             .catch(function (err) {
@@ -323,53 +324,76 @@
 
     /* Tombol Masuk berubah wujud menjadi pintu ke dasbor selama sesi siswa masih ada;
        tanpa itu tidak ada jalan kembali ke Info Siswa karena menunya tidak di baris menu.
-       Labelnya nama lengkap siswa yang sedang login, bukan lagi tulisan "Info Siswa". */
-    function ubahTombolMasuk(sudahLogin, nis, nama) {
+       Labelnya nama lengkap siswa, avatarnya fotonya — bila blob foto kosong, avatar
+       menampilkan inisial nama depan dan nama kedua. */
+    function ubahTombolMasuk(sudahLogin, nis, nama, berfoto) {
         var tombol = document.querySelector('.anj-masuk');
         if (!tombol) return;
         var el = kartu('infosiswa');
         if (el && nama) el.dataset.nama = nama;
-        var label = sudahLogin ? ((el && el.dataset.nama) || 'Info Siswa') : 'Masuk';
-        var span = tombol.querySelector('span');
-        if (tombol.hasAttribute('data-seksi') === !!sudahLogin && span && span.textContent === label) return;
+        if (el && berfoto !== undefined) el.dataset.foto = berfoto ? '1' : '0';
+        var data = el ? el.dataset : {};
+        var label = sudahLogin ? (data.nama || 'Info Siswa') : 'Masuk';
+        var wujud = (sudahLogin ? 'S' : 'M') + '|' + label + '|' + (sudahLogin && data.foto === '1' ? 'foto' : 'inisial');
+        if (tombol.dataset.anjWujud === wujud) return;
+        tombol.dataset.anjWujud = wujud;
         if (sudahLogin) {
             tombol.removeAttribute('data-bs-toggle');
             tombol.removeAttribute('data-bs-target');
             tombol.setAttribute('data-seksi', 'infosiswa');
             if (nis && el) el.dataset.nis = nis;
+            tombol.setAttribute('title', label);
         } else {
             tombol.removeAttribute('data-seksi');
+            tombol.removeAttribute('title');
             tombol.setAttribute('data-bs-toggle', 'modal');
             tombol.setAttribute('data-bs-target', '#anjMasukModal');
         }
-        labelTombol(tombol, sudahLogin ? 'bi-person-vcard' : 'bi-box-arrow-in-right', label, sudahLogin);
+        tombol.textContent = '';
+        tombol.appendChild(sudahLogin ? avatarSiswa(data.nama, data.foto === '1') : ikonBi('bi-box-arrow-in-right'));
+        var s = document.createElement('span');
+        s.className = 'anj-masuk-nama';
+        s.textContent = label;
+        tombol.appendChild(s);
     }
 
-    function labelTombol(tombol, ikon, teks, beriTooltip) {
-        var i = tombol.querySelector('i');
-        if (!i) {
-            i = document.createElement('i');
-            i.className = 'bi me-1';
-            i.setAttribute('aria-hidden', 'true');
-            tombol.insertBefore(i, tombol.firstChild);
+    function ikonBi(nama) {
+        var i = document.createElement('i');
+        i.className = 'bi ' + nama + ' me-1';
+        i.setAttribute('aria-hidden', 'true');
+        return i;
+    }
+
+    function avatarSiswa(nama, berfoto) {
+        var b = document.createElement('span');
+        b.className = 'anj-avatar';
+        var inisial = document.createElement('span');
+        inisial.className = 'anj-avatar-inisial';
+        inisial.textContent = inisialNama(nama);
+        b.appendChild(inisial);
+        if (berfoto) {
+            var img = document.createElement('img');
+            img.alt = '';
+            img.src = '/login-siswa.php?aksi=foto';
+            /* Foto hilang di tengah jalan: inisial yang tampil, bukan kotak rusak. */
+            img.onerror = function () { img.remove(); };
+            b.appendChild(img);
         }
-        i.classList.remove('bi-person-vcard', 'bi-box-arrow-in-right');
-        i.classList.add(ikon);
-        var span = tombol.querySelector('span');
-        if (!span) {
-            span = document.createElement('span');
-            tombol.appendChild(span);
-        }
-        span.textContent = teks;
-        if (beriTooltip) tombol.setAttribute('title', teks);
-        else tombol.removeAttribute('title');
+        return b;
+    }
+
+    function inisialNama(nama) {
+        var kata = String(nama || '').trim().split(/\s+/).filter(function (k) { return k.length; });
+        if (!kata.length) return '?';
+        var huruf = function (k) { return Array.from(k)[0].toUpperCase(); };
+        return (huruf(kata[0]) + (kata[1] ? huruf(kata[1]) : '')).slice(0, 2);
     }
 
     function cekSesiHalaman() {
         fetch('/login-siswa.php?aksi=status', { credentials: 'same-origin' })
             .then(function (res) { return res.ok ? res.json() : null; })
             .then(function (data) {
-                if (data && data.login && data.nis) ubahTombolMasuk(true, data.nis, data.nama);
+                if (data && data.login && data.nis) ubahTombolMasuk(true, data.nis, data.nama, data.berfoto);
             })
             .catch(function () { /* tanpa sesi: tombol tetap Masuk */ });
     }
@@ -543,7 +567,7 @@
             .then(function (res) { return res.ok ? res.json() : null; })
             .then(function (data) {
                 if (data && data.login && data.nis) {
-                    ubahTombolMasuk(true, data.nis, data.nama);
+                    ubahTombolMasuk(true, data.nis, data.nama, data.berfoto);
                     bukaIsiSiswa(data.nis);
                     return;
                 }

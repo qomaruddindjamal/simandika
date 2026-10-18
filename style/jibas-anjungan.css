@@ -123,13 +123,51 @@
 
 /* Selama sesi siswa aktif tombolnya berlabel nama lengkap — dipotong bila terlalu panjang,
    utuhnya tetap terbaca lewat tooltip. */
-.anj-masuk[data-seksi] span {
-    display: inline-block;
-    max-width: 13rem;
+.anj-masuk {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.anj-masuk-nama {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    vertical-align: bottom;
+}
+
+.anj-masuk[data-seksi] .anj-masuk-nama {
+    max-width: 13rem;
+}
+
+/* Avatar pintu dasbor: inisial selalu ada di bawah, foto menimbunnya dan dilepas JS bila 404. */
+.anj-avatar {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: .4rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--jb-primary) 15%, var(--jb-surface));
+    color: var(--jb-primary);
+    overflow: hidden;
+}
+
+.anj-avatar-inisial {
+    font-size: .62rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: .02em;
+}
+
+.anj-avatar img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* Dropdown tema: tombol hanya ikon fase yang sedang aktif (label muncul sebagai tooltip) */
@@ -332,10 +370,10 @@
     .anj-nav-link {
         padding: .5rem .55rem;
     }
-    .anj-masuk:not([data-seksi]) span {
+    .anj-masuk:not([data-seksi]) .anj-masuk-nama {
         display: none;
     }
-    .anj-masuk[data-seksi] span {
+    .anj-masuk[data-seksi] .anj-masuk-nama {
         max-width: 7.5rem;
     }
     .anj-masuk {

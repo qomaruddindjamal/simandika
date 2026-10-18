@@ -390,15 +390,23 @@ placeholder "Masuk dulu…" plus modal. Percobaan pemulihan dibatasi dua kali pe
 warisan yang rusak tidak memicu muat ulang tanpa henti. Pada ≤767,98 px sidebar menjadi baris chip yang mengemas diri
 (`flex-wrap`), tanpa scrollbar horizontal.
 
-Tombol **Masuk** di baris identitas ikut menyesuaikan: selama sesi siswa aktif ia menjadi pintu dasbor berlabel
-**nama lengkap siswa** (permintaan user 2026-10-19, menggantikan tulisan "Info Siswa") — nama diambil dari respons
-login/`?aksi=status` (`jbsakad.siswa.nama`), disimpan di `data-nama` kartu `infosiswa` supaya tetap terbaca saat
-halaman dimuat ulang atau saat `MutationObserver` dasbor memanggil ulang penataan tombol; bila sesi dibuat alur warisan
-sehingga nama tidak diketahui, label jatuh kembali ke "Info Siswa". Nama panjang dipotong `ellipsis` (maks 13rem,
-7,5rem di ≤767,98 px) dan utuhnya ada di `title`. Tanpa tombol ini pengguna tidak punya jalan kembali ke dasbor karena
-sekasinya tidak ada di baris menu. Status sesi dibaca sekali saat halaman dibuka (`login-siswa.php?aksi=status`,
-dilewati bila seksi yang aktif memang Info Siswa) dan setiap kali sesi berubah (login, Keluar — setelah Keluar label
-kembali menjadi "Masuk" dan `title` dilepas).
+Tombol **Masuk** di baris identitas ikut menyesuaikan, dan **dipindah ke paling kanan, sesudah dropdown tema**
+(permintaan user 2026-10-19: "taruh di belakang theme saja, taruh samping kanan"). Selama sesi siswa aktif ia menjadi
+pintu dasbor berlabel **nama lengkap siswa** (menggantikan tulisan "Info Siswa") plus **avatar**: bila
+`jbsakad.siswa.foto` (mediumblob) terisi, avatar menampilkan fotonya lewat `login-siswa.php?aksi=foto`; bila kosong,
+avatar menampilkan **inisial nama depan + nama kedua** (mis. "Abdul Rahman Setiawan" → `AR`, satu kata → satu huruf).
+Inisial selalu ada di DOM sebagai lapisan bawah dan `<img>` foto menimbunnya, jadi foto yang hilang di tengah jalan
+(`img.onerror` melepas `<img>`) kembali ke inisial, bukan kotak rusak. `?aksi=foto` hanya melayani nis milik sesi yang
+berjalan — nis tidak diterima dari parameter, supaya foto siswa lain tidak bisa diminta lewat URL — dan membalas 404
+bila blob kosong; respons login/status membawa `berfoto` sehingga avatar ikut terisi tanpa permintaan tambahan.
+Nama diambil dari hasil login/`?aksi=status`, disimpan di `data-nama`/`data-foto` kartu `infosiswa` supaya tetap terbaca
+saat halaman dimuat ulang atau saat `MutationObserver` dasbor memanggil ulang penataan tombol; bila sesi dibuat alur
+warisan sehingga nama tidak diketahui, label jatuh kembali ke "Info Siswa". Nama panjang dipotong `ellipsis`
+(maks 13rem, 7,5rem di ≤575,98 px) dan utuhnya ada di `title`; di layar sempit label "Masuk" disembunyikan dan avatar
+tetap tampil. Status sesi dibaca sekali saat halaman dibuka (`login-siswa.php?aksi=status`, dilewati bila seksi yang
+aktif memang Info Siswa) dan setiap kali sesi berubah (login, Keluar — setelah Keluar wujud kembali "Masuk" berikon
+panah, tanpa avatar dan tanpa `title`). Tombol ini tetap diperlukan karena seksi Info Siswa tidak ada di baris menu,
+jadi tanpa tombolnya tidak ada jalan kembali ke dasbor.
 
 Pengecualian jujur atas anggaran §7: jalur anjungan masih memakai jQuery + library warisan (syarat potongan
 `anjungan/*`), tetapi hanya **1 seksi per muat awal** (dulu 8 permintaan AJAX serentak) dan tanpa TinyMCE,

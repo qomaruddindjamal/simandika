@@ -1,8 +1,9 @@
 <?php
 /**
- * Titik masuk AJAX untuk modal Masuk pada anjungan modern (beranda.php). Tiga kegunaan:
+ * Titik masuk AJAX untuk modal Masuk pada anjungan modern (beranda.php). Empat kegunaan:
  * POST nisn+pin untuk membuka sesi, GET ?aksi=status untuk menanyakan sesi yang berjalan,
- * dan POST ?aksi=keluar untuk menutupnya.
+ * POST ?aksi=keluar untuk menutupnya, dan GET ?aksi=foto untuk mengambil foto siswa yang
+ * sedang login (blob jbsakad.siswa.foto; 404 bila kosong).
  *
  * Form login siswa memakai NISN + PIN. Pin dibandingkan dengan kolom pinsiswa yang di skema
  * warisan memang tersimpan apa adanya (belum di-hash), jadi perbandingan PIN masih teks polos
@@ -23,17 +24,86 @@ function jb_siswa_jawab($data)
     exit();
 }
 
-/* Cek sesi tanpa mengirim kredensial: dipakai halaman saat Info Siswa dibuka ulang atau
-   setelah Keluar, supaya tidak perlu menampilkan form login lama di dalam kartu. */
-if (isset($_GET['aksi']) && $_GET['aksi'] === 'status') {
+/* $db_host warisan berbentuk "host:port", jadi tidak perlu argumen port terpisah. */
+function jb_siswa_koneksi()
+{
+    require_once __DIR__ . '/include/database.config.php';
+    $mysqli = @new mysqli($db_host, $db_user, $db_pass);
+    if ($mysqli->connect_errno) {
+        return null;
+    }
+    $mysqli->set_charset('utf8');
+    return $mysqli;
+}
+
+/* Sesi siswa yang sedang berjalan, atau null bila belum login. */
+function jb_siswa_sesi()
+{
     session_name('_JIBAS_ANJUNGAN_IS__');
     session_start();
     if (empty($_SESSION['islogin']) || empty($_SESSION['infosiswa.nis'])) {
+        return null;
+    }
+    return $_SESSION['infosiswa.nis'];
+}
+
+function jb_siswa_punyaFoto($nis)
+{
+    $mysqli = jb_siswa_koneksi();
+    if (!$mysqli) {
+        return false;
+    }
+    $stmt = $mysqli->prepare("SELECT foto IS NOT NULL AND LENGTH(foto) > 0 AS berfoto FROM jbsakad.siswa WHERE nis = ? LIMIT 1");
+    $stmt->bind_param('s', $nis);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $row = $res ? $res->fetch_assoc() : null;
+    $stmt->close();
+    $mysqli->close();
+    return $row ? (bool)$row['berfoto'] : false;
+}
+
+/* Cek sesi tanpa mengirim kredensial: dipakai halaman saat Info Siswa dibuka ulang atau
+   setelah Keluar, supaya tidak perlu menampilkan form login lama di dalam kartu. */
+if (isset($_GET['aksi']) && $_GET['aksi'] === 'status') {
+    $nis = jb_siswa_sesi();
+    if ($nis === null) {
         jb_siswa_jawab(array('sukses' => false, 'pesan' => '', 'login' => false));
     }
     jb_siswa_jawab(array('sukses' => true, 'pesan' => '', 'login' => true,
-        'nis' => $_SESSION['infosiswa.nis'],
-        'nama' => isset($_SESSION['infosiswa.name']) ? $_SESSION['infosiswa.name'] : ''));
+        'nis' => $nis,
+        'nama' => isset($_SESSION['infosiswa.name']) ? $_SESSION['infosiswa.name'] : '',
+        'berfoto' => jb_siswa_punyaFoto($nis)));
+}
+
+/* Foto siswa yang sedang login. Nis tidak diterima dari permintaan: tanpa aturan ini siapa pun
+   bisa meminta foto siswa lain lewat URL. Blob-nya disimpan di jbsakad.siswa.foto (mediumblob). */
+if (isset($_GET['aksi']) && $_GET['aksi'] === 'foto') {
+    $nis = jb_siswa_sesi();
+    if ($nis === null) {
+        http_response_code(404);
+        exit();
+    }
+    $mysqli = jb_siswa_koneksi();
+    if (!$mysqli) {
+        http_response_code(503);
+        exit();
+    }
+    $stmt = $mysqli->prepare("SELECT foto FROM jbsakad.siswa WHERE nis = ? LIMIT 1");
+    $stmt->bind_param('s', $nis);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $row = $res ? $res->fetch_assoc() : null;
+    $stmt->close();
+    $mysqli->close();
+    if (!$row || $row['foto'] === null || $row['foto'] === '') {
+        http_response_code(404);
+        exit();
+    }
+    header('Content-Type: image/jpeg');
+    header('Cache-Control: no-store');
+    echo $row['foto'];
+    exit();
 }
 
 /* Tutup sesi siswa. Hanya lewat POST supaya tidak bisa dipicu tautan atau prefetch. */
@@ -58,17 +128,14 @@ if ($nisn === '' || $pin === '') {
     jb_siswa_jawab($jawaban);
 }
 
-require_once __DIR__ . '/include/database.config.php';
-
-/* $db_host warisan berbentuk "host:port", jadi tidak perlu argumen port terpisah. */
-$mysqli = @new mysqli($db_host, $db_user, $db_pass);
-if ($mysqli->connect_errno) {
+$mysqli = jb_siswa_koneksi();
+if (!$mysqli) {
     $jawaban['pesan'] = 'Layanan data sekolah tidak dapat dihubungi.';
     jb_siswa_jawab($jawaban);
 }
-$mysqli->set_charset('utf8');
 
-$stmt = $mysqli->prepare("SELECT nis, nama FROM jbsakad.siswa WHERE nisn = ? AND pinsiswa = ? LIMIT 1");
+$stmt = $mysqli->prepare("SELECT nis, nama, foto IS NOT NULL AND LENGTH(foto) > 0 AS berfoto
+                            FROM jbsakad.siswa WHERE nisn = ? AND pinsiswa = ? LIMIT 1");
 if (!$stmt) {
     $jawaban['pesan'] = 'Permintaan login tidak dapat diproses.';
     jb_siswa_jawab($jawaban);
@@ -95,4 +162,5 @@ $_SESSION['infosiswa.nis'] = $siswa['nis'];
 $_SESSION['infosiswa.name'] = $siswa['nama'];
 $_SESSION['infosiswa.reporttype'] = 'PROFIL';
 
-jb_siswa_jawab(array('sukses' => true, 'pesan' => '', 'nis' => $siswa['nis'], 'nama' => $siswa['nama']));
+jb_siswa_jawab(array('sukses' => true, 'pesan' => '', 'nis' => $siswa['nis'], 'nama' => $siswa['nama'],
+    'berfoto' => (bool)$siswa['berfoto']));

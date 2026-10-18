@@ -225,9 +225,6 @@ $tanggal = $hari[(int)date('w')] . ', ' . (int)date('j') . ' ' . $bulan[(int)dat
                 <span class="anj-clock d-none d-md-inline">
                     <i class="bi bi-calendar3 me-1"></i><?= jb_anj_e($tanggal) ?>
                 </span>
-                <button type="button" class="btn btn-sm anj-masuk" data-bs-toggle="modal" data-bs-target="#anjMasukModal">
-                    <i class="bi bi-box-arrow-in-right me-1"></i><span>Masuk</span>
-                </button>
                 <div class="dropdown anj-theme-menu">
                     <button class="btn btn-sm anj-theme-toggle" type="button" data-bs-toggle="dropdown"
                             aria-expanded="false" aria-haspopup="true" aria-label="Pilih tema"
@@ -246,6 +243,11 @@ $tanggal = $hari[(int)date('w')] . ', ' . (int)date('j') . ' ' . $bulan[(int)dat
                             <i class="bi bi-moon-stars anj-mode-icon"></i><span>Gelap</span><i class="bi bi-check2 anj-mode-cek"></i></button></li>
                     </ul>
                 </div>
+                <!-- Pintu dasbor Info Siswa: paling kanan, berlabel nama siswa + foto/inisial
+                     setelah login (script/anjungan.js yang mengisi avatar dan labelnya). -->
+                <button type="button" class="btn btn-sm anj-masuk" data-bs-toggle="modal" data-bs-target="#anjMasukModal">
+                    <i class="bi bi-box-arrow-in-right me-1"></i><span class="anj-masuk-nama">Masuk</span>
+                </button>
             </div>
         </div>
     </div>
