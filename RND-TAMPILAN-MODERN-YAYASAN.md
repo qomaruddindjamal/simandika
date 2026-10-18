@@ -369,6 +369,11 @@ placeholder "Masuk dulu…" plus modal. Percobaan pemulihan dibatasi dua kali pe
 warisan yang rusak tidak memicu muat ulang tanpa henti. Pada ≤767,98 px sidebar menjadi baris chip yang mengemas diri
 (`flex-wrap`), tanpa scrollbar horizontal.
 
+Tombol **Masuk** di baris identitas ikut menyesuaikan: selama sesi siswa aktif ia menjadi pintu **Info Siswa**
+(`data-seksi`, pemicu modal dilepas) — tanpa itu pengguna tidak punya jalan kembali ke dasbor karena sekasinya tidak
+ada di baris menu. Status sesi dibaca sekali saat halaman dibuka (`login-siswa.php?aksi=status`, dilewati bila seksi
+yang aktif memang Info Siswa) dan setiap kali sesi berubah (login, Keluar).
+
 Pengecualian jujur atas anggaran §7: jalur anjungan masih memakai jQuery + library warisan (syarat potongan
 `anjungan/*`), tetapi hanya **1 seksi per muat awal** (dulu 8 permintaan AJAX serentak) dan tanpa TinyMCE,
 bgStretcher, serta jVertTabs, sehingga jumlah request awal turun dan halaman tetap bisa di-cache service worker.

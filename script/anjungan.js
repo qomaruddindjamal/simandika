@@ -165,6 +165,12 @@
     }
 
     document.addEventListener('click', function (ev) {
+        var akun = ev.target.closest ? ev.target.closest('.anj-masuk[data-seksi]') : null;
+        if (akun) {
+            ev.preventDefault();
+            aktifkan(akun.getAttribute('data-seksi'), true);
+            return;
+        }
         var link = ev.target.closest ? ev.target.closest('.anj-nav-link') : null;
         if (link) {
             ev.preventDefault();
@@ -261,6 +267,7 @@
             .then(function (data) {
                 if (!data || !data.sukses) throw new Error((data && data.pesan) || 'NISN atau PIN salah.');
                 tutupModal();
+                ubahTombolMasuk(true, data.nis);
                 bukaIsiSiswa(data.nis);
             })
             .catch(function (err) {
@@ -269,6 +276,33 @@
             .then(function () {
                 if (tombol) tombol.disabled = false;
             });
+    }
+
+    /* Tombol Masuk berubah wujud menjadi pintu ke dasbor selama sesi siswa masih ada;
+       tanpa itu tidak ada jalan kembali ke Info Siswa karena menunya tidak di baris menu. */
+    function ubahTombolMasuk(sudahLogin, nis) {
+        var tombol = document.querySelector('.anj-masuk');
+        if (!tombol) return;
+        if (tombol.hasAttribute('data-seksi') === !!sudahLogin) return;
+        if (sudahLogin) {
+            tombol.removeAttribute('data-bs-toggle');
+            tombol.removeAttribute('data-bs-target');
+            tombol.setAttribute('data-seksi', 'infosiswa');
+            tombol.innerHTML = '<i class="bi bi-person-vcard me-1"></i><span>Info Siswa</span>';
+            if (nis) { var el = kartu('infosiswa'); if (el) el.dataset.nis = nis; }
+        } else {
+            tombol.removeAttribute('data-seksi');
+            tombol.setAttribute('data-bs-toggle', 'modal');
+            tombol.setAttribute('data-bs-target', '#anjMasukModal');
+            tombol.innerHTML = '<i class="bi bi-box-arrow-in-right me-1"></i><span>Masuk</span>';
+        }
+    }
+
+    function cekSesiHalaman() {
+        fetch('/login-siswa.php?aksi=status', { credentials: 'same-origin' })
+            .then(function (res) { return res.ok ? res.json() : null; })
+            .then(function (data) { if (data && data.login && data.nis) ubahTombolMasuk(true, data.nis); })
+            .catch(function () { /* tanpa sesi: tombol tetap Masuk */ });
     }
 
     function initMasuk() {
@@ -430,6 +464,7 @@
 
         sembunyikanKontrolLama(main);
         tandaiAktif(nav, combo.value);
+        ubahTombolMasuk(true);
     }
 
     function pulihkanSesiSiswa(el, percobaan) {
@@ -438,7 +473,12 @@
         fetch('/login-siswa.php?aksi=status', { credentials: 'same-origin' })
             .then(function (res) { return res.ok ? res.json() : null; })
             .then(function (data) {
-                if (data && data.login && data.nis) { bukaIsiSiswa(data.nis); return; }
+                if (data && data.login && data.nis) {
+                    ubahTombolMasuk(true, data.nis);
+                    bukaIsiSiswa(data.nis);
+                    return;
+                }
+                ubahTombolMasuk(false);
                 var kosong = document.createElement('div');
                 kosong.className = 'anj-kosong';
                 var i = document.createElement('i');
@@ -486,9 +526,16 @@
         });
     }
 
+    function mulai() {
+        var aktif = document.body.dataset.anjActive || 'beranda';
+        initMasuk(); latar(); aktifkan(aktif, false);
+        /* Kartu Info Siswa sudah menanyakan sesi sendiri saat dipulihkan. */
+        if (aktif !== 'infosiswa') cekSesiHalaman();
+    }
+
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function () { initMasuk(); latar(); aktifkan(document.body.dataset.anjActive || 'beranda', false); });
+        document.addEventListener('DOMContentLoaded', mulai);
     } else {
-        initMasuk(); latar(); aktifkan(document.body.dataset.anjActive || 'beranda', false);
+        mulai();
     }
 })();
