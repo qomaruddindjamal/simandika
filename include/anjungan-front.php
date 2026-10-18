@@ -298,7 +298,8 @@ $tanggal = $hari[(int)date('w')] . ', ' . (int)date('j') . ' ' . $bulan[(int)dat
     <?php } ?>
 </main>
 
-<div class="modal fade" id="anjMasukModal" tabindex="-1" role="dialog" aria-labelledby="anjMasukJudul" aria-hidden="true">
+<div class="modal fade" id="anjMasukModal" tabindex="-1" role="dialog" aria-labelledby="anjMasukJudul" aria-hidden="true"
+     data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content anj-modal">
             <div class="modal-header">

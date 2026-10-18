@@ -324,6 +324,9 @@ pesan "NIS atau PIN salah!" ditampilkan di dalam modal tanpa reload. Setelah ber
 milik warisan tidak ada di disk) dan isinya dibungkus `<div id="is_main">` (`data-wadah`) karena seluruh navigasi
 nilai/presensi/keuangan warisan menulis ke elemen itu.
 
+**Aturan modal untuk seluruh pengembangan baru:** selalu pasang `data-bs-backdrop="static"` — modal hanya ditutup lewat
+tombolnya sendiri (X / Batal / aksi eksplisit), tidak boleh hilang karena klik di luar area modal.
+
 Pengecualian jujur atas anggaran §7: jalur anjungan masih memakai jQuery + library warisan (syarat potongan
 `anjungan/*`), tetapi hanya **1 seksi per muat awal** (dulu 8 permintaan AJAX serentak) dan tanpa TinyMCE,
 bgStretcher, serta jVertTabs, sehingga jumlah request awal turun dan halaman tetap bisa di-cache service worker.
