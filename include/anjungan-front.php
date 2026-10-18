@@ -217,9 +217,9 @@ $tanggal = $hari[(int)date('w')] . ', ' . (int)date('j') . ' ' . $bulan[(int)dat
                 </a>
                 <div class="dropdown anj-theme-menu">
                     <button class="btn btn-sm anj-theme-toggle" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="false" aria-haspopup="true" title="Tema: mengikuti jam Asia/Jakarta">
+                            aria-expanded="false" aria-haspopup="true" aria-label="Pilih tema"
+                            data-jb-phase="title" title="Tema <?= jb_anj_e($info['label']) ?> &middot; <?= jb_anj_e($info['range']) ?>">
                         <i class="bi <?= jb_anj_e($info['icon']) ?>" data-jb-phase="icon"></i>
-                        <span class="anj-theme-label" data-jb-phase="label"><?= jb_anj_e($info['label']) ?></span>
                         <i class="bi bi-chevron-down anj-caret"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end anj-theme-list">

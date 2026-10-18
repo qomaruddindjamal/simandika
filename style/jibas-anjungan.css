@@ -121,17 +121,19 @@
     color: var(--jb-primary);
 }
 
-/* Dropdown tema: toggle selalu menampilkan ikon + label fase yang sedang aktif */
+/* Dropdown tema: tombol hanya ikon fase yang sedang aktif (label muncul sebagai tooltip) */
 .anj-theme-toggle {
     display: inline-flex;
     align-items: center;
-    gap: .4rem;
+    justify-content: center;
+    gap: .25rem;
+    min-width: 34px;
+    height: 32px;
+    padding: 0 .3rem 0 .45rem;
     border: 1px solid var(--jb-border);
     border-radius: 999px;
     background: var(--jb-surface);
     color: var(--jb-text);
-    font-size: .8rem;
-    padding: .3rem .7rem;
 }
 
 .anj-theme-toggle:hover {
@@ -146,6 +148,10 @@
 .anj-caret {
     font-size: .68rem;
     opacity: .6;
+}
+
+.anj-theme-toggle > .bi:first-child {
+    font-size: 1.02rem;
 }
 
 .anj-theme-list {
@@ -315,8 +321,7 @@
     .anj-nav-link {
         padding: .5rem .55rem;
     }
-    .anj-masuk span,
-    .anj-theme-label {
+    .anj-masuk span {
         display: none;
     }
     .anj-masuk {

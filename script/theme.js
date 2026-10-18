@@ -54,6 +54,7 @@
             if (field === 'label') chip.textContent = LABEL[phase];
             else if (field === 'range') chip.textContent = RANGE[phase];
             else if (field === 'icon') chip.className = 'bi ' + ICON[phase];
+            else if (field === 'title') chip.setAttribute('title', 'Tema ' + LABEL[phase] + ' \u00b7 ' + RANGE[phase]);
         }
         var meta = document.querySelector('meta[name="theme-color"]');
         if (meta && THEME_COLOR[phase]) meta.setAttribute('content', THEME_COLOR[phase]);
