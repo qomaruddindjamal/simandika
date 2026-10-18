@@ -308,7 +308,9 @@ Menu bergambar lama (jadwal/pustaka/psb) diganti tombol Bootstrap yang memanggil
 (`jadkal_ShowKalender()`, `pustaka_browse()`, `psb_InputPsbClicked()`, …); untuk mading & info sekolah
 include menunya tetap dipakai karena berisi pilihan departemen dari database, bagian tab gambarnya disembunyikan CSS.
 
-Kepala halaman dua baris: baris identitas (logo+nama, jam, tombol **Masuk**, dropdown tema) dan baris menu 8 seksi.
+Kepala halaman dua baris: baris identitas (logo+nama, jam, tombol **Masuk**, dropdown tema) dan baris menu.
+Menu **Info Siswa sengaja dihilangkan dari baris menu** (`nav_hidden`) — kartanya tetap ada sebagai sasaran
+setelah login modal, jadi seksi yang dibuka hanya lewat tombol Masuk.
 Tombol tema hanya ikon — nama fase dan rentang jam pindah ke tooltip (`data-jb-phase="title"`) dan header isi dropdown,
 isinya Auto / Terang / Gelap dengan default Auto (Senja & Fajar tetap otomatis dari jam).
 Label menu dipendekkan (Sekolah, Siswa, Jadwal, Perpust., Pegawai) pada 768–1199 px supaya baris menu tidak pernah

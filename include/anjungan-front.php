@@ -57,7 +57,7 @@ if (!function_exists('jb_anj_sections')) {
             ),
             'infosiswa' => array(
                 'label' => 'Info Siswa', 'label_pendek' => 'Siswa', 'icon' => 'bi-person-video3', 'pane' => 'c',
-                'src' => 'infosiswa/infosiswa.php', 'judul' => 'Informasi Siswa', 'wadah' => 'is_main',
+                'src' => 'infosiswa/infosiswa.php', 'judul' => 'Informasi Siswa', 'wadah' => 'is_main', 'nav_hidden' => true,
             ),
             'jadkal' => array(
                 'label' => 'Jadwal & Kalender', 'label_pendek' => 'Jadwal', 'icon' => 'bi-calendar3', 'pane' => 'i',
@@ -240,6 +240,7 @@ $tanggal = $hari[(int)date('w')] . ', ' . (int)date('j') . ' ' . $bulan[(int)dat
         <div class="anj-shell">
             <ul class="anj-nav" id="anjNav">
                 <?php foreach ($sections as $key => $sek) {
+                    if (!empty($sek['nav_hidden'])) continue;
                     $url = $key === 'beranda' ? '/' : '/' . $key . '/';
                     $pendek = !empty($sek['label_pendek']) ? $sek['label_pendek'] : $sek['label']; ?>
                 <li class="anj-nav-item"><a class="anj-nav-link<?= $key === $active ? ' active' : '' ?>" href="<?= jb_anj_e($url) ?>"
