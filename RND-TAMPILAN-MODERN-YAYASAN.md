@@ -402,8 +402,10 @@ bila blob kosong; respons login/status membawa `berfoto` sehingga avatar ikut te
 Nama diambil dari hasil login/`?aksi=status`, disimpan di `data-nama`/`data-foto` kartu `infosiswa` supaya tetap terbaca
 saat halaman dimuat ulang atau saat `MutationObserver` dasbor memanggil ulang penataan tombol; bila sesi dibuat alur
 warisan sehingga nama tidak diketahui, label jatuh kembali ke "Info Siswa". Nama panjang dipotong `ellipsis`
-(maks 13rem, 7,5rem di ≤575,98 px) dan utuhnya ada di `title`; di layar sempit label "Masuk" disembunyikan dan avatar
-tetap tampil. Status sesi dibaca sekali saat halaman dibuka (`login-siswa.php?aksi=status`, dilewati bila seksi yang
+(maks 13rem, 7,5rem di ≤575,98 px) dan utuhnya ada di `title`; proporsinya diukur di browser 2026-10-19 — avatar
+1,25rem (20 px) dalam chip setinggi 32 px, sama persis dengan tinggi tombol tema di sebelahnya dan sepusat secara
+vertikal (permintaan user: avatar pertama kali terlalu besar sehingga chip lebih gemuk dari kontrol tema);
+di layar sempit label "Masuk" disembunyikan dan avatar tetap tampil. Status sesi dibaca sekali saat halaman dibuka (`login-siswa.php?aksi=status`, dilewati bila seksi yang
 aktif memang Info Siswa) dan setiap kali sesi berubah (login, Keluar — setelah Keluar wujud kembali "Masuk" berikon
 panah, tanpa avatar dan tanpa `title`). Tombol ini tetap diperlukan karena seksi Info Siswa tidak ada di baris menu,
 jadi tanpa tombolnya tidak ada jalan kembali ke dasbor.

@@ -107,7 +107,13 @@
     white-space: nowrap;
 }
 
+/* Tinggi 32px disamakan dengan tombol tema di sebelahnya; saat sesi aktif isinya
+   avatar + nama lengkap siswa yang dipotong ellipsis (utuhnya di tooltip). */
 .anj-masuk {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    height: 32px;
     border: 1px solid var(--jb-border);
     border-radius: 999px;
     background: var(--jb-surface);
@@ -121,14 +127,6 @@
     color: var(--jb-primary);
 }
 
-/* Selama sesi siswa aktif tombolnya berlabel nama lengkap — dipotong bila terlalu panjang,
-   utuhnya tetap terbaca lewat tooltip. */
-.anj-masuk {
-    display: inline-flex;
-    align-items: center;
-    white-space: nowrap;
-}
-
 .anj-masuk-nama {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -139,27 +137,28 @@
     max-width: 13rem;
 }
 
-/* Avatar pintu dasbor: inisial selalu ada di bawah, foto menimbunnya dan dilepas JS bila 404. */
+/* Avatar pintu dasbor: inisial selalu ada di bawah, foto menimbunnya dan dilepas JS bila 404.
+   Ukurannya mengikuti tinggi baris teks (1.25rem) agar chip tidak lebih gemuk dari tombol tema. */
 .anj-avatar {
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
-    width: 1.5rem;
-    height: 1.5rem;
-    margin-right: .4rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: .35rem;
     border-radius: 50%;
     background: color-mix(in srgb, var(--jb-primary) 15%, var(--jb-surface));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--jb-primary) 25%, transparent);
     color: var(--jb-primary);
     overflow: hidden;
 }
 
 .anj-avatar-inisial {
-    font-size: .62rem;
+    font-size: .56rem;
     font-weight: 700;
     line-height: 1;
-    letter-spacing: .02em;
 }
 
 .anj-avatar img {
