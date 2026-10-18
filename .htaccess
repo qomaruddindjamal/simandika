@@ -1,0 +1,24 @@
+Options -Indexes
+
+# Halaman utama = ANJUNGAN (portal publik). Hanya untuk akses lewat vhost data.yaishk.sch.id,
+# supaya jalur lama http://.../jibas/ yang dilayani server default tidak ikut dialihkan.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^(www\.)?data\.yaishk\.sch\.id$ [NC]
+    RewriteRule ^$ /anjungan/ [R=302,L]
+</IfModule>
+
+# PWA: manifest.webmanifest tidak dikenal Apache bawaan XAMPP
+<IfModule mod_mime.c>
+    AddType application/manifest+json .webmanifest
+</IfModule>
+
+<IfModule mod_headers.c>
+    # Service worker harus selalu dicek ulang agar update tema/aset tidak tertahan
+    <FilesMatch "sw\.js$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+    </FilesMatch>
+    <FilesMatch "manifest\.webmanifest$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+</IfModule>

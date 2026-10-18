@@ -1,0 +1,93 @@
+$(document).ready(function ()
+{
+    $("#nama").focus();
+});
+
+showRekAkunDialog = function(kategori, subKategori)
+{
+    let qsb = new QsBuilder();
+    qsb.add("kategori", kategori);
+    qsb.add("subkategori", subKategori);
+
+    let addr = '../library/rekakun.dialog.php?' + qsb.createQs();
+    newWindow(addr, 'RekAkunDialog2', '760', '560', 'resizable=1,scrollbars=1,status=0,toolbar=0');
+};
+
+acceptRekAkunDialog = function(kategori, subKategori, kodeRek, namaRek)
+{
+    if (kategori === "HARTA")
+    {
+        $("#inforekkas").val(kodeRek + " " + namaRek);
+        $("#rekkas").val(kodeRek);
+    }
+    else if (kategori === "UTANG")
+    {
+        $("#inforekutang").val(kodeRek + " " + namaRek);
+        $("#rekutang").val(kodeRek);
+    }
+};
+
+simpanJenisTabungan = function()
+{
+    let idJenis = $("#idjenis").val();
+    let departemen = $("#departemen").val();
+
+    let nama = $.trim($("#nama").val());
+    if (nama.length === 0)
+    {
+        alert("Nama jenis tabungan belum ditentukan");
+        $("#nama").focus();
+        return;
+    }
+
+    let rekKas = $.trim($("#rekkas").val());
+    if (rekKas.length === 0)
+    {
+        alert("Rek Kas belum ditentukan");
+        $("#inforekkas").focus();
+        return;
+    }
+
+    let rekUtang = $.trim($("#rekutang").val());
+    if (rekUtang.length === 0)
+    {
+        alert("Rek Utang belum ditentukan");
+        $("#inforekutang").focus();
+        return;
+    }
+
+    let keterangan = $.trim($("#keterangan").val());
+    let sendNotif = $("#sendnotif").prop("checked") ? 1 : 0;
+
+    let qsb = new QsBuilder();
+    qsb.add("op", "simpan");
+    qsb.add("nama", nama);
+    qsb.add("idjenis", idJenis);
+    qsb.add("departemen", departemen);
+    qsb.add("rekkas", rekKas);
+    qsb.add("rekutang", rekUtang);
+    qsb.add("keterangan", keterangan);
+    qsb.add("sendnotif", sendNotif);
+
+    $.ajax({
+        url: "jenistabungan2.dialog.ajax.php",
+        method: "POST",
+        data: qsb.createQs(),
+        success: function (json)
+        {
+            let ls = JSON.parse(json);
+            if (parseInt(ls[0]) !== 1)
+            {
+                alert(ls[1]);
+                return;
+            }
+
+            opener.refresh();
+            window.close();
+        },
+        error: function (xhr)
+        {
+            alert(xhr.responseText);
+        }
+    });
+};

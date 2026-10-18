@@ -1,0 +1,111 @@
+$(document).ready(function ()
+{
+    if ($("#table").length)
+        Tables("table", 1, 0);
+
+    if ($("#dvLaporan").length)
+        $("#dvLaporan").hide().fadeIn(400);
+});
+
+function cetak()
+{
+    let qsb = new QsBuilder();
+    qsb.addInput("departemen", "departemen");
+
+    newWindow('laporan.rincian.cetak.php?'+qsb.createQs(), 'CetakRincianPengeluaran','780','630','resizable=1,scrollbars=1,status=0,toolbar=0'		)
+}
+
+function refresh()
+{
+    document.location.reload();
+    parent.pilih.refresh();
+}
+
+function getPageContent(section)
+{
+    if (section === "departemen")
+        return $("#departemen").val();
+
+    if (section === "pengeluaran")
+        return $("#namapengeluaran").val();
+
+    if (section === "tanggal1")
+        return $("#tanggal1").val();
+
+    if (section === "tanggal2")
+        return $("#tanggal2").val();
+
+    if (section === "laporan")
+        return $("#dvLaporan").html();
+
+    return "-";
+}
+
+function cetakbukti(id)
+{
+    let qsb = new QsBuilder();
+    qsb.add("idtransaksi", id);
+
+    newWindow('laporan.kuitansi.php?'+qsb.createQs(), 'BuktiPengeluaran','360','600','resizable=1,scrollbars=1,status=0,toolbar=0')
+}
+
+function edit(id)
+{
+    let qsb = new QsBuilder();
+    qsb.add("idtransaksi", id);
+    qsb.addInput("departemen", "departemen");
+
+    newWindow('laporan.rincian.edit.php?'+qsb.createQs(), 'EditPengeluaran','550','500','resizable=1,scrollbars=1,status=0,toolbar=0')
+}
+
+
+function onPrevPage()
+{
+    let page = parseInt($("#page").val());
+    if (page === 1)
+        return;
+
+    $("#page").val(page - 1);
+    onChangePage();
+}
+
+function onNextPage()
+{
+    let page = parseInt($("#page").val());
+    let totalpage = parseInt($("#totalpage").val());
+    if (page === totalpage)
+        return;
+
+    $("#page").val(page + 1);
+    onChangePage();
+}
+
+function onChangePage()
+{
+    let qsb = new QsBuilder();
+    qsb.addInput("idpengeluaran", "idpengeluaran");
+    qsb.addInput("namapengeluaran","namapengeluaran");
+    qsb.addInput("departemen", "departemen");
+    qsb.addInput("idtahunbuku", "idtahunbuku");
+    qsb.addInput("namatahunbuku", "namatahunbuku");
+    qsb.addInput("tanggal1", "tanggal1");
+    qsb.addInput("tanggal2", "tanggal2");
+    qsb.addInput("page", "page");
+
+    document.location.href = "laporan.rincian.php?" + qsb.createQs();
+}
+
+function excel()
+{
+    let qsb = new QsBuilder();
+    qsb.addInput("idpengeluaran", "idpengeluaran");
+    qsb.addInput("namapengeluaran","namapengeluaran");
+    qsb.addInput("departemen", "departemen");
+    qsb.addInput("idtahunbuku", "idtahunbuku");
+    qsb.addInput("namatahunbuku", "namatahunbuku");
+    qsb.addInput("tanggal1", "tanggal1");
+    qsb.addInput("tanggal2", "tanggal2");
+    qsb.addInput("page", "page");
+
+    newWindow('laporan.rincian.excel.php?'+qsb.createQs(), 'ExcelRincianPengeluaran','780','630','resizable=1,scrollbars=1,status=0,toolbar=0'		)
+}

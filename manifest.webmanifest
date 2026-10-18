@@ -1,0 +1,35 @@
+{
+  "name": "JIBAS — Sistem Informasi Yayasan",
+  "short_name": "JIBAS",
+  "description": "Sistem informasi sekolah dan yayasan: KPI, referensi, keuangan, persuratan.",
+  "id": "jibas-yayasan",
+  "lang": "id",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#f7f9fc",
+  "theme_color": "#0f6fb8",
+  "categories": ["education", "productivity", "business"],
+  "icons": [
+    { "src": "./images/pwa-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./images/pwa-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./images/pwa-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Beranda & KPI",
+      "short_name": "KPI",
+      "url": "./tampilan-baru.php?jbmodul=beranda",
+      "icons": [{ "src": "./images/pwa-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Referensi",
+      "short_name": "Referensi",
+      "url": "./tampilan-baru.php?jbmodul=referensi",
+      "icons": [{ "src": "./images/pwa-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}

@@ -1,0 +1,259 @@
+/*!
+ * JIBAS — layer token tema (Terang / Senja / Gelap / Fajar) di atas Bootstrap 5.3.8
+ * Fase ditentukan oleh script/theme.php (server) lalu dikoreksi script/theme.js (klien).
+ * Aturan jam (Asia/Jakarta): 06:00-16:59 terang, 17:00-17:59 senja, 18:00-03:59 gelap, 04:00-05:59 fajar.
+ */
+
+/* ---------- 1. Token semantik per fase ---------- */
+html[data-jibas-phase="terang"] {
+    --jb-bg: #f7f9fc;
+    --jb-surface: #ffffff;
+    --jb-surface-2: #eef2f8;
+    --jb-text: #152238;
+    --jb-text-muted: #5a6b83;
+    --jb-primary: #0f6fb8;
+    --jb-primary-ink: #ffffff;
+    --jb-accent: #12a37f;
+    --jb-accent-ink: #ffffff;
+    --jb-warning: #d98b0b;
+    --jb-danger: #c8382f;
+    --jb-border: #d8e0ec;
+    --jb-navbar-bg: #ffffff;
+    --jb-navbar-text: #152238;
+    --jb-sidebar-bg: #ffffff;
+    --jb-sidebar-text: #33415c;
+    --jb-sidebar-active-bg: #e8f2fb;
+    --jb-shadow: 0 1px 2px rgba(21, 34, 56, .06), 0 6px 18px rgba(21, 34, 56, .08);
+    --jb-ring: rgba(15, 111, 184, .25);
+}
+
+html[data-jibas-phase="senja"] {
+    --jb-bg: #2b1c33;
+    --jb-surface: #3a2440;
+    --jb-surface-2: #472c4e;
+    --jb-text: #ffe8d6;
+    --jb-text-muted: #d9b6bd;
+    --jb-primary: #ff8a5b;
+    --jb-primary-ink: #2b1c33;
+    --jb-accent: #c76b9a;
+    --jb-accent-ink: #2b1c33;
+    --jb-warning: #ffbf6b;
+    --jb-danger: #f2789f;
+    --jb-border: #5b3a61;
+    --jb-navbar-bg: #241729;
+    --jb-navbar-text: #ffe8d6;
+    --jb-sidebar-bg: #301f38;
+    --jb-sidebar-text: #f4d9cf;
+    --jb-sidebar-active-bg: #4a2b50;
+    --jb-shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 8px 22px rgba(0, 0, 0, .4);
+    --jb-ring: rgba(255, 138, 91, .35);
+}
+
+html[data-jibas-phase="gelap"] {
+    --jb-bg: #0e1319;
+    --jb-surface: #161d26;
+    --jb-surface-2: #1e2732;
+    --jb-text: #dfe7ef;
+    --jb-text-muted: #93a3b4;
+    --jb-primary: #4aa8e8;
+    --jb-primary-ink: #08101a;
+    --jb-accent: #2fbf8f;
+    --jb-accent-ink: #08101a;
+    --jb-warning: #e8b23a;
+    --jb-danger: #f2686b;
+    --jb-border: #27333f;
+    --jb-navbar-bg: #0a0f15;
+    --jb-navbar-text: #dfe7ef;
+    --jb-sidebar-bg: #121922;
+    --jb-sidebar-text: #b9c7d6;
+    --jb-sidebar-active-bg: #1d2c3c;
+    --jb-shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 8px 24px rgba(0, 0, 0, .55);
+    --jb-ring: rgba(74, 168, 232, .35);
+}
+
+html[data-jibas-phase="fajar"] {
+    --jb-bg: #fdf5f0;
+    --jb-surface: #fffaf6;
+    --jb-surface-2: #f6e8e2;
+    --jb-text: #3a2c40;
+    --jb-text-muted: #7c6a83;
+    --jb-primary: #7c5cad;
+    --jb-primary-ink: #ffffff;
+    --jb-accent: #f0a868;
+    --jb-accent-ink: #3a2c40;
+    --jb-warning: #e0a13d;
+    --jb-danger: #c9556b;
+    --jb-border: #ecdcd4;
+    --jb-navbar-bg: #fffaf6;
+    --jb-navbar-text: #3a2c40;
+    --jb-sidebar-bg: #fffaf6;
+    --jb-sidebar-text: #4b3a54;
+    --jb-sidebar-active-bg: #f0e6f7;
+    --jb-shadow: 0 1px 2px rgba(58, 44, 64, .07), 0 6px 18px rgba(58, 44, 64, .09);
+    --jb-ring: rgba(124, 92, 173, .28);
+}
+
+/* ---------- 2. Pemetaan ke variabel Bootstrap (yang memang dibaca Bootstrap) ---------- */
+html[data-jibas-phase] {
+    --bs-primary: var(--jb-primary);
+    --bs-primary-rgb: var(--jb-primary-rgb);
+    --bs-primary-text-emphasis: var(--jb-primary);
+    --bs-primary-bg-subtle: color-mix(in srgb, var(--jb-primary) 14%, var(--jb-surface));
+    --bs-primary-border-subtle: color-mix(in srgb, var(--jb-primary) 34%, var(--jb-surface));
+
+    --bs-body-color: var(--jb-text);
+    --bs-body-color-rgb: var(--jb-text-rgb);
+    --bs-body-bg: var(--jb-bg);
+    --bs-body-bg-rgb: var(--jb-bg-rgb);
+    --bs-emphasis-color: var(--jb-text);
+    --bs-emphasis-color-rgb: var(--jb-text-rgb);
+    --bs-secondary-color: var(--jb-text-muted);
+    --bs-secondary-color-rgb: var(--jb-text-muted-rgb);
+    --bs-tertiary-bg: var(--jb-surface-2);
+    --bs-secondary-bg: var(--jb-surface);
+    --bs-border-color: var(--jb-border);
+    --bs-border-color-translucent: color-mix(in srgb, var(--jb-border) 75%, transparent);
+
+    --bs-link-color: var(--jb-primary);
+    --bs-link-hover-color: color-mix(in srgb, var(--jb-primary) 80%, var(--jb-text));
+
+    --bs-success-text-emphasis: var(--jb-accent);
+    --bs-success-bg-subtle: color-mix(in srgb, var(--jb-accent) 14%, var(--jb-surface));
+    --bs-warning-text-emphasis: var(--jb-warning);
+    --bs-warning-bg-subtle: color-mix(in srgb, var(--jb-warning) 16%, var(--jb-surface));
+    --bs-danger-text-emphasis: var(--jb-danger);
+    --bs-danger-bg-subtle: color-mix(in srgb, var(--jb-danger) 14%, var(--jb-surface));
+
+    --bs-nav-pills-link-active-bg: var(--jb-primary);
+    --bs-nav-pills-link-active-color: var(--jb-primary-ink);
+    --bs-pagination-active-bg: var(--jb-primary);
+    --bs-pagination-active-border-color: var(--jb-primary);
+    --bs-pagination-color: var(--jb-primary);
+    --bs-pagination-hover-bg: var(--jb-surface-2);
+    --bs-pagination-disabled-color: var(--jb-text-muted);
+    --bs-progress-bar-bg: var(--jb-primary);
+    --bs-list-group-action-hover-bg: var(--jb-surface-2);
+    --bs-dropdown-link-active-bg: var(--jb-primary);
+    --bs-dropdown-link-active-color: var(--jb-primary-ink);
+    --bs-dropdown-hover-bg: var(--jb-surface-2);
+    --bs-form-file-button-bg: var(--jb-surface-2);
+    --bs-box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+
+    color-scheme: var(--jb-color-scheme);
+    background-color: var(--jb-bg);
+}
+
+/* rgb triplet untuk variabel Bootstrap yang menuntut format "r,g,b" */
+html[data-jibas-phase="terang"] { --jb-bg-rgb: 247,249,252; --jb-text-rgb: 21,34,56; --jb-text-muted-rgb: 90,107,131; --jb-primary-rgb: 15,111,184; --jb-color-scheme: light; }
+html[data-jibas-phase="senja"]  { --jb-bg-rgb: 43,28,51;   --jb-text-rgb: 255,232,214; --jb-text-muted-rgb: 217,182,189; --jb-primary-rgb: 255,138,91; --jb-color-scheme: dark; }
+html[data-jibas-phase="gelap"]  { --jb-bg-rgb: 14,19,25;   --jb-text-rgb: 223,231,239; --jb-text-muted-rgb: 147,163,180; --jb-primary-rgb: 74,168,232; --jb-color-scheme: dark; }
+html[data-jibas-phase="fajar"]  { --jb-bg-rgb: 253,245,240; --jb-text-rgb: 58,44,64; --jb-text-muted-rgb: 124,106,131; --jb-primary-rgb: 124,92,173; --jb-color-scheme: light; }
+
+/* ---------- 3. Sinkron kelas Bootstrap yang masih hardcode hex di 5.3.8 ---------- */
+html[data-jibas-phase] .btn-primary {
+    --bs-btn-color: var(--jb-primary-ink);
+    --bs-btn-bg: var(--jb-primary);
+    --bs-btn-border-color: var(--jb-primary);
+    --bs-btn-hover-color: var(--jb-primary-ink);
+    --bs-btn-hover-bg: color-mix(in srgb, var(--jb-primary) 84%, var(--jb-text));
+    --bs-btn-hover-border-color: color-mix(in srgb, var(--jb-primary) 84%, var(--jb-text));
+    --bs-btn-active-color: var(--jb-primary-ink);
+    --bs-btn-active-bg: color-mix(in srgb, var(--jb-primary) 72%, var(--jb-text));
+    --bs-btn-active-border-color: color-mix(in srgb, var(--jb-primary) 72%, var(--jb-text));
+    --bs-btn-disabled-color: var(--jb-primary-ink);
+    --bs-btn-disabled-bg: var(--jb-primary);
+    --bs-btn-disabled-border-color: var(--jb-primary);
+    --bs-btn-focus-shadow-rgb: var(--jb-primary-rgb);
+}
+
+html[data-jibas-phase] .btn-outline-primary {
+    --bs-btn-color: var(--jb-primary);
+    --bs-btn-border-color: var(--jb-primary);
+    --bs-btn-hover-color: var(--jb-primary-ink);
+    --bs-btn-hover-bg: var(--jb-primary);
+    --bs-btn-hover-border-color: var(--jb-primary);
+    --bs-btn-active-color: var(--jb-primary-ink);
+    --bs-btn-active-bg: var(--jb-primary);
+    --bs-btn-active-border-color: var(--jb-primary);
+    --bs-btn-focus-shadow-rgb: var(--jb-primary-rgb);
+}
+
+html[data-jibas-phase] .btn-accent {
+    --bs-btn-color: var(--jb-accent-ink);
+    --bs-btn-bg: var(--jb-accent);
+    --bs-btn-border-color: var(--jb-accent);
+    --bs-btn-hover-color: var(--jb-accent-ink);
+    --bs-btn-hover-bg: color-mix(in srgb, var(--jb-accent) 85%, var(--jb-text));
+    --bs-btn-hover-border-color: color-mix(in srgb, var(--jb-accent) 85%, var(--jb-text));
+    --bs-btn-active-bg: color-mix(in srgb, var(--jb-accent) 72%, var(--jb-text));
+    --bs-btn-focus-shadow-rgb: var(--jb-primary-rgb);
+}
+
+html[data-jibas-phase] .form-check-input:checked {
+    background-color: var(--jb-primary);
+    border-color: var(--jb-primary);
+}
+
+html[data-jibas-phase] .form-control:focus,
+html[data-jibas-phase] .form-select:focus,
+html[data-jibas-phase] .form-check-input:focus {
+    border-color: color-mix(in srgb, var(--jb-primary) 60%, var(--jb-surface));
+    box-shadow: 0 0 0 .25rem var(--jb-ring);
+}
+
+html[data-jibas-phase] .input-group-text {
+    background-color: var(--jb-surface-2);
+    border-color: var(--jb-border);
+    color: var(--jb-text-muted);
+}
+
+/* ---------- 4. Komponen permukaan ---------- */
+html[data-jibas-phase] .card,
+html[data-jibas-phase] .list-group-item,
+html[data-jibas-phase] .dropdown-menu,
+html[data-jibas-phase] .modal-content,
+html[data-jibas-phase] .offcanvas,
+html[data-jibas-phase] .navbar-jb,
+html[data-jibas-phase] .sidebar-jb {
+    background-color: var(--jb-surface);
+    border-color: var(--jb-border);
+    color: var(--jb-text);
+}
+
+html[data-jibas-phase] .card { box-shadow: var(--jb-shadow); }
+html[data-jibas-phase] .text-muted,
+html[data-jibas-phase] .small-note { color: var(--jb-text-muted) !important; }
+
+html[data-jibas-phase] .table {
+    --bs-table-color: var(--jb-text);
+    --bs-table-bg: transparent;
+    --bs-table-border-color: var(--jb-border);
+    --bs-table-striped-bg: color-mix(in srgb, var(--jb-surface-2) 70%, transparent);
+    --bs-table-striped-color: var(--jb-text);
+    --bs-table-hover-bg: color-mix(in srgb, var(--jb-primary) 10%, var(--jb-surface));
+    --bs-table-hover-color: var(--jb-text);
+}
+
+html[data-jibas-phase] .table > :not(caption) > * > * { background-color: var(--bs-table-bg-state, var(--bs-table-bg)); }
+
+html[data-jibas-phase] .badge.text-bg-light {
+    background-color: var(--jb-surface-2) !important;
+    color: var(--jb-text) !important;
+}
+
+/* ---------- 5. Cetak selalu terang ---------- */
+@media print {
+    html[data-jibas-phase] {
+        --jb-bg: #ffffff;
+        --jb-surface: #ffffff;
+        --jb-surface-2: #f2f2f2;
+        --jb-text: #000000;
+        --jb-text-muted: #444444;
+        --jb-primary: #14507d;
+        --jb-primary-ink: #ffffff;
+        --jb-border: #bbbbbb;
+        --jb-shadow: none;
+        color-scheme: light;
+    }
+    .navbar-jb, .sidebar-jb, .no-print { display: none !important; }
+}

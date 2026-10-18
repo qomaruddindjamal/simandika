@@ -1,0 +1,46 @@
+<?php
+/**[N]**
+ * JIBAS Education Community
+ * Jaringan Informasi Bersama Antar Sekolah
+ *
+ * @version: 33.0 (Jan 05, 2026)
+ * @notes:
+ *
+ * Copyright (C) 2024 JIBAS (http://www.jibas.net)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ **[N]**/ ?>
+<?php
+require_once ("tabs.siswa.func.php");
+
+$op = $_REQUEST["op"];
+if ($op == "kelas")
+{
+    $idTingkat = $_REQUEST["idtingkat"];
+    ShowSelectKelasSiswa();
+}
+else if ($op == "daftar")
+{
+    $departemen = $_REQUEST["departemen"];
+    $idTingkat = $_REQUEST["idtingkat"];
+    $tingkat = $_REQUEST["tingkat"];
+    $idKelas = $_REQUEST["idkelas"];
+    $kelas = $_REQUEST["kelas"];
+    $urut = $_REQUEST["urut"];
+    ShowDaftarSiswa();
+}
+else if ($op == "cari")
+{
+    ShowCariSiswa();
+}
+?>

@@ -1,0 +1,12 @@
+# Kredensial instalasi ini — dipakai jalan, jangan ter-publish.
+# Salin include/database.config.example.php menjadi file ini untuk mengaktifkan koneksi DB.
+include/database.config.php
+
+# Jejak runtime & scratch
+log/
+temp/
+
+# Saran Windows
+Thumbs.db
+desktop.ini
+.DS_Store

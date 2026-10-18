@@ -1,0 +1,27 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #fff;
+}
+
+.container {
+    position: fixed;      /* 👈 stays fixed on screen */
+    left: 0;              /* 👈 touches left edge */
+    right: 0;             /* 👈 touches right edge */
+    bottom: 0;            /* 👈 anchored to bottom */
+    background: white;
+    padding: 2px;
+    text-align: center;
+    color: #666;
+    box-shadow: 0 -3px 6px rgba(0, 0, 0, 0.15); /* 👈 top shadow */
+    border-top: 1px solid #ccc;
+    z-index: 1000;        /* 👈 stays on top of other elements */
+}
+
+/* Center section (holds the menu) */
+.div2 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}

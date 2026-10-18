@@ -1,0 +1,53 @@
+/* Toast Container - COMMON STYLES */
+#toast-container {
+    position: fixed; /* Stays in place when scrolling */
+    left: 50%;       /* Center horizontally */
+    transform: translateX(-50%); /* Adjust to truly center */
+    z-index: 1000;   /* Ensure it's above other content */
+    display: flex;
+    /* flex-direction will be set by JS/CSS classes based on position */
+    align-items: center;    /* Center individual toasts horizontally */
+    pointer-events: none; /* Allows clicks to pass through the container */
+    width: 100%; /* Take full width to help with centering */
+    max-width: 400px; /* Limit max width of the container itself */
+}
+
+/* Toast Container - TOP POSITION */
+#toast-container.toast-top {
+    top: 20px;    /* 20px from the top */
+    bottom: auto; /* Remove conflicting bottom property */
+    flex-direction: column; /* Stack new toasts below existing ones */
+}
+
+/* Toast Container - BOTTOM POSITION (Default Android-like) */
+#toast-container.toast-bottom {
+    bottom: 20px;   /* 20px from the bottom */
+    top: auto;      /* Remove conflicting top property */
+    flex-direction: column-reverse; /* Stack new toasts above existing ones */
+}
+
+/* Individual Toast Message Style */
+.toast-message {
+    background-color: rgba(50, 50, 50, 0.9); /* Dark semi-transparent background */
+    color: white;
+    padding: 12px 20px;
+    border-radius: 25px; /* Rounded corners */
+    margin-bottom: 10px; /* Space between multiple toasts */
+    font-size: 15px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.5s ease-in-out; /* Smooth fade in/out */
+    max-width: 90%; /* Adjust width of individual toast */
+    min-width: 200px; /* Minimum width */
+    box-sizing: border-box; /* Include padding/border in width */
+}
+
+/* For different types of toasts (optional) */
+.toast-message.success {
+    background-color: rgba(40, 167, 69, 0.9); /* Green for success */
+}
+
+.toast-message.error {
+    background-color: rgba(220, 53, 69, 0.9); /* Red for error */
+}

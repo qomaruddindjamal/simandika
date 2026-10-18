@@ -1,0 +1,36 @@
+#Main
+{
+    position:absolute;
+    width:200px;
+    height:115px;
+    z-index:1;
+    top:50px;
+    left: 50px;
+}
+
+#Footer
+{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+}
+
+#Partner
+{
+    position:fixed;
+    bottom:20px;
+    left:20px;
+}
+
+.divVersionInfo
+{
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed; /* Use 'absolute' if it should stay at the bottom of a parent container */
+    bottom: 10px;    /* Distance from the bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    color: #ffffff;
+    padding: 5px;
+}

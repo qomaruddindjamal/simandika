@@ -1,0 +1,74 @@
+<p class="help-title">Konfigurasi SchoolPay</p>
+
+<p class="help-content">
+    Menu ini merupakan konfigurasi dasar yang mengatur transaksi pembayaran non tunai yang terjadi di JIBAS SchoolPay.
+</p>
+
+<p class="help-content">
+    Hal yang diatur di Konfigurasi SchoolPay, yaitu:
+    <ul class="help-list">
+        <li>Tabungan Siswa dan Pegawai yang digunakan sebagai sumber dana pembayaran non tunai</li>
+        <li>Maksimal jumlah transaksi yang dapat dilakukan oleh Siswa dan Pegawai dalam satu hari</li>
+        <li>Rekening Kas dan Utang Vendor untuk mendata jurnal penerimaan dari transaksi pembayaran non tunai yang diterima oleh Vendor</li>
+    </ul>
+</p>
+
+<p class="help-content">
+    Rekening Kas dan Utang Vendor untuk mendata jurnal penerimaan dari transaksi non tunai yang diterima Vendor.
+    Saat terjadi transaksi pembayaran non tunai, proses akuntansi yang terjadi adalah sebagai berikut
+
+    <ol class="help-list">
+        <li>
+            <b>Penarikan Tabungan sebagai sumber dana pembayaran</b><br>
+            Misalnya siswa membayarkan uang Rp 10.000 sebagai pembayaran non tunai. Uang Rp 10.000 ini akan diambil sebagai Penarikan dari Tabungan Siswa. Jurnal Akuntansi yang terjadi
+            <table class="tab" cellpadding="0" cellspacing="0">
+            <tr>
+                <td colspan="2" align="center" width="260">Rekening Akuntansi</td>
+                <td width="100" align="center">Debet</td>
+                <td width="100" align="center">Kredit</td>
+            </tr>
+            <tr>
+                <td align="center" width="60">115</td>
+                <td align="left" width="200">Kas Tabungan Jajan Siswa</td>
+                <td align="right">Rp 0</td>
+                <td align="right">Rp 10.000</td>
+            </tr>
+            <tr>
+                <td align="center" width="60">907</td>
+                <td align="left" width="200">Hutang Tabungan Jajan Siswa</td>
+                <td align="right">Rp 10.000</td>
+                <td align="right">Rp 0</td>
+            </tr>
+            </table>
+        </li>
+        <li>
+            <b>Pendataan penerimaan non tunai untuk Vendor</b><br>
+            Uang yang diterima Vendor dari pembayaran non tunai akan di data
+            sebagai jurnal akuntansi sebagai berikut
+            <table class="tab" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td colspan="2" align="center" width="260">Rekening Akuntansi</td>
+                    <td width="100" align="center">Debet</td>
+                    <td width="100" align="center">Kredit</td>
+                </tr>
+                <tr>
+                    <td align="center" width="60">116</td>
+                    <td align="left" width="200">Kas Transaksi Vendor</td>
+                    <td align="right">Rp 10.000</td>
+                    <td align="right">Rp 0</td>
+                </tr>
+                <tr>
+                    <td align="center" width="60">908</td>
+                    <td align="left" width="200">Hutang Transaksi Vendor</td>
+                    <td align="right">Rp 0</td>
+                    <td align="right">Rp 10.000</td>
+                </tr>
+            </table>
+        </li>
+    </ol>
+</p>
+
+<p class="help-content">
+    Untuk informasi lebih lengkap, silakan lihat tautan berikut:<br>
+    <a href="https://www.youtube.com/watch?v=4YVBAZYwVhs" style="color: blue; font-weight: normal;" target="_blank">https://www.youtube.com/watch?v=4YVBAZYwVhs</a>
+</p>
