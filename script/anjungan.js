@@ -248,6 +248,48 @@
        /anjungan/ karena <base>, jadi selalu dipakai absolut. */
     var URL_LOGIN = '/login-siswa.php';
 
+    /* Kabar singkat tanpa Bootstrap Toast: elemen melengkung lalu hilang sendiri. */
+    function kabari(pesan) {
+        var el = document.createElement('div');
+        el.className = 'anj-kabari';
+        el.setAttribute('role', 'status');
+        el.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>';
+        el.appendChild(document.createTextNode(pesan));
+        document.body.appendChild(el);
+        /* Jeda dulu supaya transisi punya titik awal; fallback timer karena requestAnimationFrame
+           tidak berjalan di tab yang tidak digambar. */
+        setTimeout(function () { el.classList.add('anj-kabari-tampil'); }, 20);
+        setTimeout(function () {
+            el.classList.remove('anj-kabari-tampil');
+            setTimeout(function () { el.remove(); }, 400);
+        }, 3800);
+    }
+
+    /* Keluar dari dasbor siswa ditutup di titik masuk login, lalu halaman kembali ke beranda.
+       Alur logout warisan tidak dipakai: ia menggambar ulang form login lama ke dalam pane. */
+    function keluarSiswa() {
+        if (!window.confirm('Anda akan keluar dari halaman Informasi Siswa. Lanjutkan?')) return;
+        fetch(URL_LOGIN + '?aksi=keluar', { method: 'POST', credentials: 'same-origin' })
+            .then(function (res) { return res.ok ? res.json() : null; })
+            .then(function () {
+                var el = kartu('infosiswa');
+                if (el) {
+                    el.removeAttribute('data-nis');
+                    el.dataset.anjTermuat = '';
+                    /* Sesi yang baru ditutup tidak boleh langsung dipulihkan otomatis. */
+                    el.dataset.anjPulih = '9';
+                    var pane = el.querySelector('.anj-pane');
+                    if (pane) pane.textContent = '';
+                }
+                ubahTombolMasuk(false);
+                aktifkan('beranda', true);
+                kabari('Anda telah keluar dari Informasi Siswa.');
+            })
+            .catch(function () {
+                kabari('Pengeluaran tidak dapat dikonfirmasi, silakan muat ulang halaman.');
+            });
+    }
+
     function kirimLogin(nisn, pin) {
         var tombol = document.getElementById('anjMasukKirim');
         if (tombol) tombol.disabled = true;
@@ -449,7 +491,7 @@
                 var b = ev.target.closest ? ev.target.closest('.anj-sb-item') : null;
                 if (!b) return;
                 if (b.classList.contains('anj-sb-keluar')) {
-                    if (typeof window.is_Logout === 'function') window.is_Logout();
+                    keluarSiswa();
                     return;
                 }
                 var tipe = b.classList.contains('anj-sb-muat') ? comboLaporan(main).value : b.dataset.tipe;

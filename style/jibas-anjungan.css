@@ -527,6 +527,33 @@
     font-size: .9rem;
 }
 
+/* Kabar singkat (mis. setelah Keluar): mengambang di kanan atas, geser masuk lalu luntur. */
+.anj-kabari {
+    position: fixed;
+    top: 4.6rem;
+    right: 1.1rem;
+    z-index: 1080;
+    display: flex;
+    align-items: center;
+    max-width: min(24rem, 88vw);
+    padding: .6rem 1rem;
+    border: 1px solid var(--jb-border);
+    border-left: 3px solid var(--jb-primary);
+    border-radius: .7rem;
+    background: var(--jb-surface);
+    color: var(--jb-text);
+    font-size: .86rem;
+    box-shadow: var(--jb-shadow);
+    opacity: 0;
+    transform: translateY(-.6rem);
+    transition: opacity .25s ease, transform .25s ease;
+}
+
+.anj-kabari.anj-kabari-tampil {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .anj-spinner {
     width: 1.1rem;
     height: 1.1rem;

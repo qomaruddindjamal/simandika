@@ -341,11 +341,19 @@ membalas 200 — PROFIL, KEUANGAN, PRESENSIHARIAN, PRESENSIPELAJARAN, PRESENSIKE
 Dua di antaranya sempat fatal karena kode warisan belum siap untuk PHP 8: `count($this->arrdept)` di
 `infosiswa.keuangan.class.php:70` dan `sizeof($ajaran)`/`sizeof($kls)` di `infosiswa.presensiharian.php:110,115,125`
 — keduanya bernilai `null` bila siswa belum punya baris `jbsakad.riwayatdeptsiswa` / `jbsakad.riwayatkelassiswa`.
-Yang dipakai sekarang: **data uji dilengkapi** (satu baris riwayat departemen `SMA` dan satu riwayat kelas), bukan
-file warisan disunting. Bug-nya tetap ada untuk siswa baru tanpa riwayat kelas, dan karena `display_errors` masih
-menyala di XAMPP, pesan fatalnya ikut tercetak ke halaman publik lengkap dengan path absolut — perlu diputuskan
-apakah (a) menambal file warisan dengan `?? []` (butuh cadangan `.legacy-*`) atau (b) mematikan `display_errors`
-untuk jalur anjungan.
+
+**Kedua langkah diambil sekaligus (2026-10-19).** (a) Lima file laporan warisan ditambal: `$dep`/`$ajaran`/`$kls`
+(plus `$this->arrdept`, `$aspekarr`, `$pelarr`) selalu berupa array, dan pembacaan `$dep[$departemen]`,
+`$ajaran[0][0]`, `$this->arrdept[$this->departemen]` dilindungi `isset(... ? … : $nis_awal/'')`. Salinan semula ada di
+`C:\YIM\JIBAS\legacy-backup\2026-10-19-infosiswa\` (di luar docroot, md5 dicocokkan sebelum menyunting) dan
+`php -l` bersih untuk semuanya. (b) `anjungan/include/config.php` — konfigurasi yang dimuat setiap fragmen anjungan —
+menyetel `display_errors`/`display_startup_errors` = `0`, jadi jejak error tidak lagi muncul ke pengunjung; fatal
+tetap tercatat di `apache/logs/data.yaishk.sch.id-ssl-error.log` dan `php.ini` di sini masih `error_reporting`
+tanpa `E_WARNING`, sehingga warning tidak tampil dan tidak ditulis. Bukti: file prova sementara yang sengaja
+memancing warning + fatal hanya membalas kosong lewat HTTP (200) sementara fatalnya muncul di log.
+
+Uji ulang tanpa satu pun baris riwayat (`DELETE` kedua baris uji, sweep laporan, lalu `INSERT` kembali):
+sembilan laporan membalas 200 tanpa teks error — sebelumnya KEUANGAN dan PRESENSIHARIAN fatal.
 
 **Aturan modal untuk seluruh pengembangan baru:** selalu pasang `data-bs-backdrop="static"` — modal hanya ditutup lewat
 tombolnya sendiri (X / Batal / aksi eksplisit), tidak boleh hilang karena klik di luar area modal.
@@ -358,7 +366,20 @@ sidebar tidak ikut tertimpa. Dropdown "Laporan :", teks labelnya, dan tombol LOG
 (`display:none`, nilai combo tetap dipakai fungsi warisan), bukan dihapus. Klik item sidebar = `combo.value = tipe` +
 `dispatchEvent('change')` sehingga `GetReportContent()` warisan yang bekerja; sebuah `MutationObserver` pada `#is_main`
 menyembunyikan ulang kontrol lama dan menyelaraskan item aktif setiap kali konten berganti. Item khusus: **Muat ulang**
-(mengulang laporan aktif) dan **Keluar** (memanggil `is_Logout()` warisan, jadi pembersihan sesi tetap milik warisan).
+(mengulang laporan aktif) dan **Keluar**.
+
+**Keluar tidak lagi ke form login warisan** (permintaan user 2026-10-19: siswa logout diarahkan ke area login lama di
+dalam folder `anjungan/infosiswa`). Item Keluar memanggil `keluarSiswa()` di `script/anjungan.js`: konfirmasi, POST
+`login-siswa.php?aksi=keluar` (cabang baru, hanya menerima POST — sesi `_JIBAS_ANJUNGAN_IS__` dikosongkan, cookienya
+dihapus, `session_destroy()`), lalu kartu `infosiswa` dibersihkan (`data-nis` dilepas, `data-anj-pulih` diisi nilai
+tinggi supaya sesi yang baru ditutup tidak otomatis dipulihkan), tombol kepala kembali menjadi **Masuk**, halaman pindah
+ke **Beranda**, dan kabar `.anj-kabari` ("Anda telah keluar dari Informasi Siswa.") muncul di kanan atas lalu hilang
+sendiri dalam ±4 detik. `is_Logout()` warisan tidak dipakai lagi; fungsi itu menulis form login lama ke `#is_main`.
+Fungsionalitasnya tetap warisan dan masih bisa dipakai lewat `/anjungan/` lama karena `infosiswa.logout.php` tidak
+diubah — ia hanya meninggalkan `infosiswa.nis` di sesi, dan `?aksi=status` sudah memeriksa `islogin` lebih dulu
+sehingga nilai sisa itu tidak bisa dipakai. Teruji di browser 2026-10-19: sesi tertutup (`?aksi=status` → `login:false`),
+laporan tidak lagi menampilkan data, kartu aktif kembali ke `anj-kartu-beranda`, toast terlihat (`opacity:1`) lalu
+terhapus, dan modal Masuk terbuka kembali dengan fokus di NISN.
 Untuk siswa yang punya nilai, `showInfoInitTabbedPanel()` memerlukan Spry TabbedPanels — dulu dimuat di kepala
 `anjungan/index.php`, sekarang ikut `data-lib`/`data-css` seksi `infosiswa`.
 

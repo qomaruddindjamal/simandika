@@ -1,7 +1,8 @@
 <?php
 /**
- * Titik masuk AJAX untuk modal Masuk pada anjungan modern (beranda.php). Dua kegunaan:
- * POST nisn+pin untuk membuka sesi, dan GET ?aksi=status untuk menanyakan sesi yang berjalan.
+ * Titik masuk AJAX untuk modal Masuk pada anjungan modern (beranda.php). Tiga kegunaan:
+ * POST nisn+pin untuk membuka sesi, GET ?aksi=status untuk menanyakan sesi yang berjalan,
+ * dan POST ?aksi=keluar untuk menutupnya.
  *
  * Form login siswa memakai NISN + PIN. Pin dibandingkan dengan kolom pinsiswa yang di skema
  * warisan memang tersimpan apa adanya (belum di-hash), jadi perbandingan PIN masih teks polos
@@ -33,6 +34,21 @@ if (isset($_GET['aksi']) && $_GET['aksi'] === 'status') {
     jb_siswa_jawab(array('sukses' => true, 'pesan' => '', 'login' => true,
         'nis' => $_SESSION['infosiswa.nis'],
         'nama' => isset($_SESSION['infosiswa.name']) ? $_SESSION['infosiswa.name'] : ''));
+}
+
+/* Tutup sesi siswa. Hanya lewat POST supaya tidak bisa dipicu tautan atau prefetch. */
+if (isset($_GET['aksi']) && $_GET['aksi'] === 'keluar') {
+    if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+        jb_siswa_jawab(array('sukses' => false, 'pesan' => 'Pengeluaran harus dikirim sebagai permintaan POST.', 'login' => false));
+    }
+    session_name('_JIBAS_ANJUNGAN_IS__');
+    session_start();
+    $_SESSION = array();
+    if (ini_get('session.use_cookies')) {
+        setcookie(session_name(), '', time() - 42000, '/');
+    }
+    session_destroy();
+    jb_siswa_jawab(array('sukses' => true, 'pesan' => '', 'login' => false));
 }
 
 $nisn = isset($_POST['nisn']) ? trim((string)$_POST['nisn']) : '';
