@@ -30,6 +30,12 @@ require_once('infosiswa.security.php');
 
 $nis_awal = $_SESSION["infosiswa.nis"];
 
+/* Siswa tanpa riwayat departemen/kelas belum pernah mengisi array-array ini, dan
+   PHP 8 menganggap sizeof(null) sebagai fatal; dipakai sebagai array kosong saja. */
+$dep = array();
+$ajaran = array();
+$kls = array();
+
 $departemen = 0;
 if (isset($_REQUEST['departemen']))
 	$departemen = $_REQUEST['departemen'];
@@ -58,7 +64,7 @@ do
 }
 while($nrow > 0);
 
-$nis = $dep[$departemen][1];
+$nis = isset($dep[$departemen]) ? $dep[$departemen][1] : $nis_awal;
 
 $sql_ajaran  = 	"SELECT DISTINCT(t.replid), t.tahunajaran
 				   FROM riwayatkelassiswa r, kelas k, tahunajaran t

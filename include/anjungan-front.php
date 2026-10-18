@@ -6,11 +6,15 @@
  * di address bar: <base href="/anjungan/"> hanya dipakai agar aset dan titik masuk AJAX
  * warisan tetap resolve (muncul di network tab, bukan di address bar).
  *
- * Tidak ada file warisan yang diubah. Pane konten sengaja memakai id lama (content-pane-a..h)
- * supaya script tiap seksi anjungan tetap bekerja apa adanya.
+ * Pane konten sengaja memakai id lama (content-pane-a..h) supaya script tiap seksi anjungan
+ * tetap bekerja apa adanya. Beberapa file laporan warisan hanya ditambal agar tidak fatal di
+ * PHP 8; salinan semula tersimpan di C:\YIM\JIBAS\legacy-backup\2026-10-19-infosiswa\.
  */
 
 require_once __DIR__ . '/../script/theme.php';
+
+/* Kesalahan PHP tidak ditampilkan ke pengunjung anjungan; log PHP tetap mencatatnya. */
+ini_set('display_errors', '0');
 
 if (!function_exists('jb_anj_e')) {
     function jb_anj_e($value)

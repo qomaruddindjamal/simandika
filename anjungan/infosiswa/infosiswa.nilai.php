@@ -29,6 +29,12 @@ require_once('infosiswa.security.php');
 
 $nis_awal = $_SESSION["infosiswa.nis"];
 
+/* Siswa tanpa riwayat departemen/kelas belum pernah mengisi array-array ini, dan
+   PHP 8 menganggap count(null) serta indeks tak tentu sebagai masalah; pakai array kosong. */
+$dep = array();
+$ajaran = array();
+$kls = array();
+
 $semester = "";
 if (isset($_REQUEST['semester']))
 	$semester = $_REQUEST['semester'];
@@ -62,7 +68,7 @@ do
 }
 while($nrow > 0);
 
-$nis = $dep[$departemen][1];
+$nis = isset($dep[$departemen]) ? $dep[$departemen][1] : $nis_awal;
 $sql_ajaran = "SELECT DISTINCT(t.replid), t.tahunajaran
 				 FROM riwayatkelassiswa r, kelas k, tahunajaran t
 				WHERE r.nis = '$nis' AND r.idkelas = k.replid AND k.idtahunajaran = t.replid
@@ -75,7 +81,7 @@ while ($row_ajaran = @mysqli_fetch_array($result_ajaran))
 	$k++;
 }
 
-$tahunajaran = $ajaran[0][0];
+$tahunajaran = isset($ajaran[0]) ? $ajaran[0][0] : 0;
 if (isset($_REQUEST['tahunajaran']))
 	$tahunajaran = $_REQUEST['tahunajaran'];
 	
@@ -174,7 +180,7 @@ if (isset($_REQUEST['pelajaran']))
 	<br />
 	<div id="TabbedPanels3" class="TabbedPanels">
 		<ul class="TabbedPanelsTabGroup">
-<? 			$depart = $dep[$departemen][0];
+<? 			$depart = isset($dep[$departemen]) ? $dep[$departemen][0] : '';
 			$sql_sem = "SELECT * FROM semester WHERE departemen = '$depart' ORDER BY replid";
 			$result_sem = QueryDb($sql_sem);
 			$numsem = @mysqli_num_rows($result_sem);

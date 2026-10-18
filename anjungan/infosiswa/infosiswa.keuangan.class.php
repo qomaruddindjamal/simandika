@@ -26,7 +26,9 @@ class CK
 	var $nis, $db_name_fina;
 	
 	private $departemen;
-	private $arrdept;
+	/* Siswa tanpa riwayat departemen: properti ini tidak pernah diisi, dan PHP 8
+	   membuat count(null) menjadi fatal. Biarkan selalu berupa array. */
+	private $arrdept = array();
 	
 	private $idtahunbuku;
 	private $arrta;
@@ -76,8 +78,8 @@ class CK
 	
 	public function ShowTahunBukuComboBox()
 	{
-		$vnis = $this->arrdept[$this->departemen][1];
-		$vdept = $this->arrdept[$this->departemen][0];
+		$vnis = isset($this->arrdept[$this->departemen]) ? $this->arrdept[$this->departemen][1] : '';
+		$vdept = isset($this->arrdept[$this->departemen]) ? $this->arrdept[$this->departemen][0] : '';
 		
 		$sql = "SELECT DISTINCT idtahunbuku, tahunbuku FROM
 				(
@@ -116,8 +118,8 @@ class CK
     
 	function ShowFinanceReport()
     {
-		$departemen = $this->arrdept[$this->departemen][0];
-		$nis = $this->arrdept[$this->departemen][1];
+		$departemen = isset($this->arrdept[$this->departemen]) ? $this->arrdept[$this->departemen][0] : '';
+		$nis = isset($this->arrdept[$this->departemen]) ? $this->arrdept[$this->departemen][1] : '';
 		$idtahunbuku = $this->idtahunbuku;
 				
 		$sql =	"SELECT s.nama, k.kelas
@@ -125,8 +127,8 @@ class CK
 				  WHERE s.nis = '$nis' AND s.idkelas = k.replid ";
 		$result = QueryDb($sql);
 		$row = mysqli_fetch_row($result);
-		$namasiswa = $row[0];
-		$kelas = $row[1]; ?>
+		$namasiswa = isset($row[0]) ? $row[0] : '';
+		$kelas = isset($row[1]) ? $row[1] : ''; ?>
 		
 		<input type="hidden" name="current_nis" id="current_nis" value="<?=$nis?>">
 		<input type="hidden" name="current_dept" id="current_dept" value="<?=$departemen?>">

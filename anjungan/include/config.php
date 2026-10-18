@@ -69,6 +69,12 @@ elseif (file_exists('../../../include/mainconfig.php'))
 $G_ENABLE_QUERY_ERROR_LOG = true;
 $G_FILE_LOG_QUERY_ERROR = "anjungan-error.log";
 
+/* Semua fragmen anjungan memuat konfigurasi ini, jadi di sini kesalahan PHP
+   disembunyikan dari layar siswa. Jejak kesalahan fatal tetap tercatat di
+   apache/logs/data.yaishk.sch.id-ssl-error.log. */
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
+
 $G_ENABLE_QUERY_LOG = false;
 $G_FILE_LOG_QUERY = "anjungan-query.log";
 

@@ -32,6 +32,12 @@ require_once('infosiswa.security.php');
 
 $nis_awal = $_SESSION["infosiswa.nis"];
 
+/* Siswa tanpa riwayat departemen/kelas belum pernah mengisi array-array ini, dan
+   PHP 8 menganggap sizeof(null) sebagai fatal; dipakai sebagai array kosong saja. */
+$dep = array();
+$ajaran = array();
+$kls = array();
+
 $departemen = 0;
 if (isset($_REQUEST['departemen']))
 	$departemen = $_REQUEST['departemen'];
@@ -61,8 +67,8 @@ do
 while($nrow > 0);
 
 		
-$depart = $dep[$departemen][0];
-$nis = $dep[$departemen][1];
+$depart = isset($dep[$departemen]) ? $dep[$departemen][0] : '';
+$nis = isset($dep[$departemen]) ? $dep[$departemen][1] : $nis_awal;
 
 $sql_ajaran = "SELECT DISTINCT(t.replid), t.tahunajaran 
  				 FROM riwayatkelassiswa r, kelas k, tahunajaran t 
@@ -318,6 +324,7 @@ function ShowRaporDeskripsi($semester, $kelas, $nis)
                AND a.dasarpenilaian = d.dasarpenilaian
                AND d.aktif = 1";
     $res = QueryDb($sql);
+    $aspekarr = array();
     $i = 0;
     while($row = mysqli_fetch_row($res))
     {
@@ -414,6 +421,7 @@ function ShowRaporColumn($semester, $kelas, $nis)
                AND d.aktif = 1";
 
     $res = QueryDb($sql);
+    $aspekarr = array();
     $i = 0;
     while($row = mysqli_fetch_row($res))
     {
@@ -545,6 +553,7 @@ function ShowRaporRow($semester, $kelas, $nis)
                AND sis.nis = '$nis' 
          GROUP BY pel.nama";    
     $res = QueryDb($sql);
+    $pelarr = array();
     $i = 0;
     while($row = mysqli_fetch_row($res))
     {
