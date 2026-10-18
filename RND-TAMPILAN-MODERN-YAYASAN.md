@@ -350,6 +350,25 @@ untuk jalur anjungan.
 **Aturan modal untuk seluruh pengembangan baru:** selalu pasang `data-bs-backdrop="static"` — modal hanya ditutup lewat
 tombolnya sendiri (X / Batal / aksi eksplisit), tidak boleh hilang karena klik di luar area modal.
 
+Setelah login, **Info Siswa tampil sebagai dasbor bersidebar** (permintaan user 2026-10-19: menu samping, bukan dropdown;
+kepala halaman anjungan tetap seperti adanya). Kartunya ditandai `data-dasbor="siswa"`; `script/anjungan.js` membaca option
+`<select id="reporttype">` warisan sebagai satu-satunya daftar laporan (tidak ada duplikasi daftar di PHP), lalu membangun
+`.anj-sb` di dalam `.anj-pane` sebagai **sibling sebelum `#is_main`** — karena seluruh navigasi warisan menulis ke `#is_main`,
+sidebar tidak ikut tertimpa. Dropdown "Laporan :", teks labelnya, dan tombol LOGOUT/REFRESH warisan hanya **disembunyikan**
+(`display:none`, nilai combo tetap dipakai fungsi warisan), bukan dihapus. Klik item sidebar = `combo.value = tipe` +
+`dispatchEvent('change')` sehingga `GetReportContent()` warisan yang bekerja; sebuah `MutationObserver` pada `#is_main`
+menyembunyikan ulang kontrol lama dan menyelaraskan item aktif setiap kali konten berganti. Item khusus: **Muat ulang**
+(mengulang laporan aktif) dan **Keluar** (memanggil `is_Logout()` warisan, jadi pembersihan sesi tetap milik warisan).
+Untuk siswa yang punya nilai, `showInfoInitTabbedPanel()` memerlukan Spry TabbedPanels — dulu dimuat di kepala
+`anjungan/index.php`, sekarang ikut `data-lib`/`data-css` seksi `infosiswa`.
+
+Sesi dipulihkan lewat `login-siswa.php?aksi=status` (cabang GET, hanya membaca `_JIBAS_ANJUNGAN_IS__` milik sendiri):
+saat `/infosiswa/` dibuka ulang atau dituju langsung lewat URL, `infosiswa.php` warisan selalu menampilkan form loginnya
+(karena file itu tidak membuka sesi siswa), jadi isinya dibersihkan dan diganti — dasbor bila sesi masih ada, jika tidak
+placeholder "Masuk dulu…" plus modal. Percobaan pemulihan dibatasi dua kali per kartu (`data-anj-pulih`) agar konten
+warisan yang rusak tidak memicu muat ulang tanpa henti. Pada ≤767,98 px sidebar menjadi baris chip yang mengemas diri
+(`flex-wrap`), tanpa scrollbar horizontal.
+
 Pengecualian jujur atas anggaran §7: jalur anjungan masih memakai jQuery + library warisan (syarat potongan
 `anjungan/*`), tetapi hanya **1 seksi per muat awal** (dulu 8 permintaan AJAX serentak) dan tanpa TinyMCE,
 bgStretcher, serta jVertTabs, sehingga jumlah request awal turun dan halaman tetap bisa di-cache service worker.

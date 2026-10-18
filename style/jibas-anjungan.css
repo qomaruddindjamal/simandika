@@ -518,6 +518,15 @@
     color: var(--jb-danger);
 }
 
+.anj-kosong {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: 2rem 1rem;
+    color: var(--jb-text-muted);
+    font-size: .9rem;
+}
+
 .anj-spinner {
     width: 1.1rem;
     height: 1.1rem;
@@ -627,6 +636,111 @@
     opacity: .6;
 }
 
+/* ---------- 3c. Dasbor Info Siswa: sidebar laporan ---------- */
+
+.anj-pane.anj-dasbor {
+    display: flex;
+    gap: 1.1rem;
+    align-items: flex-start;
+}
+
+.anj-pane.anj-dasbor > #is_main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.anj-sb {
+    flex: 0 0 216px;
+    position: sticky;
+    top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .12rem;
+    padding: .7rem;
+    border: 1px solid var(--jb-border);
+    border-radius: .9rem;
+    background: var(--jb-surface);
+    box-shadow: var(--jb-shadow);
+}
+
+.anj-sb-title {
+    margin: 0 0 .35rem;
+    font-size: .72rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--jb-text-muted);
+}
+
+.anj-sb-item {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: var(--jb-text);
+    border-radius: .6rem;
+    padding: .5rem .6rem;
+    font-size: .86rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+.anj-sb-item:hover {
+    background: var(--jb-surface-2);
+}
+
+.anj-sb-item.active {
+    background: var(--jb-primary);
+    color: var(--jb-primary-ink);
+    font-weight: 600;
+}
+
+.anj-sb-item .bi {
+    font-size: 1rem;
+    flex: 0 0 auto;
+}
+
+.anj-sb-sep {
+    height: 1px;
+    background: var(--jb-border);
+    margin: .5rem .2rem;
+}
+
+.anj-sb-keluar,
+.anj-sb-keluar:hover {
+    color: var(--jb-danger);
+}
+
+.anj-sb-keluar:hover {
+    background: color-mix(in srgb, var(--jb-danger) 12%, var(--jb-surface));
+}
+
+@media (max-width: 767.98px) {
+    .anj-pane.anj-dasbor {
+        flex-direction: column;
+    }
+
+    .anj-sb {
+        position: static;
+        flex: none;
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: .3rem;
+    }
+
+    .anj-sb-title,
+    .anj-sb-sep {
+        display: none;
+    }
+
+    .anj-sb-item {
+        width: auto;
+        white-space: nowrap;
+    }
+}
+
 /* ---------- 4. Isi warisan: tabel, teks, form ---------- */
 
 /* Skema lama memakai <font color="..."> dan bgcolor untuk halaman terang;
@@ -723,9 +837,10 @@ body.anj-iframe {
     box-shadow: 0 0 0 3px var(--jb-ring);
 }
 
+/* tombol warisan jadi pil; item sidebar dasbor punya tampilan sendiri (lihat 3c) */
 .anj-pane input[type=button],
 .anj-pane input[type=submit],
-.anj-pane button,
+.anj-pane button:not(.anj-sb-item),
 .anj-iframe input[type=button],
 .anj-iframe input[type=submit],
 .anj-iframe button {

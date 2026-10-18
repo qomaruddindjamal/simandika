@@ -1,6 +1,7 @@
 <?php
 /**
- * Titik masuk AJAX untuk modal Masuk pada anjungan modern (beranda.php).
+ * Titik masuk AJAX untuk modal Masuk pada anjungan modern (beranda.php). Dua kegunaan:
+ * POST nisn+pin untuk membuka sesi, dan GET ?aksi=status untuk menanyakan sesi yang berjalan.
  *
  * Form login siswa memakai NISN + PIN. Pin dibandingkan dengan kolom pinsiswa yang di skema
  * warisan memang tersimpan apa adanya (belum di-hash), jadi perbandingan PIN masih teks polos
@@ -21,9 +22,21 @@ function jb_siswa_jawab($data)
     exit();
 }
 
+/* Cek sesi tanpa mengirim kredensial: dipakai halaman saat Info Siswa dibuka ulang atau
+   setelah Keluar, supaya tidak perlu menampilkan form login lama di dalam kartu. */
+if (isset($_GET['aksi']) && $_GET['aksi'] === 'status') {
+    session_name('_JIBAS_ANJUNGAN_IS__');
+    session_start();
+    if (empty($_SESSION['islogin']) || empty($_SESSION['infosiswa.nis'])) {
+        jb_siswa_jawab(array('sukses' => false, 'pesan' => '', 'login' => false));
+    }
+    jb_siswa_jawab(array('sukses' => true, 'pesan' => '', 'login' => true,
+        'nis' => $_SESSION['infosiswa.nis'],
+        'nama' => isset($_SESSION['infosiswa.name']) ? $_SESSION['infosiswa.name'] : ''));
+}
+
 $nisn = isset($_POST['nisn']) ? trim((string)$_POST['nisn']) : '';
 $pin = isset($_POST['pin']) ? trim((string)$_POST['pin']) : '';
-
 if ($nisn === '' || $pin === '') {
     $jawaban['pesan'] = 'NISN dan PIN harus diisi.';
     jb_siswa_jawab($jawaban);

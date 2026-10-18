@@ -138,6 +138,7 @@
             .then(function () {
                 var nama = el.dataset.init;
                 if (nama && typeof window[nama] === 'function') window[nama]();
+                if (el.dataset.dasbor === 'siswa') pasangDasborSiswa(el);
             })
             .catch(function (err) {
                 el.dataset.anjTermuat = '';
@@ -233,6 +234,7 @@
         if (!el) return;
         el.dataset.src = 'infosiswa/infosiswa.content.php?nis=' + encodeURIComponent(nis) + '&reporttype=PROFIL';
         el.dataset.anjTermuat = '';
+        el.dataset.anjPulih = '';
         aktifkan('infosiswa', true);
     }
 
@@ -297,6 +299,162 @@
     function fokusNisn() {
         var nisn = document.getElementById('anjIsNisn');
         if (nisn) nisn.focus();
+    }
+
+    function bukaModalMasuk() {
+        var el = document.getElementById('anjMasukModal');
+        var form = document.getElementById('anjMasukForm');
+        if (form) form.reset();
+        sembunyikanGalat();
+        if (el && window.bootstrap) window.bootstrap.Modal.getOrCreateInstance(el).show();
+        setTimeout(fokusNisn, 120);
+    }
+
+    /* ---------- dasbor Info Siswa: sidebar laporan menggantikan dropdown warisan ---------- */
+
+    var IKON_LAPORAN = {
+        PROFIL: 'bi-person-vcard',
+        KEUANGAN: 'bi-cash-coin',
+        PRESENSIHARIAN: 'bi-calendar-check',
+        PRESENSIPELAJARAN: 'bi-journal-text',
+        PRESENSIKEGIATAN: 'bi-clipboard2-check',
+        NILAI: 'bi-graph-up',
+        RAPOR: 'bi-file-earmark-text',
+        PERPUSTAKAAN: 'bi-book',
+        CBE: 'bi-display'
+    };
+
+    function comboLaporan(main) {
+        return main ? main.querySelector('#reporttype') : null;
+    }
+
+    /* Dropdown "Laporan :" serta tombol LOGOUT/REFRESH warisan digantikan sidebar:
+       elemennya tetap ada (seluruh navigasi warisan membacanya), hanya disembunyikan. */
+    function sembunyikanKontrolLama(main) {
+        var combo = comboLaporan(main);
+        if (!combo) return;
+        var teks = combo.previousSibling;
+        if (teks && teks.nodeType === 3 && /laporan/i.test(teks.nodeValue)) teks.nodeValue = '';
+        combo.style.display = 'none';
+        [].slice.call(main.querySelectorAll('input.but')).forEach(function (tombol) {
+            tombol.style.display = 'none';
+        });
+    }
+
+    function tandaiAktif(nav, tipe) {
+        [].slice.call(nav.querySelectorAll('.anj-sb-item[data-tipe]')).forEach(function (b) {
+            b.classList.toggle('active', b.dataset.tipe === tipe);
+        });
+    }
+
+    function item(nav, kelas, tip, ikon, label) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'anj-sb-item ' + kelas;
+        if (tip) b.dataset.tipe = tip;
+        var i = document.createElement('i');
+        i.className = 'bi ' + ikon;
+        i.setAttribute('aria-hidden', 'true');
+        var s = document.createElement('span');
+        s.textContent = label;
+        b.appendChild(i);
+        b.appendChild(s);
+        nav.appendChild(b);
+        return b;
+    }
+
+    function bangunSidebar(main) {
+        var nav = document.createElement('nav');
+        nav.className = 'anj-sb';
+        nav.setAttribute('aria-label', 'Laporan siswa');
+        var judul = document.createElement('p');
+        judul.className = 'anj-sb-title';
+        judul.textContent = 'Laporan';
+        nav.appendChild(judul);
+        [].slice.call(comboLaporan(main).options).forEach(function (o) {
+            item(nav, '', o.value, IKON_LAPORAN[o.value] || 'bi-dot', (o.textContent || '').trim());
+        });
+        var pemisah = document.createElement('div');
+        pemisah.className = 'anj-sb-sep';
+        nav.appendChild(pemisah);
+        item(nav, 'anj-sb-muat', null, 'bi-arrow-clockwise', 'Muat ulang');
+        item(nav, 'anj-sb-keluar', null, 'bi-box-arrow-right', 'Keluar');
+        return nav;
+    }
+
+    function pilihLaporan(main, tipe) {
+        var combo = comboLaporan(main);
+        if (!combo || !tipe) return;
+        combo.value = tipe;
+        combo.dispatchEvent(new Event('change'));
+    }
+
+    function pasangDasborSiswa(el) {
+        var pane = el.querySelector('.anj-pane');
+        var main = el.querySelector('#is_main');
+        if (!pane || !main) return;
+        var nav = pane.querySelector('.anj-sb');
+        var combo = comboLaporan(main);
+
+        if (!combo) {
+            /* Bukan laporan lagi: form login lama warisan (pertama kali dibuka) atau hasil
+               Keluar. Isi kartu dibersihkan lalu sesi ditanyakan ke titik masuk login. */
+            if (nav) nav.parentNode.removeChild(nav);
+            pane.classList.remove('anj-dasbor');
+            var sudahCoba = parseInt(el.dataset.anjPulih || '0', 10);
+            if (sudahCoba < 2) {
+                pane.textContent = '';
+                pulihkanSesiSiswa(el, sudahCoba);
+            }
+            return;
+        }
+
+        if (!nav) {
+            nav = bangunSidebar(main);
+            nav.addEventListener('click', function (ev) {
+                var b = ev.target.closest ? ev.target.closest('.anj-sb-item') : null;
+                if (!b) return;
+                if (b.classList.contains('anj-sb-keluar')) {
+                    if (typeof window.is_Logout === 'function') window.is_Logout();
+                    return;
+                }
+                var tipe = b.classList.contains('anj-sb-muat') ? comboLaporan(main).value : b.dataset.tipe;
+                tandaiAktif(nav, tipe);
+                pilihLaporan(main, tipe);
+            });
+            pane.classList.add('anj-dasbor');
+            pane.insertBefore(nav, main);
+            new MutationObserver(function () { pasangDasborSiswa(el); })
+                .observe(main, { childList: true, subtree: true });
+        }
+
+        sembunyikanKontrolLama(main);
+        tandaiAktif(nav, combo.value);
+    }
+
+    function pulihkanSesiSiswa(el, percobaan) {
+        el.dataset.anjPulih = String(percobaan + 1);
+        var pane = el.querySelector('.anj-pane');
+        fetch('/login-siswa.php?aksi=status', { credentials: 'same-origin' })
+            .then(function (res) { return res.ok ? res.json() : null; })
+            .then(function (data) {
+                if (data && data.login && data.nis) { bukaIsiSiswa(data.nis); return; }
+                var kosong = document.createElement('div');
+                kosong.className = 'anj-kosong';
+                var i = document.createElement('i');
+                i.className = 'bi bi-person-lock me-2';
+                i.setAttribute('aria-hidden', 'true');
+                kosong.appendChild(i);
+                kosong.appendChild(document.createTextNode('Masuk dulu untuk melihat informasi siswa.'));
+                pane.appendChild(kosong);
+                bukaModalMasuk();
+            })
+            .catch(function () {
+                var gagal = document.createElement('div');
+                gagal.className = 'anj-kosong';
+                gagal.textContent = 'Informasi siswa tidak dapat dibuka saat ini.';
+                pane.appendChild(gagal);
+            });
     }
 
 

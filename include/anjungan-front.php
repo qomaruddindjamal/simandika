@@ -58,6 +58,7 @@ if (!function_exists('jb_anj_sections')) {
             'infosiswa' => array(
                 'label' => 'Info Siswa', 'label_pendek' => 'Siswa', 'icon' => 'bi-person-video3', 'pane' => 'c',
                 'src' => 'infosiswa/infosiswa.php', 'judul' => 'Informasi Siswa', 'wadah' => 'is_main', 'nav_hidden' => true,
+                'dasbor' => 'siswa',
             ),
             'jadkal' => array(
                 'label' => 'Jadwal & Kalender', 'label_pendek' => 'Jadwal', 'icon' => 'bi-calendar3', 'pane' => 'i',
@@ -282,7 +283,8 @@ $tanggal = $hari[(int)date('w')] . ', ' . (int)date('j') . ' ' . $bulan[(int)dat
              data-css="<?= jb_anj_e(isset($sek['css']) ? json_encode($sek['css']) : '[]') ?>"
              <?php if (isset($sek['init'])) { ?>data-init="<?= jb_anj_e($sek['init']) ?>"<?php } ?>
              <?php if (!empty($sek['iframe'])) { ?>data-iframe="1"<?php } ?>
-             <?php if (!empty($sek['wadah'])) { ?>data-wadah="<?= jb_anj_e($sek['wadah']) ?>"<?php } ?>>
+             <?php if (!empty($sek['wadah'])) { ?>data-wadah="<?= jb_anj_e($sek['wadah']) ?>"<?php } ?>
+             <?php if (!empty($sek['dasbor'])) { ?>data-dasbor="<?= jb_anj_e($sek['dasbor']) ?>"<?php } ?>>
         <div class="anj-card-head">
             <h2 class="anj-card-title"><i class="bi <?= jb_anj_e($sek['icon']) ?> me-2"></i><?= jb_anj_e($sek['judul']) ?></h2>
             <?php if (isset($sek['tools'])) { ?>
