@@ -121,6 +121,17 @@
     color: var(--jb-primary);
 }
 
+/* Selama sesi siswa aktif tombolnya berlabel nama lengkap — dipotong bila terlalu panjang,
+   utuhnya tetap terbaca lewat tooltip. */
+.anj-masuk[data-seksi] span {
+    display: inline-block;
+    max-width: 13rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: bottom;
+}
+
 /* Dropdown tema: tombol hanya ikon fase yang sedang aktif (label muncul sebagai tooltip) */
 .anj-theme-toggle {
     display: inline-flex;
@@ -321,8 +332,11 @@
     .anj-nav-link {
         padding: .5rem .55rem;
     }
-    .anj-masuk span {
+    .anj-masuk:not([data-seksi]) span {
         display: none;
+    }
+    .anj-masuk[data-seksi] span {
+        max-width: 7.5rem;
     }
     .anj-masuk {
         padding: .3rem .5rem;

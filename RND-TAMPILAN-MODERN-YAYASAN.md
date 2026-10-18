@@ -390,10 +390,15 @@ placeholder "Masuk dulu…" plus modal. Percobaan pemulihan dibatasi dua kali pe
 warisan yang rusak tidak memicu muat ulang tanpa henti. Pada ≤767,98 px sidebar menjadi baris chip yang mengemas diri
 (`flex-wrap`), tanpa scrollbar horizontal.
 
-Tombol **Masuk** di baris identitas ikut menyesuaikan: selama sesi siswa aktif ia menjadi pintu **Info Siswa**
-(`data-seksi`, pemicu modal dilepas) — tanpa itu pengguna tidak punya jalan kembali ke dasbor karena sekasinya tidak
-ada di baris menu. Status sesi dibaca sekali saat halaman dibuka (`login-siswa.php?aksi=status`, dilewati bila seksi
-yang aktif memang Info Siswa) dan setiap kali sesi berubah (login, Keluar).
+Tombol **Masuk** di baris identitas ikut menyesuaikan: selama sesi siswa aktif ia menjadi pintu dasbor berlabel
+**nama lengkap siswa** (permintaan user 2026-10-19, menggantikan tulisan "Info Siswa") — nama diambil dari respons
+login/`?aksi=status` (`jbsakad.siswa.nama`), disimpan di `data-nama` kartu `infosiswa` supaya tetap terbaca saat
+halaman dimuat ulang atau saat `MutationObserver` dasbor memanggil ulang penataan tombol; bila sesi dibuat alur warisan
+sehingga nama tidak diketahui, label jatuh kembali ke "Info Siswa". Nama panjang dipotong `ellipsis` (maks 13rem,
+7,5rem di ≤767,98 px) dan utuhnya ada di `title`. Tanpa tombol ini pengguna tidak punya jalan kembali ke dasbor karena
+sekasinya tidak ada di baris menu. Status sesi dibaca sekali saat halaman dibuka (`login-siswa.php?aksi=status`,
+dilewati bila seksi yang aktif memang Info Siswa) dan setiap kali sesi berubah (login, Keluar — setelah Keluar label
+kembali menjadi "Masuk" dan `title` dilepas).
 
 Pengecualian jujur atas anggaran §7: jalur anjungan masih memakai jQuery + library warisan (syarat potongan
 `anjungan/*`), tetapi hanya **1 seksi per muat awal** (dulu 8 permintaan AJAX serentak) dan tanpa TinyMCE,
