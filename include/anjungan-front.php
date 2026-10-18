@@ -98,13 +98,21 @@ if (!function_exists('jb_anj_sections')) {
             'beranda' => array('beranda/beranda.js'),
             'infosekolah' => array('infosekolah/infosekolah.js'),
             'mading' => array('mading/mading.js'),
-            'infosiswa' => array('infosiswa/infosiswa.js', 'infosiswa/infosiswa.cbe.js'),
+            'infosiswa' => array('infosiswa/infosiswa.js', 'infosiswa/infosiswa.cbe.js',
+                'script/SpryAssets/SpryTabbedPanels.js'),
             'jadkal' => array('jadkal/jadkal.js'),
             'pegawai' => array('pegawai/struktur.js'),
             'psb' => array('psb/psb.js'),
         );
+        /* Laporan Nilai & Rapor warisan merangkai tab dengan Spry: CSS-nya ikut dimuat per seksi. */
+        $styles = array(
+            'infosiswa' => array('script/SpryAssets/SpryTabbedPanels.css'),
+        );
         foreach ($libs as $key => $urls) {
             $sections[$key]['lib'] = $urls;
+        }
+        foreach ($styles as $key => $urls) {
+            $sections[$key]['css'] = $urls;
         }
         return $sections;
     }
@@ -271,6 +279,7 @@ $tanggal = $hari[(int)date('w')] . ', ' . (int)date('j') . ' ' . $bulan[(int)dat
     <section class="anj-card<?= $key === $active ? '' : ' d-none' ?>" id="anj-kartu-<?= jb_anj_e($key) ?>"
              data-seksi="<?= jb_anj_e($key) ?>" data-src="<?= jb_anj_e($sek['src']) ?>"
              data-lib="<?= jb_anj_e(isset($sek['lib']) ? json_encode($sek['lib']) : '[]') ?>"
+             data-css="<?= jb_anj_e(isset($sek['css']) ? json_encode($sek['css']) : '[]') ?>"
              <?php if (isset($sek['init'])) { ?>data-init="<?= jb_anj_e($sek['init']) ?>"<?php } ?>
              <?php if (!empty($sek['iframe'])) { ?>data-iframe="1"<?php } ?>
              <?php if (!empty($sek['wadah'])) { ?>data-wadah="<?= jb_anj_e($sek['wadah']) ?>"<?php } ?>>

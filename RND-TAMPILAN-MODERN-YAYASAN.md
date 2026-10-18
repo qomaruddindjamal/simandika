@@ -330,6 +330,23 @@ nilai/presensi/keuangan warisan menulis ke elemen itu.
 Kolom login selalu dikosongkan setiap modal dibuka dan memakai `autocomplete=off` / `new-password` supaya kredensial
 yang pernah tersimpan browser tidak menempel di form.
 
+Aset per seksi dimuat saat kartunya dibuka: `data-lib` untuk JavaScript warisan dan `data-css` (mekanisme baru yang
+mengikutinya) untuk stylesheet yang hanya dipakai satu seksi. Contoh nyatanya laporan **Nilai/Rapor**: halaman induk
+lama memuat `script/SpryAssets/SpryTabbedPanels.js` + `.css` di kepala halaman, sedangkan shell modern tidak, sehingga
+`showInfoInitTabbedPanel()` di `anjungan/infosiswa/infosiswa.js` memanggil `Spry` yang belum ada. Keduanya sekarang
+terdaftar di seksi `infosiswa` dan baru di-request bila Info Siswa benar-benar dibuka.
+
+Hasil uji setelah login (akun uji, 2026-10-19): seluruh option combo laporan dipanggil lewat `GetReportContent()` dan
+membalas 200 — PROFIL, KEUANGAN, PRESENSIHARIAN, PRESENSIPELAJARAN, PRESENSIKEGIATAN, NILAI, RAPOR, PERPUSTAKAAN, CBE.
+Dua di antaranya sempat fatal karena kode warisan belum siap untuk PHP 8: `count($this->arrdept)` di
+`infosiswa.keuangan.class.php:70` dan `sizeof($ajaran)`/`sizeof($kls)` di `infosiswa.presensiharian.php:110,115,125`
+— keduanya bernilai `null` bila siswa belum punya baris `jbsakad.riwayatdeptsiswa` / `jbsakad.riwayatkelassiswa`.
+Yang dipakai sekarang: **data uji dilengkapi** (satu baris riwayat departemen `SMA` dan satu riwayat kelas), bukan
+file warisan disunting. Bug-nya tetap ada untuk siswa baru tanpa riwayat kelas, dan karena `display_errors` masih
+menyala di XAMPP, pesan fatalnya ikut tercetak ke halaman publik lengkap dengan path absolut — perlu diputuskan
+apakah (a) menambal file warisan dengan `?? []` (butuh cadangan `.legacy-*`) atau (b) mematikan `display_errors`
+untuk jalur anjungan.
+
 **Aturan modal untuk seluruh pengembangan baru:** selalu pasang `data-bs-backdrop="static"` — modal hanya ditutup lewat
 tombolnya sendiri (X / Batal / aksi eksplisit), tidak boleh hilang karena klik di luar area modal.
 

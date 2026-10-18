@@ -32,6 +32,15 @@
         });
     }
 
+    function muatGaya(rel) {
+        var urlAbs = new URL(rel, document.baseURI).href;
+        if (document.querySelector('link[href="' + urlAbs + '"]')) return;
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = urlAbs;
+        document.head.appendChild(link);
+    }
+
     function muatScript(el) {
         return new Promise(function (resolve) {
             if (el.src) {
@@ -110,6 +119,7 @@
 
         var pustaka = [];
         try { pustaka = JSON.parse(el.dataset.lib || '[]') || []; } catch (e) { /* tanpa pustaka */ }
+        try { JSON.parse(el.dataset.css || '[]').forEach(muatGaya); } catch (e) { /* tanpa gaya tambahan */ }
         var rantai = Promise.resolve();
         pustaka.forEach(function (rel) {
             rantai = rantai.then(function () { return muatLuarscript(new URL(rel, document.baseURI).href); });
