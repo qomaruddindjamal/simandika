@@ -548,14 +548,83 @@
     flex-wrap: wrap;
 }
 
-.anj-foot-links a {
+.anj-foot-links a,
+.anj-foot-links button {
     color: var(--jb-text-muted);
     text-decoration: none;
     margin-left: .8rem;
 }
 
-.anj-foot-links a:hover {
+.anj-foot-links button {
+    border: 0;
+    background: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+}
+
+.anj-foot-links a:hover,
+.anj-foot-links button:hover {
     color: var(--jb-primary);
+}
+
+/* ---------- 3b. Modal Masuk ---------- */
+
+.anj-modal {
+    border: 1px solid var(--jb-border);
+    border-radius: .9rem;
+    background: var(--jb-surface);
+    color: var(--jb-text);
+    box-shadow: var(--jb-shadow);
+}
+
+.anj-modal .modal-header,
+.anj-modal .modal-footer {
+    border-color: var(--jb-border);
+}
+
+.anj-modal .modal-title {
+    font-size: .98rem;
+    font-weight: 600;
+}
+
+.anj-modal .form-label {
+    font-size: .78rem;
+    color: var(--jb-text-muted);
+    margin-bottom: .25rem;
+}
+
+.anj-modal-note {
+    font-size: .82rem;
+    line-height: 1.5;
+    color: var(--jb-text-muted);
+    background: var(--jb-surface-2);
+    border-radius: .6rem;
+    padding: .6rem .75rem;
+    margin-bottom: 1rem;
+}
+
+.anj-modal-error {
+    font-size: .82rem;
+    color: var(--jb-danger);
+    background: color-mix(in srgb, var(--jb-danger) 12%, var(--jb-surface));
+    border: 1px solid color-mix(in srgb, var(--jb-danger) 40%, var(--jb-border));
+    border-radius: .55rem;
+    padding: .45rem .6rem;
+    margin-top: .25rem;
+}
+
+.anj-masuk-kirim {
+    border: 0;
+    border-radius: 999px;
+    background: var(--jb-primary);
+    color: var(--jb-primary-ink);
+    font-weight: 600;
+    padding: .35rem 1rem;
+}
+
+.anj-masuk-kirim:disabled {
+    opacity: .6;
 }
 
 /* ---------- 4. Isi warisan: tabel, teks, form ---------- */

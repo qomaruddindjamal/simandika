@@ -308,6 +308,20 @@ Menu bergambar lama (jadwal/pustaka/psb) diganti tombol Bootstrap yang memanggil
 (`jadkal_ShowKalender()`, `pustaka_browse()`, `psb_InputPsbClicked()`, …); untuk mading & info sekolah
 include menunya tetap dipakai karena berisi pilihan departemen dari database, bagian tab gambarnya disembunyikan CSS.
 
+Kepala halaman dua baris: baris identitas (logo+nama, jam, tombol **Masuk**, dropdown tema) dan baris menu 8 seksi.
+Tombol tema hanya ikon — nama fase dan rentang jam pindah ke tooltip (`data-jb-phase="title"`) dan header isi dropdown,
+isinya Auto / Terang / Gelap dengan default Auto (Senja & Fajar tetap otomatis dari jam).
+Label menu dipendekkan (Sekolah, Siswa, Jadwal, Perpust., Pegawai) pada 768–1199 px supaya baris menu tidak pernah
+bergulir horizontal di atas 768 px.
+
+Tombol **Masuk** tidak lagi mengarah ke `/akademik/`: ia membuka modal Bootstrap yang formnya diambil dari login
+Informasi Siswa warisan (NIS + PIN, `anjungan/infosiswa/infosiswa.login.php`). Pengiriman menuju
+`infosiswa/infosiswa.dologin.php` — penanda suksesnya adalah hadirnya `infosiswa.content.php` pada respons; bila tidak,
+pesan "NIS atau PIN salah!" ditampilkan di dalam modal tanpa reload. Setelah berhasil, kartu `infosiswa` diarahkan memuat
+`infosiswa/infosiswa.content.php?nis=…&reporttype=PROFIL` (bukan `infosiswa.php`, karena include `infosiswa.main.php`
+milik warisan tidak ada di disk) dan isinya dibungkus `<div id="is_main">` (`data-wadah`) karena seluruh navigasi
+nilai/presensi/keuangan warisan menulis ke elemen itu.
+
 Pengecualian jujur atas anggaran §7: jalur anjungan masih memakai jQuery + library warisan (syarat potongan
 `anjungan/*`), tetapi hanya **1 seksi per muat awal** (dulu 8 permintaan AJAX serentak) dan tanpa TinyMCE,
 bgStretcher, serta jVertTabs, sehingga jumlah request awal turun dan halaman tetap bisa di-cache service worker.

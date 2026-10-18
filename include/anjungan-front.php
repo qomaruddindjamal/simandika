@@ -57,7 +57,7 @@ if (!function_exists('jb_anj_sections')) {
             ),
             'infosiswa' => array(
                 'label' => 'Info Siswa', 'label_pendek' => 'Siswa', 'icon' => 'bi-person-video3', 'pane' => 'c',
-                'src' => 'infosiswa/infosiswa.php', 'judul' => 'Informasi Siswa',
+                'src' => 'infosiswa/infosiswa.php', 'judul' => 'Informasi Siswa', 'wadah' => 'is_main',
             ),
             'jadkal' => array(
                 'label' => 'Jadwal & Kalender', 'label_pendek' => 'Jadwal', 'icon' => 'bi-calendar3', 'pane' => 'i',
@@ -212,9 +212,9 @@ $tanggal = $hari[(int)date('w')] . ', ' . (int)date('j') . ' ' . $bulan[(int)dat
                 <span class="anj-clock d-none d-md-inline">
                     <i class="bi bi-calendar3 me-1"></i><?= jb_anj_e($tanggal) ?>
                 </span>
-                <a class="btn btn-sm anj-masuk" href="/akademik/">
+                <button type="button" class="btn btn-sm anj-masuk" data-bs-toggle="modal" data-bs-target="#anjMasukModal">
                     <i class="bi bi-box-arrow-in-right me-1"></i><span>Masuk</span>
-                </a>
+                </button>
                 <div class="dropdown anj-theme-menu">
                     <button class="btn btn-sm anj-theme-toggle" type="button" data-bs-toggle="dropdown"
                             aria-expanded="false" aria-haspopup="true" aria-label="Pilih tema"
@@ -271,7 +271,8 @@ $tanggal = $hari[(int)date('w')] . ', ' . (int)date('j') . ' ' . $bulan[(int)dat
              data-seksi="<?= jb_anj_e($key) ?>" data-src="<?= jb_anj_e($sek['src']) ?>"
              data-lib="<?= jb_anj_e(isset($sek['lib']) ? json_encode($sek['lib']) : '[]') ?>"
              <?php if (isset($sek['init'])) { ?>data-init="<?= jb_anj_e($sek['init']) ?>"<?php } ?>
-             <?php if (!empty($sek['iframe'])) { ?>data-iframe="1"<?php } ?>>
+             <?php if (!empty($sek['iframe'])) { ?>data-iframe="1"<?php } ?>
+             <?php if (!empty($sek['wadah'])) { ?>data-wadah="<?= jb_anj_e($sek['wadah']) ?>"<?php } ?>>
         <div class="anj-card-head">
             <h2 class="anj-card-title"><i class="bi <?= jb_anj_e($sek['icon']) ?> me-2"></i><?= jb_anj_e($sek['judul']) ?></h2>
             <?php if (isset($sek['tools'])) { ?>
@@ -296,12 +297,48 @@ $tanggal = $hari[(int)date('w')] . ', ' . (int)date('j') . ' ' . $bulan[(int)dat
     <?php } ?>
 </main>
 
+<div class="modal fade" id="anjMasukModal" tabindex="-1" role="dialog" aria-labelledby="anjMasukJudul" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content anj-modal">
+            <div class="modal-header">
+                <h5 class="modal-title" id="anjMasukJudul">
+                    <i class="bi bi-person-lock me-2"></i>Masuk Informasi Siswa
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <form id="anjMasukForm" autocomplete="off" novalidate>
+                <div class="modal-body">
+                    <p class="anj-modal-note">
+                        Melalui halaman Informasi Siswa anda dapat melihat Data Pribadi, Akademik, Presensi dan Keuangan siswa.
+                        Isikan NIS dan PIN siswa. Tanyakan PIN kepada staf sekolah apabila anda tidak mengetahuinya.
+                    </p>
+                    <div class="mb-3">
+                        <label class="form-label" for="anjIsNis">N I S</label>
+                        <input type="text" class="form-control" id="anjIsNis" name="nis" maxlength="24" inputmode="numeric" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="anjIsPin">P I N</label>
+                        <input type="password" class="form-control" id="anjIsPin" name="pin" maxlength="6" required>
+                    </div>
+                    <div class="anj-modal-error" id="anjMasukError" role="alert" hidden></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-sm anj-masuk-kirim" id="anjMasukKirim">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <footer class="anj-foot">
     <div class="anj-foot-inner">
         <span><i class="bi bi-info-circle me-1"></i>JIBAS <?= jb_anj_e($versi) ?><?= $build !== '' ? ' &middot; ' . jb_anj_e($build) : '' ?></span>
         <span class="anj-foot-links">
             <a href="/">Anjungan</a>
-            <a href="/akademik/" rel="nofollow">Masuk</a>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#anjMasukModal">Masuk</button>
         </span>
     </div>
 </footer>

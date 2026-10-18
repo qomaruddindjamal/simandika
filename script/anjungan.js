@@ -75,7 +75,17 @@
 
         var target = kartuEl.querySelector('.anj-pane');
         target.textContent = '';
-        while (paneEl.firstChild) target.appendChild(paneEl.firstChild);
+
+        /* Sebagian script warisan Informasi Siswa menulis ulang ke '#is_main', jadi
+           isinya dibungkus elemen dengan id itu bila kartunya meminta (data-wadah). */
+        var tujuan = target;
+        var wadahId = kartuEl.getAttribute('data-wadah');
+        if (wadahId) {
+            tujuan = document.createElement('div');
+            tujuan.id = wadahId;
+            target.appendChild(tujuan);
+        }
+        while (paneEl.firstChild) tujuan.appendChild(paneEl.firstChild);
         target.querySelectorAll('iframe').forEach(temaIframe);
 
         var rantai = Promise.resolve();
@@ -186,7 +196,84 @@
         }, Math.max(8000, (window.b_bgDelay || 15000)));
     }
 
-    /* ---------- tautan keluar & pembaruan service worker ---------- */
+    /* ---------- modal Masuk (form login Informasi Siswa) ---------- */
+
+    function tampilkanGalat(pesan) {
+        var box = document.getElementById('anjMasukError');
+        if (!box) return;
+        box.textContent = pesan;
+        box.hidden = false;
+    }
+
+    function sembunyikanGalat() {
+        var box = document.getElementById('anjMasukError');
+        if (box) { box.textContent = ''; box.hidden = true; }
+    }
+
+    function tutupModal() {
+        var el = document.getElementById('anjMasukModal');
+        if (el && window.bootstrap) window.bootstrap.Modal.getOrCreateInstance(el).hide();
+    }
+
+    /* Isi halaman Informasi Siswa diambil dari infosiswa.content.php, bukan infosiswa.php:
+       file itu hanya merender form login (sesi siswa tidak dibuka di sana) dan include
+       'infosiswa.main.php' milik warisan tidak ada di disk. */
+    function bukaIsiSiswa(nis) {
+        var el = kartu('infosiswa');
+        if (!el) return;
+        el.dataset.src = 'infosiswa/infosiswa.content.php?nis=' + encodeURIComponent(nis) + '&reporttype=PROFIL';
+        el.dataset.anjTermuat = '';
+        aktifkan('infosiswa', true);
+    }
+
+    function kirimLogin(nis, pin) {
+        var tombol = document.getElementById('anjMasukKirim');
+        if (tombol) tombol.disabled = true;
+        fetch('infosiswa/infosiswa.dologin.php?nis=' + encodeURIComponent(nis) + '&pin=' + encodeURIComponent(pin),
+              { credentials: 'same-origin' })
+            .then(function (res) {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.text();
+            })
+            .then(function (html) {
+                if (html.indexOf('infosiswa.content.php') === -1) throw new Error('NIS atau PIN salah!');
+                tutupModal();
+                var form = document.getElementById('anjMasukForm');
+                if (form) form.reset();
+                sembunyikanGalat();
+                bukaIsiSiswa(nis);
+            })
+            .catch(function (err) {
+                tampilkanGalat(err && err.message ? err.message : 'Login gagal, silakan coba lagi.');
+            })
+            .then(function () {
+                if (tombol) tombol.disabled = false;
+            });
+    }
+
+    function initMasuk() {
+        var form = document.getElementById('anjMasukForm');
+        if (!form) return;
+        form.addEventListener('submit', function (ev) {
+            ev.preventDefault();
+            sembunyikanGalat();
+            var nis = document.getElementById('anjIsNis').value.trim();
+            var pin = document.getElementById('anjIsPin').value.trim();
+            if (nis === '' || pin === '') { tampilkanGalat('NIS dan PIN harus diisi.'); return; }
+            kirimLogin(nis, pin);
+        });
+        document.querySelectorAll('[data-bs-target="#anjMasukModal"]').forEach(function (pemicu) {
+            pemicu.addEventListener('click', function () {
+                setTimeout(function () {
+                    var nis = document.getElementById('anjIsNis');
+                    if (nis && !nis.value) nis.focus();
+                }, 120);
+            });
+        });
+    }
+
+
+    /* ---------- iframe bertema & pembaruan service worker ---------- */
 
     function sediaTemaIframeUlang() {
         var fase = root.getAttribute('data-jibas-phase');
@@ -215,9 +302,8 @@
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function () { latar(); aktifkan(document.body.dataset.anjActive || 'beranda', false); });
+        document.addEventListener('DOMContentLoaded', function () { initMasuk(); latar(); aktifkan(document.body.dataset.anjActive || 'beranda', false); });
     } else {
-        latar();
-        aktifkan(document.body.dataset.anjActive || 'beranda', false);
+        initMasuk(); latar(); aktifkan(document.body.dataset.anjActive || 'beranda', false);
     }
 })();
