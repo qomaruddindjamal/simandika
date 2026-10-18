@@ -31,14 +31,26 @@
     box-shadow: var(--jb-shadow);
 }
 
-.anj-topbar-inner {
+.anj-shell {
     max-width: 1240px;
     margin: 0 auto;
     padding: .5rem 1rem;
     display: flex;
     align-items: center;
     gap: 1rem;
-    flex-wrap: wrap;
+}
+
+.anj-row-id .anj-shell {
+    padding-bottom: .45rem;
+}
+
+.anj-row-nav {
+    background: var(--jb-surface-2);
+    border-top: 1px solid var(--jb-border);
+}
+
+.anj-row-nav .anj-shell {
+    padding: 0 1rem;
 }
 
 .anj-brand {
@@ -47,124 +59,292 @@
     gap: .6rem;
     text-decoration: none;
     color: inherit;
-    flex: 0 0 auto;
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .anj-brand img {
     height: 38px;
     width: auto;
     object-fit: contain;
+    flex: 0 0 auto;
 }
 
 .anj-brand-text {
     display: flex;
     flex-direction: column;
     line-height: 1.15;
+    min-width: 0;
 }
 
 .anj-brand-text strong {
     font-size: .92rem;
     letter-spacing: .02em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .anj-brand-text small {
     font-size: .74rem;
     color: var(--jb-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.anj-menu-wrap {
-    flex: 1 1 auto;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-}
-
-.anj-nav {
+.anj-row-tools {
+    margin-left: auto;
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: .15rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    gap: .5rem;
+    flex: 0 0 auto;
 }
 
-.anj-nav-link {
+.anj-clock {
+    font-size: .78rem;
+    color: var(--jb-text-muted);
+    white-space: nowrap;
+}
+
+.anj-masuk {
+    border: 1px solid var(--jb-border);
+    border-radius: 999px;
+    background: var(--jb-surface);
+    color: var(--jb-text);
+    font-size: .8rem;
+    padding: .3rem .85rem;
+}
+
+.anj-masuk:hover {
+    border-color: var(--jb-primary);
+    color: var(--jb-primary);
+}
+
+/* Dropdown tema: toggle selalu menampilkan ikon + label fase yang sedang aktif */
+.anj-theme-toggle {
     display: inline-flex;
     align-items: center;
     gap: .4rem;
-    padding: .45rem .7rem;
-    border-radius: .6rem;
-    font-size: .86rem;
+    border: 1px solid var(--jb-border);
+    border-radius: 999px;
+    background: var(--jb-surface);
+    color: var(--jb-text);
+    font-size: .8rem;
+    padding: .3rem .7rem;
+}
+
+.anj-theme-toggle:hover {
+    border-color: var(--jb-primary);
+    color: var(--jb-primary);
+}
+
+.anj-theme-toggle.dropdown-toggle::after {
+    display: none;
+}
+
+.anj-caret {
+    font-size: .68rem;
+    opacity: .6;
+}
+
+.anj-theme-list {
+    min-width: 15.5rem;
+    border: 1px solid var(--jb-border);
+    border-radius: .7rem;
+    background: var(--jb-surface);
+    box-shadow: var(--jb-shadow);
+    padding: .35rem;
+}
+
+.anj-theme-list .dropdown-header {
+    font-size: .74rem;
     font-weight: 500;
     color: var(--jb-text-muted);
-    text-decoration: none;
-    white-space: nowrap;
-    transition: background-color .16s ease, color .16s ease;
+    letter-spacing: .02em;
 }
 
-.anj-nav-link i {
-    font-size: 1rem;
+.anj-mode {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    border-radius: .5rem;
+    background: transparent;
+    color: var(--jb-text);
+    font-size: .85rem;
+    padding: .4rem .6rem;
 }
 
-.anj-nav-link:hover {
+.anj-mode:hover {
     background: var(--jb-surface-2);
     color: var(--jb-text);
 }
 
-.anj-nav-link.active {
-    background: var(--jb-primary);
-    color: var(--jb-primary-ink);
+.anj-mode span {
+    margin-right: auto;
 }
 
-.anj-topbar-tools {
+.anj-mode-icon {
+    width: 1.05rem;
+    text-align: center;
+    color: var(--jb-text-muted);
+}
+
+.anj-mode-cek {
+    visibility: hidden;
+    color: var(--jb-primary);
+}
+
+.anj-mode.active,
+.anj-mode:active,
+.anj-mode[aria-pressed="true"] {
+    background: transparent;
+    color: var(--jb-text);
+    font-weight: 600;
+}
+
+.anj-mode.active .anj-mode-cek,
+.anj-mode[aria-pressed="true"] .anj-mode-cek {
+    visibility: visible;
+}
+
+.anj-mode.active .anj-mode-icon,
+.anj-mode[aria-pressed="true"] .anj-mode-icon {
+    color: var(--jb-primary);
+}
+
+/* Baris menu: 8 seksi. Layar kecil boleh digulir horizontal, layar lebar selalu rata penuh. */
+.anj-nav {
     display: flex;
-    align-items: center;
-    gap: .6rem;
+    align-items: stretch;
+    gap: .15rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.anj-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.anj-nav-item {
+    display: flex;
     flex: 0 0 auto;
 }
 
-.anj-phase-chip {
-    display: inline-flex;
+.anj-nav-link {
+    display: flex;
     align-items: center;
+    justify-content: center;
     gap: .35rem;
-    padding: .25rem .6rem;
-    border: 1px solid var(--jb-border);
-    border-radius: 999px;
-    font-size: .76rem;
+    min-height: 44px;
+    padding: .5rem .7rem;
+    border-bottom: 2px solid transparent;
+    border-radius: .45rem .45rem 0 0;
+    font-size: .78rem;
+    font-weight: 500;
     color: var(--jb-text-muted);
-    background: var(--jb-surface);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color .16s ease, color .16s ease, border-color .16s ease;
 }
 
-.anj-phase-chip small {
-    font-size: .68rem;
-    opacity: .8;
+.anj-nav-link i {
+    font-size: 1.05rem;
 }
 
-.anj-burger {
-    color: inherit;
-    border: 1px solid var(--jb-border);
+.anj-nav-label {
+    display: none;
 }
 
-@media (max-width: 991.98px) {
-    .anj-menu-wrap {
-        flex-basis: 100%;
+@media (min-width: 768px) {
+    .anj-nav {
+        overflow: visible;
+        gap: 0;
+    }
+    .anj-nav-item {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+    .anj-nav-link {
+        flex: 1 1 auto;
+        flex-direction: column;
+        gap: .2rem;
+        min-height: 0;
+        padding: .42rem .3rem;
+        font-size: .73rem;
+        overflow: hidden;
+    }
+    .anj-nav-link i {
+        font-size: 1.12rem;
+    }
+    .anj-nav-label,
+    .anj-nav-label-sm {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+@media (min-width: 1200px) {
+    .anj-nav-link {
+        padding: .58rem .6rem;
+        font-size: .8rem;
+        border-radius: .6rem .6rem 0 0;
+    }
+    .anj-nav-link i {
+        font-size: 1.25rem;
+    }
+    .anj-nav-label {
+        display: inline;
+    }
+    .anj-nav-label-sm {
         display: none;
     }
-    .anj-menu-wrap.show {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
+}
+
+@media (max-width: 575.98px) {
+    .anj-shell,
+    .anj-row-nav .anj-shell {
+        padding-left: .75rem;
+        gap: .5rem;
     }
-    .anj-nav {
-        flex-direction: column;
-        align-items: stretch;
-        width: 100%;
+    .anj-nav-link {
+        padding: .5rem .55rem;
     }
-    .anj-topbar-tools {
-        width: 100%;
-        justify-content: space-between;
+    .anj-masuk span,
+    .anj-theme-label {
+        display: none;
     }
+    .anj-masuk {
+        padding: .3rem .5rem;
+    }
+    .anj-masuk i {
+        margin: 0 !important;
+    }
+    .anj-brand-text strong {
+        font-size: .84rem;
+    }
+}
+
+.anj-nav-link:hover {
+    background: var(--jb-sidebar-active-bg);
+    color: var(--jb-text);
+}
+
+.anj-nav-link:focus-visible {
+    outline: 2px solid var(--jb-primary);
+    outline-offset: -2px;
+}
+
+.anj-nav-link.active {
+    color: var(--jb-primary);
+    border-bottom-color: var(--jb-primary);
+    background: var(--jb-sidebar-active-bg);
+    font-weight: 600;
 }
 
 /* ---------- 2. Hero ---------- */

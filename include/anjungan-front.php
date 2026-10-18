@@ -36,7 +36,7 @@ if (!function_exists('jb_anj_sections')) {
                 'src' => 'beranda/beranda.php', 'judul' => 'Beranda Informasi',
             ),
             'infosekolah' => array(
-                'label' => 'Info Sekolah', 'icon' => 'bi-buildings', 'pane' => 'b',
+                'label' => 'Info Sekolah', 'label_pendek' => 'Sekolah', 'icon' => 'bi-buildings', 'pane' => 'b',
                 'src' => 'infosekolah/infosekolah.php', 'judul' => 'Informasi Sekolah',
                 'menu' => 'infosekolah/infosekolah.menu.php', 'init' => 'ifse_InitInfoSekolah', 'iframe' => true,
                 'tools' => array(
@@ -56,11 +56,11 @@ if (!function_exists('jb_anj_sections')) {
                 ),
             ),
             'infosiswa' => array(
-                'label' => 'Info Siswa', 'icon' => 'bi-person-video3', 'pane' => 'c',
+                'label' => 'Info Siswa', 'label_pendek' => 'Siswa', 'icon' => 'bi-person-video3', 'pane' => 'c',
                 'src' => 'infosiswa/infosiswa.php', 'judul' => 'Informasi Siswa',
             ),
             'jadkal' => array(
-                'label' => 'Jadwal & Kalender', 'icon' => 'bi-calendar3', 'pane' => 'i',
+                'label' => 'Jadwal & Kalender', 'label_pendek' => 'Jadwal', 'icon' => 'bi-calendar3', 'pane' => 'i',
                 'src' => 'jadkal/jadkal.php', 'judul' => 'Jadwal & Kalender Akademik',
                 'tools' => array(
                     array('label' => 'Kalender Akademik', 'icon' => 'bi-calendar-event', 'onclick' => 'jadkal_ShowKalender()'),
@@ -69,7 +69,7 @@ if (!function_exists('jb_anj_sections')) {
                 ),
             ),
             'pustaka' => array(
-                'label' => 'Perpustakaan', 'icon' => 'bi-book', 'pane' => 'k',
+                'label' => 'Perpustakaan', 'label_pendek' => 'Perpust.', 'icon' => 'bi-book', 'pane' => 'k',
                 'src' => 'pustaka/pustaka.php', 'judul' => 'Perpustakaan',
                 'tools' => array(
                     array('label' => 'Daftar Pustaka', 'icon' => 'bi-list-ul', 'onclick' => 'pustaka_browse()'),
@@ -78,7 +78,7 @@ if (!function_exists('jb_anj_sections')) {
                 ),
             ),
             'pegawai' => array(
-                'label' => 'Kepegawaian', 'icon' => 'bi-diagram-3', 'pane' => 'g',
+                'label' => 'Kepegawaian', 'label_pendek' => 'Pegawai', 'icon' => 'bi-diagram-3', 'pane' => 'g',
                 'src' => 'pegawai/struktur.php', 'judul' => 'Struktur Kepegawaian',
                 'init' => 'jb_anj_pegawai',
             ),
@@ -198,41 +198,58 @@ $tanggal = $hari[(int)date('w')] . ', ' . (int)date('j') . ' ' . $bulan[(int)dat
 </head>
 <body class="anj-body" data-anj-active="<?= jb_anj_e($active) ?>">
 
-<nav class="anj-topbar" id="anjTopbar">
-    <div class="anj-topbar-inner">
-        <a class="anj-brand" href="/">
-            <img src="/images/<?= jb_anj_e($logo) ?>" alt="Logo">
-            <span class="anj-brand-text">
-                <strong><?= jb_anj_e($judul1) ?></strong>
-                <?php if ($judul2 !== '') { ?><small><?= jb_anj_e($judul2) ?></small><?php } ?>
-            </span>
-        </a>
-        <button class="btn btn-sm anj-burger d-lg-none" type="button"
-                data-bs-toggle="collapse" data-bs-target="#anjMenu" aria-controls="anjMenu" aria-expanded="false"
-                aria-label="Buka menu"><i class="bi bi-list"></i></button>
-        <div class="collapse d-lg-flex anj-menu-wrap" id="anjMenu">
-            <ul class="anj-nav" id="anjNav">
-                <?php foreach ($sections as $key => $sek) {
-                    $url = $key === 'beranda' ? '/' : '/' . $key . '/'; ?>
-                <li><a class="anj-nav-link<?= $key === $active ? ' active' : '' ?>" href="<?= jb_anj_e($url) ?>"
-                       data-seksi="<?= jb_anj_e($key) ?>"><i class="bi <?= jb_anj_e($sek['icon']) ?>"></i><span><?= jb_anj_e($sek['label']) ?></span></a></li>
-                <?php } ?>
-            </ul>
-            <div class="anj-topbar-tools">
-                <span class="anj-phase-chip" title="Tema mengikuti jam (Asia/Jakarta)">
-                    <i class="bi <?= jb_anj_e($info['icon']) ?>" data-jb-phase="icon"></i>
-                    <span data-jb-phase="label"><?= jb_anj_e($info['label']) ?></span>
-                    <small data-jb-phase="range"><?= jb_anj_e($info['range']) ?></small>
+<header class="anj-topbar" id="anjTopbar">
+    <div class="anj-topbar-row anj-row-id">
+        <div class="anj-shell">
+            <a class="anj-brand" href="/">
+                <img src="/images/<?= jb_anj_e($logo) ?>" alt="Logo">
+                <span class="anj-brand-text">
+                    <strong><?= jb_anj_e($judul1) ?></strong>
+                    <?php if ($judul2 !== '') { ?><small><?= jb_anj_e($judul2) ?></small><?php } ?>
                 </span>
-                <div class="btn-group btn-group-sm" role="group" aria-label="Pilih tema">
-                    <button type="button" class="btn btn-outline-secondary" data-jb-theme-mode="terang" aria-pressed="false">Terang</button>
-                    <button type="button" class="btn btn-outline-secondary" data-jb-theme-mode="gelap" aria-pressed="false">Gelap</button>
-                    <button type="button" class="btn btn-outline-secondary" data-jb-theme-mode="auto" aria-pressed="true">Auto</button>
+            </a>
+            <div class="anj-row-tools">
+                <span class="anj-clock d-none d-md-inline">
+                    <i class="bi bi-calendar3 me-1"></i><?= jb_anj_e($tanggal) ?>
+                </span>
+                <a class="btn btn-sm anj-masuk" href="/akademik/">
+                    <i class="bi bi-box-arrow-in-right me-1"></i><span>Masuk</span>
+                </a>
+                <div class="dropdown anj-theme-menu">
+                    <button class="btn btn-sm anj-theme-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false" aria-haspopup="true" title="Tema: mengikuti jam Asia/Jakarta">
+                        <i class="bi <?= jb_anj_e($info['icon']) ?>" data-jb-phase="icon"></i>
+                        <span class="anj-theme-label" data-jb-phase="label"><?= jb_anj_e($info['label']) ?></span>
+                        <i class="bi bi-chevron-down anj-caret"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end anj-theme-list">
+                        <li><h6 class="dropdown-header">Tema <span data-jb-phase="label"><?= jb_anj_e($info['label']) ?></span>
+                            &middot; <span data-jb-phase="range"><?= jb_anj_e($info['range']) ?></span></h6></li>
+                        <li><button type="button" class="dropdown-item anj-mode" data-jb-theme-mode="auto" aria-pressed="true">
+                            <i class="bi bi-magic anj-mode-icon"></i><span>Auto (ikuti jam)</span><i class="bi bi-check2 anj-mode-cek"></i></button></li>
+                        <li><button type="button" class="dropdown-item anj-mode" data-jb-theme-mode="terang" aria-pressed="false">
+                            <i class="bi bi-sun anj-mode-icon"></i><span>Terang</span><i class="bi bi-check2 anj-mode-cek"></i></button></li>
+                        <li><button type="button" class="dropdown-item anj-mode" data-jb-theme-mode="gelap" aria-pressed="false">
+                            <i class="bi bi-moon-stars anj-mode-icon"></i><span>Gelap</span><i class="bi bi-check2 anj-mode-cek"></i></button></li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
-</nav>
+    <nav class="anj-topbar-row anj-row-nav" aria-label="Menu anjungan">
+        <div class="anj-shell">
+            <ul class="anj-nav" id="anjNav">
+                <?php foreach ($sections as $key => $sek) {
+                    $url = $key === 'beranda' ? '/' : '/' . $key . '/';
+                    $pendek = !empty($sek['label_pendek']) ? $sek['label_pendek'] : $sek['label']; ?>
+                <li class="anj-nav-item"><a class="anj-nav-link<?= $key === $active ? ' active' : '' ?>" href="<?= jb_anj_e($url) ?>"
+                       title="<?= jb_anj_e($sek['label']) ?>"
+                       data-seksi="<?= jb_anj_e($key) ?>"><i class="bi <?= jb_anj_e($sek['icon']) ?>"></i><span class="anj-nav-label"><?= jb_anj_e($sek['label']) ?></span><span class="anj-nav-label-sm"><?= jb_anj_e($pendek) ?></span></a></li>
+                <?php } ?>
+            </ul>
+        </div>
+    </nav>
+</header>
 
 <header class="anj-hero" id="anjHero">
     <div class="anj-hero-layer" id="anjBg" aria-hidden="true"></div>

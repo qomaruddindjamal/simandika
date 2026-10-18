@@ -5,8 +5,12 @@
     if (!('serviceWorker' in navigator)) return;
 
     window.addEventListener('load', function () {
+        /* Halaman anjungan memasang <base href="/anjungan/">, jadi path SW diambil dari nilai
+           absolut yang diberikan halaman (window.JIBAS_SW) dan scope-nya selalu root. */
+        var src = window.JIBAS_SW || 'sw.js';
+        var opts = src.charAt(0) === '/' ? { scope: src.replace(/[^/]*$/, '') } : {};
         navigator.serviceWorker
-            .register('sw.js')
+            .register(src, opts)
             .then(function (reg) {
                 reg.addEventListener('updatefound', function () {
                     var b = reg.installing;

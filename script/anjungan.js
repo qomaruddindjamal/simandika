@@ -139,8 +139,6 @@
         });
         var h1 = document.getElementById('anjHeroTitle');
         if (h1) h1.textContent = judul(key);
-        var menu = document.getElementById('anjMenu');
-        if (menu && menu.classList.contains('show')) new bootstrap.Collapse(menu, { toggle: true }).hide();
         if (push) history.pushState({ seksi: key }, '', '/' + (key === 'beranda' ? '' : key + '/'));
         muatSeksi(key);
     }
