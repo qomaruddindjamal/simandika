@@ -1,7 +1,7 @@
 /* Service worker JIBAS: cache aset statis, selalu network untuk PHP (data sesi), fallback luring. */
 'use strict';
 
-const CACHE_ASET = 'jibas-aset-v1';
+const CACHE_ASET = 'jibas-aset-v2';
 const CACHE_HALAMAN = 'jibas-halaman-v1';
 
 const ASET_INTI = [
@@ -13,9 +13,11 @@ const ASET_INTI = [
     './style/bootstrap/fonts/bootstrap-icons.woff',
     './style/jibas-theme.css',
     './style/jibas-shell.css',
+    './style/jibas-anjungan.css',
     './script/bootstrap.bundle.min.js',
     './script/theme.js',
     './script/shell.js',
+    './script/anjungan.js',
     './script/pwa.js',
     './images/pwa-192.png',
     './images/pwa-512.png',

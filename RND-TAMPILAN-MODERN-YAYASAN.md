@@ -282,6 +282,39 @@ Roadmap F-5/F-6.
 - Prasyarat yang harus dipenuhi user lebih dulu: aktifkan `extension=imap` di `php.ini`, sediakan IMAP/SMTP server,
   buat DB `jbsmail`. Tanpa itu webmail tidak bisa diuji — dicatat sebagai blocker, bukan asumsi "sudah siap".
 
+### 6.5 Anjungan = halaman utama, URL root, tampilan modern (menu di atas)
+Permintaan: `https://data.yaishk.sch.id/` menampilkan anjungan, nama folder `/anjungan` **tidak boleh muncul
+di address bar**, dan tampilannya lebih modern dengan menu di atas.
+
+Yang dipakai sekarang (semua di dalam `htdocs/jibas`, tanpa folder baru, tanpa mengubah file warisan):
+
+| Bagian | Peran |
+|---|---|
+| `beranda.php` | front controller: rute root + 8 seksi, `chdir(anjungan)`, muat `include/mainconfig.php`, lalu render |
+| `include/anjungan-front.php` | peta seksi + pencetak kerangka halaman modern (navbar atas, hero, kartu per seksi, footer) |
+| `style/jibas-anjungan.css` | layer tampilan anjungan (shell + restyle potongan/iframe warisan) di atas `jibas-theme.css` |
+| `script/anjungan.js` | menu atas: muat potongan seksi, sekuens `<script>`, panggil init warisan, pushState, tema iframe |
+| `.htaccess` | `/` dan `/(beranda\|infosekolah\|mading\|infosiswa\|jadkal\|pustaka\|pegawai\|psb)/` → `beranda.php`; `/anjungan/` → 302 `/` |
+
+Cara nama folder tetap tidak muncul: halaman selalu di-render pada URL bersih dan `<base href="/anjungan/">`
+hanya berfungsi agar aset serta titik masuk AJAX warisan (`beranda/beranda.php`, `mading/notes.php`, dst.)
+tetap resolve. Jadi nama folder terlihat di network tab, bukan di address bar — dan `/anjungan/` langsung
+dirapatkan ke `/`. Aset statis root (`/style/`, `/script/`) sengaja **tidak** dilewatkan ke PHP, sehingga
+rule lama berbasis `-e` diganti daftar rute eksplisit.
+
+Pemetaan 8 seksi (id pane lama dipertahankan agar script warisan jalan apa adanya):
+`beranda`→a, `infosekolah`→b, `mading`→j, `infosiswa`→c, `jadkal`→i, `pustaka`→k, `pegawai`→g, `psb`→h.
+Menu bergambar lama (jadwal/pustaka/psb) diganti tombol Bootstrap yang memanggil fungsi warisan yang sama
+(`jadkal_ShowKalender()`, `pustaka_browse()`, `psb_InputPsbClicked()`, …); untuk mading & info sekolah
+include menunya tetap dipakai karena berisi pilihan departemen dari database, bagian tab gambarnya disembunyikan CSS.
+
+Pengecualian jujur atas anggaran §7: jalur anjungan masih memakai jQuery + library warisan (syarat potongan
+`anjungan/*`), tetapi hanya **1 seksi per muat awal** (dulu 8 permintaan AJAX serentak) dan tanpa TinyMCE,
+bgStretcher, serta jVertTabs, sehingga jumlah request awal turun dan halaman tetap bisa di-cache service worker.
+
+Catatan keamanan ikut tertutup di `.htaccess`: `include/`, `log/`, path ber-titik, `.sql/.md/.ini/.conf/.bak/…`,
+`database.config.php`/`.example.php` → 403; vhost 443 (mkcert) memaksa HTTP → HTTPS.
+
 ---
 
 ## 7. Ringan & Performa

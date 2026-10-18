@@ -1,0 +1,561 @@
+/*!
+ * JIBAS — Anjungan Informasi (tampilan modern, menu di atas)
+ *
+ * Layer di atas Bootstrap 5.3.8 + style/jibas-theme.css. Dipakai dua tempat:
+ *   1) halaman yang dirender include/anjungan-front.php (beranda.php di URL root), dan
+ *   2) dokumen di dalam iframe warisan (mading / info sekolah), yang disuntik
+ *      script/anjungan.js supaya isi lama ikut tampil modern dan ikut fase tema.
+ * Tidak ada file warisan yang diubah — selector di bawah hanya menimpa tampilan.
+ */
+
+/* ---------- 1. Halaman anjungan ---------- */
+
+.anj-body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--jb-bg);
+    color: var(--jb-text);
+    font-family: var(--bs-body-font-family);
+    -webkit-font-smoothing: antialiased;
+}
+
+.anj-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    background: var(--jb-navbar-bg);
+    color: var(--jb-navbar-text);
+    border-bottom: 1px solid var(--jb-border);
+    box-shadow: var(--jb-shadow);
+}
+
+.anj-topbar-inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: .5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.anj-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    text-decoration: none;
+    color: inherit;
+    flex: 0 0 auto;
+}
+
+.anj-brand img {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+}
+
+.anj-brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.anj-brand-text strong {
+    font-size: .92rem;
+    letter-spacing: .02em;
+}
+
+.anj-brand-text small {
+    font-size: .74rem;
+    color: var(--jb-text-muted);
+}
+
+.anj-menu-wrap {
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.anj-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .15rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.anj-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .45rem .7rem;
+    border-radius: .6rem;
+    font-size: .86rem;
+    font-weight: 500;
+    color: var(--jb-text-muted);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color .16s ease, color .16s ease;
+}
+
+.anj-nav-link i {
+    font-size: 1rem;
+}
+
+.anj-nav-link:hover {
+    background: var(--jb-surface-2);
+    color: var(--jb-text);
+}
+
+.anj-nav-link.active {
+    background: var(--jb-primary);
+    color: var(--jb-primary-ink);
+}
+
+.anj-topbar-tools {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    flex: 0 0 auto;
+}
+
+.anj-phase-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .25rem .6rem;
+    border: 1px solid var(--jb-border);
+    border-radius: 999px;
+    font-size: .76rem;
+    color: var(--jb-text-muted);
+    background: var(--jb-surface);
+}
+
+.anj-phase-chip small {
+    font-size: .68rem;
+    opacity: .8;
+}
+
+.anj-burger {
+    color: inherit;
+    border: 1px solid var(--jb-border);
+}
+
+@media (max-width: 991.98px) {
+    .anj-menu-wrap {
+        flex-basis: 100%;
+        display: none;
+    }
+    .anj-menu-wrap.show {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .anj-nav {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+    .anj-topbar-tools {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+/* ---------- 2. Hero ---------- */
+
+.anj-hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--jb-primary), var(--jb-accent));
+    color: #fff;
+}
+
+.anj-hero-layer {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: .28;
+    transition: opacity .6s ease;
+}
+
+.anj-hero-inner {
+    position: relative;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 1.7rem 1rem 1.9rem;
+}
+
+.anj-hero-eyebrow {
+    margin: 0 0 .35rem;
+    font-size: .78rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    opacity: .85;
+}
+
+.anj-hero-title {
+    margin: 0;
+    font-size: clamp(1.35rem, 2.6vw, 2rem);
+    font-weight: 700;
+}
+
+.anj-hero-sub {
+    margin: .35rem 0 0;
+    font-size: .92rem;
+    opacity: .9;
+}
+
+/* ---------- 3. Kartu konten ---------- */
+
+.anj-main {
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 1.1rem 1rem 2rem;
+}
+
+.anj-notice {
+    margin-bottom: .8rem;
+    padding: .55rem .8rem;
+    border: 1px solid var(--jb-border);
+    border-left: 4px solid var(--jb-warning);
+    border-radius: .6rem;
+    background: var(--jb-surface);
+    font-size: .85rem;
+}
+
+.anj-card {
+    background: var(--jb-surface);
+    border: 1px solid var(--jb-border);
+    border-radius: .9rem;
+    box-shadow: var(--jb-shadow);
+    overflow: hidden;
+}
+
+.anj-card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .7rem;
+    padding: .8rem 1rem;
+    border-bottom: 1px solid var(--jb-border);
+    background: var(--jb-surface-2);
+}
+
+.anj-card-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    flex: 0 0 auto;
+}
+
+.anj-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+}
+
+.anj-tool {
+    border: 1px solid var(--jb-border);
+    background: var(--jb-surface);
+    color: var(--jb-text-muted);
+    border-radius: 999px;
+    font-size: .8rem;
+    padding: .28rem .8rem;
+}
+
+.anj-tool:hover {
+    color: var(--jb-primary);
+    border-color: var(--jb-primary);
+}
+
+.anj-tool.active {
+    background: var(--jb-primary);
+    border-color: var(--jb-primary);
+    color: var(--jb-primary-ink);
+}
+
+.anj-legacy-menu {
+    margin-left: auto;
+}
+
+.anj-card-body {
+    padding: 1rem;
+}
+
+.anj-pane {
+    min-height: 260px;
+}
+
+/* Seksi yang isinya iframe warisan (mading & info sekolah) */
+.anj-body-frame {
+    padding: 0;
+    position: relative;
+    height: clamp(480px, 68vh, 860px);
+    background: var(--jb-surface);
+}
+
+.anj-body-frame .anj-pane,
+.anj-body-frame .anj-pane > div[id] {
+    position: absolute;
+    inset: 0;
+}
+
+.anj-pane iframe {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border: 0 !important;
+    background: var(--jb-surface);
+}
+
+.anj-loading,
+.anj-error {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: 2rem 1rem;
+    color: var(--jb-text-muted);
+    font-size: .9rem;
+}
+
+.anj-error {
+    color: var(--jb-danger);
+}
+
+.anj-spinner {
+    width: 1.1rem;
+    height: 1.1rem;
+    border: 2px solid var(--jb-border);
+    border-top-color: var(--jb-primary);
+    border-radius: 50%;
+    animation: anj-putar .8s linear infinite;
+}
+
+@keyframes anj-putar {
+    to { transform: rotate(360deg); }
+}
+
+.anj-foot {
+    border-top: 1px solid var(--jb-border);
+    background: var(--jb-navbar-bg);
+    color: var(--jb-text-muted);
+    font-size: .8rem;
+}
+
+.anj-foot-inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: .8rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.anj-foot-links a {
+    color: var(--jb-text-muted);
+    text-decoration: none;
+    margin-left: .8rem;
+}
+
+.anj-foot-links a:hover {
+    color: var(--jb-primary);
+}
+
+/* ---------- 4. Isi warisan: tabel, teks, form ---------- */
+
+/* Skema lama memakai <font color="..."> dan bgcolor untuk halaman terang;
+   di tema gelap/kartu harus mengikuti token fase. */
+html[data-jibas-phase] body,
+.anj-pane body,
+.anj-pane table,
+.anj-pane td,
+.anj-pane th,
+.anj-pane font {
+    font-family: var(--bs-body-font-family);
+    color: var(--jb-text);
+}
+
+.anj-pane font,
+#not_container font,
+#dvIsi font {
+    color: inherit !important;
+    font-family: inherit !important;
+}
+
+.anj-pane table,
+body.anj-iframe table {
+    max-width: 100%;
+}
+
+.anj-pane img,
+body.anj-iframe img {
+    max-width: 100%;
+    height: auto;
+}
+
+.anj-pane a,
+body.anj-iframe a {
+    color: var(--jb-primary);
+    text-decoration: none;
+}
+
+.anj-pane a:hover,
+body.anj-iframe a:hover {
+    text-decoration: underline;
+}
+
+/* putih hardcoded pada div konten warisan */
+.anj-pane [style*="background-color: #fff"],
+.anj-pane [style*="background-color:#fff"],
+body.anj-iframe [style*="background-color: #fff"],
+body.anj-iframe [style*="background-color:#fff"] {
+    background-color: var(--jb-surface) !important;
+}
+
+body.anj-iframe,
+body {
+    margin: 0;
+}
+
+html[data-jibas-phase] body.anj-iframe,
+body.anj-iframe {
+    background: var(--jb-bg) !important;
+    color: var(--jb-text) !important;
+    font-family: var(--bs-body-font-family) !important;
+}
+
+/* kontrol form warisan (.inputbox, textarea, select, tombol) */
+.anj-pane .inputbox,
+.anj-pane input[type=text],
+.anj-pane input[type=password],
+.anj-pane input[type=file],
+.anj-pane select,
+.anj-pane textarea,
+.anj-iframe .inputbox,
+.anj-iframe input[type=text],
+.anj-iframe input[type=password],
+.anj-iframe select,
+.anj-iframe textarea {
+    border: 1px solid var(--jb-border);
+    border-radius: .5rem;
+    background: var(--jb-surface);
+    color: var(--jb-text);
+    padding: .35rem .6rem;
+    font-size: .86rem;
+    max-width: 100%;
+}
+
+.anj-pane .inputbox:focus,
+.anj-pane input:focus,
+.anj-pane select:focus,
+.anj-pane textarea:focus,
+.anj-iframe input:focus,
+.anj-iframe select:focus,
+.anj-iframe textarea:focus {
+    outline: none;
+    border-color: var(--jb-primary);
+    box-shadow: 0 0 0 3px var(--jb-ring);
+}
+
+.anj-pane input[type=button],
+.anj-pane input[type=submit],
+.anj-pane button,
+.anj-iframe input[type=button],
+.anj-iframe input[type=submit],
+.anj-iframe button {
+    border: 1px solid var(--jb-primary);
+    border-radius: 999px;
+    background: var(--jb-primary);
+    color: var(--jb-primary-ink);
+    padding: .3rem .95rem;
+    font-size: .84rem;
+    cursor: pointer;
+}
+
+.anj-pane input[type=button]:hover,
+.anj-pane input[type=submit]:hover,
+.anj-iframe input[type=button]:hover,
+.anj-iframe input[type=submit]:hover {
+    filter: brightness(1.06);
+}
+
+.anj-pane table[border] td,
+.anj-pane table[border] th,
+.anj-iframe table[border] td,
+.anj-iframe table[border] th {
+    padding: .28rem .45rem;
+}
+
+.anj-pane table[border] {
+    border-collapse: collapse;
+}
+
+.anj-pane fieldset,
+.anj-iframe fieldset {
+    border: 1px solid var(--jb-border);
+    border-radius: .6rem;
+    padding: .8rem;
+}
+
+.anj-pane hr,
+.anj-iframe hr {
+    border-color: var(--jb-border);
+    opacity: .7;
+}
+
+/* ---------- 5. Menu warisan bergambar (pilihan departemen mading / info sekolah) ---------- */
+
+#mad_menu,
+#ifse_menu {
+    display: inline-block;
+}
+
+#mad_menu table,
+#mad_menu tbody,
+#mad_menu tr,
+#ifse_menu table,
+#ifse_menu tbody,
+#ifse_menu tr {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+}
+
+#mad_menu td,
+#ifse_menu td {
+    width: auto !important;
+    height: auto !important;
+    padding: 0 !important;
+    font-size: .82rem;
+    color: var(--jb-text-muted);
+    white-space: nowrap;
+}
+
+/* tab bergambar digantikan tombol modern di .anj-tools */
+#mad_menu td:not(:first-child),
+#ifse_menu td:not(:first-child) {
+    display: none;
+}
+
+#mad_menu select,
+#ifse_menu select {
+    margin-left: .3rem;
+    border: 1px solid var(--jb-border);
+    border-radius: .5rem;
+    background: var(--jb-surface);
+    color: var(--jb-text);
+    padding: .28rem .5rem;
+    font-size: .82rem;
+}

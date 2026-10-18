@@ -1,13 +1,5 @@
 Options -Indexes
 
-# Halaman utama = ANJUNGAN (portal publik). Hanya untuk akses lewat vhost data.yaishk.sch.id,
-# supaya jalur lama http://.../jibas/ yang dilayani server default tidak ikut dialihkan.
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteCond %{HTTP_HOST} ^(www\.)?data\.yaishk\.sch\.id$ [NC]
-    RewriteRule ^$ /anjungan/ [R=302,L]
-</IfModule>
-
 # PWA: manifest.webmanifest tidak dikenal Apache bawaan XAMPP
 <IfModule mod_mime.c>
     AddType application/manifest+json .webmanifest
@@ -21,4 +13,37 @@ Options -Indexes
     <FilesMatch "manifest\.webmanifest$">
         Header set Cache-Control "no-cache"
     </FilesMatch>
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # --- Tidak boleh diakses lewat HTTP (hanya dipakai PHP dari sisi server) ---
+    RewriteCond %{REQUEST_URI} !^/\.well-known/
+    RewriteRule "(^|/)\." - [F,L]
+    RewriteRule "(^|/)include/" - [F,L]
+    RewriteRule "(^|/)log/" - [F,L]
+    RewriteRule \.(sql|md|ini|conf|bak|old|orig|save|dist|eml|sh)$ - [F,L]
+    RewriteRule (database\.config|\.example)\.php$ - [F,L]
+
+    # --- Halaman utama = ANJUNGAN tanpa nama folder di URL ---
+    # Hanya untuk vhost data.yaishk.sch.id agar akses lama lewat /jibas/ tidak berubah.
+    # 1) URL /anjungan atau /anjungan/ dirapatkan ke /
+    RewriteCond %{HTTP_HOST} ^(www\.)?data\.yaishk\.sch\.id$ [NC]
+    RewriteRule ^anjungan/?$ / [R=302,L]
+
+    # 2) / disajikan oleh beranda.php (tampilan modern anjungan; <base href="/anjungan/"> di dalamnya)
+    RewriteCond %{HTTP_HOST} ^(www\.)?data\.yaishk\.sch\.id$ [NC]
+    RewriteRule ^$ beranda.php [L]
+
+    # 3) /beranda.php tidak boleh tampil sendiri (hanya permintaan langsung, bukan hasil rewrite internal)
+    RewriteCond %{HTTP_HOST} ^(www\.)?data\.yaishk\.sch\.id$ [NC]
+    RewriteCond %{THE_REQUEST} "^GET /beranda\.php"
+    RewriteRule ^beranda\.php$ / [R=302,L]
+
+    # 4) rute seksi anjungan di URL root: /mading/, /pustaka/, dst tanpa nama foldernya.
+    #    Hanya path tanpa nama folder lain, jadi aset statis root (/style/, /script/) tidak pernah
+    #    lewat PHP.
+    RewriteCond %{HTTP_HOST} ^(www\.)?data\.yaishk\.sch\.id$ [NC]
+    RewriteRule ^(beranda|infosekolah|mading|infosiswa|jadkal|pustaka|pegawai|psb)/?$ beranda.php [L]
 </IfModule>
