@@ -312,15 +312,17 @@ $tanggal = $hari[(int)date('w')] . ', ' . (int)date('j') . ' ' . $bulan[(int)dat
                 <div class="modal-body">
                     <p class="anj-modal-note">
                         Melalui halaman Informasi Siswa anda dapat melihat Data Pribadi, Akademik, Presensi dan Keuangan siswa.
-                        Isikan NIS dan PIN siswa. Tanyakan PIN kepada staf sekolah apabila anda tidak mengetahuinya.
+                        Isikan NISN dan PIN siswa. Tanyakan PIN kepada staf sekolah apabila anda tidak mengetahuinya.
                     </p>
                     <div class="mb-3">
-                        <label class="form-label" for="anjIsNis">N I S</label>
-                        <input type="text" class="form-control" id="anjIsNis" name="nis" maxlength="24" inputmode="numeric" required>
+                        <label class="form-label" for="anjIsNisn">N I S N</label>
+                        <input type="text" class="form-control" id="anjIsNisn" name="nisn" maxlength="16"
+                               inputmode="numeric" autocomplete="off" data-lpignore="true" data-form-type="other" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="anjIsPin">P I N</label>
-                        <input type="password" class="form-control" id="anjIsPin" name="pin" maxlength="6" required>
+                        <input type="password" class="form-control" id="anjIsPin" name="pin" maxlength="25"
+                               autocomplete="new-password" data-lpignore="true" data-form-type="other" required>
                     </div>
                     <div class="anj-modal-error" id="anjMasukError" role="alert" hidden></div>
                 </div>

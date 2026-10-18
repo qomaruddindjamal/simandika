@@ -316,13 +316,19 @@ isinya Auto / Terang / Gelap dengan default Auto (Senja & Fajar tetap otomatis d
 Label menu dipendekkan (Sekolah, Siswa, Jadwal, Perpust., Pegawai) pada 768–1199 px supaya baris menu tidak pernah
 bergulir horizontal di atas 768 px.
 
-Tombol **Masuk** tidak lagi mengarah ke `/akademik/`: ia membuka modal Bootstrap yang formnya diambil dari login
-Informasi Siswa warisan (NIS + PIN, `anjungan/infosiswa/infosiswa.login.php`). Pengiriman menuju
-`infosiswa/infosiswa.dologin.php` — penanda suksesnya adalah hadirnya `infosiswa.content.php` pada respons; bila tidak,
-pesan "NIS atau PIN salah!" ditampilkan di dalam modal tanpa reload. Setelah berhasil, kartu `infosiswa` diarahkan memuat
+Tombol **Masuk** tidak lagi mengarah ke `/akademik/`: ia membuka modal Bootstrap (`data-bs-backdrop="static"`, lihat
+aturan modal di bawah) yang formnya meniru login Informasi Siswa warisan, tetapi kolomnya **NISN + PIN**.
+Kiriman POST ke `login-siswa.php` (titik masuk baru di root, JSON) yang memvalidasi `jbsakad.siswa` lewat prepared
+statement, lalu membuka sesi `__JIBAS_ANJUNGAN_IS__` — sesi yang sama dengan `anjungan/infosiswa/infosiswa.session.php` —
+sehingga konten warisan tetap dipakai apa adanya. CATATAN: kolom `pinsiswa` di skema warisan tersimpan apa adanya,
+jadi PIN tetap berjalan dalam teks polos (di kueri maupun di jalur HTTPS); pemindahan ke `password_hash()` baru bisa
+dilakukan bersamaan dengan migrasi data siswa dan belum terjadi sampai catatan ini ditulis.
+Setelah login berhasil, `data.nis` dipakai untuk memuat
 `infosiswa/infosiswa.content.php?nis=…&reporttype=PROFIL` (bukan `infosiswa.php`, karena include `infosiswa.main.php`
 milik warisan tidak ada di disk) dan isinya dibungkus `<div id="is_main">` (`data-wadah`) karena seluruh navigasi
 nilai/presensi/keuangan warisan menulis ke elemen itu.
+Kolom login selalu dikosongkan setiap modal dibuka dan memakai `autocomplete=off` / `new-password` supaya kredensial
+yang pernah tersimpan browser tidak menempel di form.
 
 **Aturan modal untuk seluruh pengembangan baru:** selalu pasang `data-bs-backdrop="static"` — modal hanya ditutup lewat
 tombolnya sendiri (X / Batal / aksi eksplisit), tidak boleh hilang karena klik di luar area modal.

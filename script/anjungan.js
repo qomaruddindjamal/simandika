@@ -226,22 +226,30 @@
         aktifkan('infosiswa', true);
     }
 
-    function kirimLogin(nis, pin) {
+    /* Titik masuk login NISN/PIN ada di root (login-siswa.php); path relatif akan resolve ke
+       /anjungan/ karena <base>, jadi selalu dipakai absolut. */
+    var URL_LOGIN = '/login-siswa.php';
+
+    function kirimLogin(nisn, pin) {
         var tombol = document.getElementById('anjMasukKirim');
         if (tombol) tombol.disabled = true;
-        fetch('infosiswa/infosiswa.dologin.php?nis=' + encodeURIComponent(nis) + '&pin=' + encodeURIComponent(pin),
-              { credentials: 'same-origin' })
+        var body = new URLSearchParams();
+        body.append('nisn', nisn);
+        body.append('pin', pin);
+        fetch(URL_LOGIN, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' },
+            body: body.toString()
+        })
             .then(function (res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
-                return res.text();
+                return res.json();
             })
-            .then(function (html) {
-                if (html.indexOf('infosiswa.content.php') === -1) throw new Error('NIS atau PIN salah!');
+            .then(function (data) {
+                if (!data || !data.sukses) throw new Error((data && data.pesan) || 'NISN atau PIN salah.');
                 tutupModal();
-                var form = document.getElementById('anjMasukForm');
-                if (form) form.reset();
-                sembunyikanGalat();
-                bukaIsiSiswa(nis);
+                bukaIsiSiswa(data.nis);
             })
             .catch(function (err) {
                 tampilkanGalat(err && err.message ? err.message : 'Login gagal, silakan coba lagi.');
@@ -257,19 +265,28 @@
         form.addEventListener('submit', function (ev) {
             ev.preventDefault();
             sembunyikanGalat();
-            var nis = document.getElementById('anjIsNis').value.trim();
+            var nisn = document.getElementById('anjIsNisn').value.trim();
             var pin = document.getElementById('anjIsPin').value.trim();
-            if (nis === '' || pin === '') { tampilkanGalat('NIS dan PIN harus diisi.'); return; }
-            kirimLogin(nis, pin);
+            if (nisn === '' || pin === '') { tampilkanGalat('NISN dan PIN harus diisi.'); return; }
+            kirimLogin(nisn, pin);
         });
+        /* Setiap modal dibuka, isinya dikosongkan lagi: nilai sisa dari browser atau percobaan
+           sebelumnya tidak boleh tertinggal di kolom login. */
         document.querySelectorAll('[data-bs-target="#anjMasukModal"]').forEach(function (pemicu) {
             pemicu.addEventListener('click', function () {
-                setTimeout(function () {
-                    var nis = document.getElementById('anjIsNis');
-                    if (nis && !nis.value) nis.focus();
-                }, 120);
+                form.reset();
+                sembunyikanGalat();
+                setTimeout(fokusNisn, 120);
             });
         });
+        /* Bootstrap memindahkan fokus ke elemen dialog saat transisi selesai; ambil alih lagi
+           supaya kursor langsung di kolom NISN. */
+        document.getElementById('anjMasukModal').addEventListener('shown.bs.modal', fokusNisn);
+    }
+
+    function fokusNisn() {
+        var nisn = document.getElementById('anjIsNisn');
+        if (nisn) nisn.focus();
     }
 
 
