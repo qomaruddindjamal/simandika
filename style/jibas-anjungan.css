@@ -660,26 +660,6 @@
     flex-wrap: wrap;
 }
 
-.anj-foot-links a,
-.anj-foot-links button {
-    color: var(--jb-text-muted);
-    text-decoration: none;
-    margin-left: .8rem;
-}
-
-.anj-foot-links button {
-    border: 0;
-    background: none;
-    padding: 0;
-    font: inherit;
-    cursor: pointer;
-}
-
-.anj-foot-links a:hover,
-.anj-foot-links button:hover {
-    color: var(--jb-primary);
-}
-
 /* ---------- 3b. Modal Masuk ---------- */
 
 .anj-modal {

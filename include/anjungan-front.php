@@ -358,10 +358,6 @@ $tanggal = $hari[(int)date('w')] . ', ' . (int)date('j') . ' ' . $bulan[(int)dat
 <footer class="anj-foot">
     <div class="anj-foot-inner">
         <span><i class="bi bi-info-circle me-1"></i>JIBAS <?= jb_anj_e($versi) ?><?= $build !== '' ? ' &middot; ' . jb_anj_e($build) : '' ?></span>
-        <span class="anj-foot-links">
-            <a href="/">Anjungan</a>
-            <button type="button" data-bs-toggle="modal" data-bs-target="#anjMasukModal">Masuk</button>
-        </span>
     </div>
 </footer>
 

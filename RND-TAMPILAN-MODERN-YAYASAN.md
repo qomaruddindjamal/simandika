@@ -600,6 +600,15 @@ terbaca sebagai blok bertumpuk tanpa gaya — masih bisa diisi, hanya tidak rapi
 (`data.yaishk.sch.id`) tetap benar. Dan `is_ValidateInput()` masih menutupnya dengan `confirm()` bawaan browser
 serta `Validator.*` memakai `alert()` — tidak diubah di pekerjaan ini karena di luar permintaan tata letak.
 
+**Tautan "Anjungan" dan tombol "Masuk" di kaki halaman dihapus** (permintaan user 2026-10-19: "hilangkan text pada
+gambar" yang memperlihatkan baris kaki `<a>Anjungan</a> <button>Masuk</button>`). Blok `<span class="anj-foot-links">`
+dilepas dari `include/anjungan-front.php` bersama tiga aturan CSS-nya di `style/jibas-anjungan.css` karena tidak ada
+pemakai lain; `.anj-foot-inner` (flex `space-between`) tetap ada dan hanya menyisakan baris versi. Pintu masuk modal
+Masuk tidak terpengaruh — satu-satunya tersisa di kepala (`.anj-masuk`), dan `data-bs-target="#anjMasukModal"`-nya
+tidak berubah. Bukti browser 2026-10-19: `innerText` kaki = "JIBAS 33.0 · 05 Januari 2026", `querySelectorAll('a,button')`
+di dalam `.anj-foot` kosong, `document.querySelector('.anj-foot-links') === null`, tombol kepala masih ada
+(`.anj-masuk` berlabel "SU Siswa Uji Coba" karena sesi aktif), konsol bersih. `CACHE_ASET` → `jibas-aset-v44`.
+
 Pengecualian jujur atas anggaran §7: jalur anjungan masih memakai jQuery + library warisan (syarat potongan
 `anjungan/*`), tetapi hanya **1 seksi per muat awal** (dulu 8 permintaan AJAX serentak) dan tanpa TinyMCE,
 bgStretcher, serta jVertTabs, sehingga jumlah request awal turun dan halaman tetap bisa di-cache service worker.
