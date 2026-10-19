@@ -608,6 +608,30 @@ orangtua) dan 18 sel `col-md-3` (dua lajur ayah/ibu pada sembilan baris), `php -
 viewport 831 px: label `x=39` lebar `341`, isian `x=380` lebar `341` (682 = lebar kartu, tidak ada overflow),
 Ayah `x=380` dan Ibu `x=551` sama-sama lebar `170`, tombol Simpan `x=388` sejajar lajur isian.
 
+**Form dipecah menjadi dua paruh 6:6 berdampingan, blok Orangtua pindah ke kanan** (permintaan user 2026-10-19:
+"mulai Data Orang tua siswa di taruh samping kanan buat 6:6", dipilih opsi "Blok Orangtua pindah ke paruh kanan",
+lalu "untuk form Riwayat Kesehatan Siswa taruh diatas Data Orangtua Siswa"). Isi `<form class="anj-form">` dibungkus
+`<div class="row g-4 g-lg-5 anj-kol-form-blok">` dengan dua `<div class="col-12 col-lg-6 anj-kol-form">` — kiri
+**Data Pribadi + Data Sekolah**, kanan **Riwayat Kesehatan + Data Orangtua + Informasi Tambahan + Data Tambahan**
+(tombol Simpan ikut paruh kanan). Pemindahan blok kesehatan dilakukan murni memotong 52 baris (judul
+`Riwayat Kesehatan Siswa` s.d. baris `is_kesehatan`) lalu menempelkannya tepat sebelum judul `Data Orangtua
+Siswa`, sehingga `git diff --stat` file itu hanya **+7 baris** (seluruhnya pembungkus/pemisah lajur) dan hitungan
+`name="is_` tetap **63 = 63** terhadap `git show HEAD:` — tanpa perubahan permukaan POST. Aturan baru §4b:
+`@media (min-width:992px){ #is_profile .anj-kol-form + .anj-kol-form { padding-left:1.5rem; border-left:1px solid var(--jb-border) } }`
+(pemisah antar paruh, hanya aktif di ≥992 px).
+
+Terukur 2026-10-19 di `/infosiswa/#datasiswa`. Pada viewport otomatis 831 px (di bawah ambang `col-lg`) lajur
+ditumpuk dan urutan judul vertikal terbukti: Pribadi `470` → Sekolah `1633` → **Kesehatan `1936` → Orangtua `2245`**
+→ Informasi Tambahan `3089` → Data Tambahan `3335`, `scrollWidth ≤ innerWidth` (tanpa overflow), konsol bersih.
+Karena ambang 992 px tidak bisa dicapai di viewport itu, perilaku dua paruh dibuktikan dengan menyuntik sementara
+aturan setara `col-lg-6` (`flex:0 0 auto; width:50%; max-width:50%`) lalu mengukur: paruh kiri `x=35` lebar `345`
+(Pribadi+Sekolah), paruh kanan `x=380` lebar `345` (Kesehatan+Orangtua+Tambahan), tinggi kedua paruh sama `1641 px`
+selaras, pemisah terpasang `border-left 1px solid rgb(216,224,236)` + `padding-left 24 px`, dan `style` suntikan
+langsung dihapus setelah pengukuran. Distribusi `name` per paruh 37 (kiri) + 40 (kanan); target AJAX
+`#is_divTglLahir{Siswa,Ayah,Ibu}` dan `#is_divAsalSekolah` tetap ada, lima radio `is_gol` utuh, baris identitas
+`font` tetap `display:none`, tombol **Simpan** `inline-block` (LOGOUT/REFRESH tetap `none`). `CACHE_ASET` →
+`jibas-aset-v48`.
+
 **Baris identitas "NIS - Nama" di dalam kartu laporan dihapus** (permintaan user 2026-10-19: "tidak usah ada
 hilangkan saja", gambarnya menunjukkan `900001 - Siswa Uji Coba`). Teks itu berasal dari `ShowReportHeader()` di
 `anjungan/infosiswa/infosiswa.class.php` (`<font style='font-size:17px; font-weight:bold; color:#666;'>`), dan

@@ -60,6 +60,8 @@ $departemen = $row2['departemen'];
 <script language="javascript" src="infosiswa/infosiswa.profile.js"></script>
 <div id="is_profile">
 <form name="is_form" id="is_form" method="post" class="anj-form">
+<div class="row g-4 g-lg-5 anj-kol-form-blok">
+<div class="col-12 col-lg-6 anj-kol-form">
 
 <h3 class="anj-form-judul">Data Pribadi Siswa</h3>
 
@@ -288,6 +290,9 @@ $departemen = $row2['departemen'];
         <textarea name="is_ketsekolah" id="is_ketsekolah" rows="2" class="form-control"><?=$row['ketsekolah']?></textarea>
     </div>
 </div>
+
+</div>
+<div class="col-12 col-lg-6 anj-kol-form">
 
 <h3 class="anj-form-judul">Riwayat Kesehatan Siswa</h3>
 
@@ -654,6 +659,8 @@ $departemen = $row2['departemen'];
 		</span>
 <?		} ?>
     </div>
+</div>
+</div>
 </div>
 </form>
 </div>

@@ -1088,6 +1088,14 @@ body.anj-iframe {
     color: var(--jb-text);
 }
 
+/* Dua paruh: kiri data siswa, kanan orangtua & tambahan (permintaan user 2026-10-19). */
+@media (min-width: 992px) {
+    #is_profile .anj-kol-form + .anj-kol-form {
+        padding-left: 1.5rem;
+        border-left: 1px solid var(--jb-border);
+    }
+}
+
 /* combo warisan (Show*Combo) satu lajur melebar seperti .form-control */
 #is_profile .inputbox {
     width: 100%;
