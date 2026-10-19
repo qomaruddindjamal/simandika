@@ -739,7 +739,7 @@
     opacity: .6;
 }
 
-/* ---------- 3c. Dasbor Info Siswa: sidebar laporan ---------- */
+/* ---------- 3c. Sidebar laporan siswa (rel, tampil di semua seksi saat sesi aktif) ---------- */
 
 .anj-rail {
     display: none;

@@ -461,6 +461,30 @@ warisan yang rusak tidak memicu muat ulang tanpa henti. Pada ≤991,98 px kartu 
 dengan rel, jadi rel pindah ke atas kartu (`position: static`, satu kolom grid) dan daftar laporan menjadi baris chip
 yang mengemas diri (`flex-wrap`), tanpa scrollbar horizontal.
 
+**Rel laporan ikut tampil di semua seksi selama sesi siswa aktif** (permintaan user 2026-10-19: "saat siswa aktif
+tampilkan sidebar menu di anjungan"). Sebelumnya rel hanya terlihat saat kartu Info Siswa menjadi seksi aktif
+(`tampilRel(key === 'infosiswa')`), jadi siswa yang sedang login dan berpindah ke Beranda/Mading kehilangan jalan
+kembali ke laporannya. Sekarang keadaan sesi yang menentukan: `ubahTombolMasuk()` menyimpannya di `sesiSiswaAktif`
+dan langsung memanggil `pastikanRelSiswa()` (bangun sidebar bila belum ada + pasang `anj-ber-rail`), sedangkan
+`aktifkan()` memanggil `pastikanRelSiswa()` untuk setiap seksi selama flag itu hidup; `ubahTombolMasuk(false)`
+melepas rel. Konsekuensinya sidebar tidak boleh lagi menunggu combo warisan: daftarnya dibangun dari `SLUG_LAPORAN`
++ `LABEL_LAPORAN` baru yang meniru `ShowReportComboBox()` di `anjungan/infosiswa/infosiswa.class.php` (sumber
+kebenaran isi tetap `#reporttype`, yang disembunyikan seperti sebelumnya). Penangan klik dipindah ke dalam
+`bangunSidebar()` dan meneruskan ke `bukaLaporan(tipe)`: bila dasbor sudah termuat ia `pilihLaporan()` seperti dulu
+(hanya mengaktifkan kartunya lebih dulu bila sedang tersembunyi), bila belum ia `bukaIsiSiswa(nis, tipe)` — jenis
+laporan dibawa sebagai argumen dan dicatat di `data-anj-tipe`, karena `pushState` saat mengaktifkan seksi membuang
+hash; `samakanHash()` kini jatuh ke `data-anj-tipe` bila combo belum ada sehingga alamat tetap `/infosiswa/#rapor`.
+"Muat ulang" mengikuti seksi yang tampil (`muatUlangSeksi()`): laporan yang sama di dasbor, potongan halaman seksi
+lain. Teruji di browser 2026-10-19 pada viewport 831 px (modus chip): reload dingin di `/` dan `/mading/` dengan sesi
+hidup → rel 11 item (9 laporan + Muat ulang + Keluar) tampil; klik Keuangan dari Beranda → `/infosiswa/#keuangan`,
+combo `KEUANGAN`, item sidebar ikut bertanda; klik Rapor dari Mading tanpa dasbor termuat → `/infosiswa/#rapor`,
+combo `RAPOR`; Muat ulang di Beranda → `GET beranda/beranda.php`; Keluar → `POST ?aksi=keluar`, rel dikosongkan
+(`display:none`, `anj-ber-rail` lepas), tombol kepala kembali "Masuk" ber-`data-bs-target` modal; pengujung tanpa sesi
+→ rel tetap kosong dan satu kolom; `history.back()` dari Rapor → Mading dengan rel tetap tampil; tanpa pesan konsol.
+Layout dua kolom di atas 992 px tidak bisa diukur di tab otomatis ini (viewport-nya 831 px), tapi kelas yang sama
+memakai aturan yang sudah ada — dibuktikan dari CSSOM: `.anj-main.anj-ber-rail { grid-template-columns: 13.5rem
+minmax(0px, 1fr) }` tanpa kondisi media, dan hanya dilipat kembali oleh `@media (max-width: 991.98px)`.
+
 **Kepala anjungan tembus pandang 70% saat digulir** (permintaan user 2026-10-19). `pantauGulir()` memasang listener
 `scroll` (passive) yang men-toggle kelas `anj-gulung` pada `#anjTopbar` di atas `scrollY` 12 px; CSS-nya mengganti
 latar baris identitas dan baris menu dengan `color-mix(in srgb, <warna fase> 30%, transparent)` — jadi 70% tembus pandang,

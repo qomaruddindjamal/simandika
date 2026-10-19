@@ -149,19 +149,30 @@
 
     /* ---------- rel sidebar & kepala transparan saat digulir ---------- */
 
+    /* Sesi siswa yang sedang hidup: satu-satunya syarat rel laporan ditampilkan. */
+    var sesiSiswaAktif = false;
+
     function rel() {
         return document.querySelector('.anj-rail');
     }
 
-    /* Sidebar laporan tinggal di rel di luar kartu. Kelas pengatur kolom hanya dipasang
-       selama seksi Info Siswa aktif dan sidebar benar-benar ada, jadi seksi lain
-       tetap memakai lebar penuh. */
+    /* Sidebar laporan tinggal di rel di luar kartu. Selama sesi siswa aktif rel dipakai di
+       semua seksi (permintaan user 2026-10-19), bukan hanya di kartu Info Siswa; tanpa
+       sidebar di dalamnya — pengujung tanpa sesi — kelas pengatur kolom tidak dipasang
+       supaya seksi tetap memakai lebar penuh. */
     function tampilRel(aktif) {
         var utama = document.querySelector('.anj-main');
         var r = rel();
         if (utama) {
             utama.classList.toggle('anj-ber-rail', aktif && !!(r && r.querySelector('.anj-sb')));
         }
+    }
+
+    function pastikanRelSiswa() {
+        var r = rel();
+        if (!r) return;
+        if (!r.querySelector('.anj-sb')) r.appendChild(bangunSidebar());
+        tampilRel(true);
     }
 
     function kosongkanRel() {
@@ -195,7 +206,9 @@
         [].slice.call(document.querySelectorAll('.anj-card')).forEach(function (c) {
             c.classList.toggle('d-none', c !== el);
         });
-        tampilRel(key === 'infosiswa');
+        /* Rel laporan ikut tampil di seksi mana pun selama sesi siswa hidup; di luar itu
+           hanya kartu Info Siswa yang punya rel. */
+        if (sesiSiswaAktif) pastikanRelSiswa(); else tampilRel(key === 'infosiswa');
         [].slice.call(document.querySelectorAll('.anj-nav-link')).forEach(function (a) {
             a.classList.toggle('active', a.getAttribute('data-seksi') === key);
         });
@@ -280,16 +293,18 @@
     /* Isi halaman Informasi Siswa diambil dari infosiswa.content.php, bukan infosiswa.php:
        file itu hanya merender form login (sesi siswa tidak dibuka di sana) dan include
        'infosiswa.main.php' milik warisan tidak ada di disk. */
-    function bukaIsiSiswa(nis) {
+    function bukaIsiSiswa(nis, tipe) {
         var el = kartu('infosiswa');
         if (!el) return;
         /* Halaman dibuka langsung pada satu laporan — tautan atau muat ulang di
            /infosiswa/#keuangan. Jenisnya ikut diminta ke potongan warisan lewat
            reporttype; memaksa PROFIL di sini membuat laporan itu hilang sebelum
-           sidebar sempat dibangun. */
-        var tipe = tipeDariHash() || 'PROFIL';
+           sidebar sempat dibangun. Tanpa combo di DOM, dataset ini satu-satunya yang
+           tahu laporan yang sedang diminta, jadi samakanHash() membacanya. */
+        var jenis = tipe || tipeDariHash() || 'PROFIL';
+        el.dataset.anjTipe = jenis;
         el.dataset.src = 'infosiswa/infosiswa.content.php?nis=' + encodeURIComponent(nis)
-            + '&reporttype=' + encodeURIComponent(tipe);
+            + '&reporttype=' + encodeURIComponent(jenis);
         el.dataset.anjTermuat = '';
         el.dataset.anjPulih = '';
         aktifkan('infosiswa', true);
@@ -346,14 +361,14 @@
                     el.removeAttribute('data-nis');
                     el.removeAttribute('data-nama');
                     el.removeAttribute('data-foto');
+                    el.removeAttribute('data-anj-tipe');
                     el.dataset.anjTermuat = '';
                     /* Sesi yang baru ditutup tidak boleh langsung dipulihkan otomatis. */
                     el.dataset.anjPulih = '9';
                     var pane = el.querySelector('.anj-pane');
                     if (pane) pane.textContent = '';
                 }
-                /* Sidebar laporan bukan bagian kartu lagi, jadi perlu dilepas sendiri. */
-                kosongkanRel();
+                /* Sidebar laporan bukan bagian kartu lagi, tapi dilepas oleh ubahTombolMasuk(false). */
                 ubahTombolMasuk(false);
                 aktifkan('beranda', true);
                 kabari('Anda telah keluar dari Informasi Siswa.');
@@ -400,6 +415,11 @@
     function ubahTombolMasuk(sudahLogin, nis, nama, berfoto) {
         var tombol = document.querySelector('.anj-masuk');
         if (!tombol) return;
+        /* Sesi aktif = rel laporan dipasang (lagi) walau kartu Info Siswa tidak sedang tampil;
+           sesi selesai = rel dibersihkan. Dibaca ulang di sini karena fungsi ini yang
+           paling tahu keadaan sesi: dari cek status saat halaman dibuka, login, sampai Keluar. */
+        sesiSiswaAktif = !!sudahLogin;
+        if (sudahLogin) pastikanRelSiswa(); else kosongkanRel();
         var el = kartu('infosiswa');
         if (el && nama) el.dataset.nama = nama;
         if (el && berfoto !== undefined) el.dataset.foto = berfoto ? '1' : '0';
@@ -541,6 +561,21 @@
         TIPE_DARI_SLUG[SLUG_LAPORAN[tipe]] = tipe;
     });
 
+    /* Label sidebar tidak menunggu combo warisan dimuat: rel bisa lebih dulu tampil di
+       seksi lain. Isinya sama dengan ShowReportComboBox() di
+       anjungan/infosiswa/infosiswa.class.php, urutan diambil dari SLUG_LAPORAN. */
+    var LABEL_LAPORAN = {
+        PROFIL: 'Data Pribadi',
+        KEUANGAN: 'Keuangan',
+        PRESENSIHARIAN: 'Presensi Harian',
+        PRESENSIPELAJARAN: 'Presensi Pelajaran',
+        PRESENSIKEGIATAN: 'Presensi Kegiatan',
+        NILAI: 'Nilai',
+        RAPOR: 'Rapor',
+        PERPUSTAKAAN: 'Perpustakaan',
+        CBE: 'Computer Based Exam'
+    };
+
     function tipeDariHash() {
         return TIPE_DARI_SLUG[location.hash.replace(/^#/, '')] || null;
     }
@@ -593,7 +628,7 @@
         return b;
     }
 
-    function bangunSidebar(main) {
+    function bangunSidebar() {
         var nav = document.createElement('nav');
         nav.className = 'anj-sb';
         nav.setAttribute('aria-label', 'Laporan siswa');
@@ -601,14 +636,28 @@
         judul.className = 'anj-sb-title';
         judul.textContent = 'Laporan';
         nav.appendChild(judul);
-        [].slice.call(comboLaporan(main).options).forEach(function (o) {
-            item(nav, '', o.value, IKON_LAPORAN[o.value] || 'bi-dot', (o.textContent || '').trim());
+        Object.keys(SLUG_LAPORAN).forEach(function (tipe) {
+            item(nav, '', tipe, IKON_LAPORAN[tipe] || 'bi-dot', LABEL_LAPORAN[tipe] || tipe);
         });
         var pemisah = document.createElement('div');
         pemisah.className = 'anj-sb-sep';
         nav.appendChild(pemisah);
         item(nav, 'anj-sb-muat', null, 'bi-arrow-clockwise', 'Muat ulang');
         item(nav, 'anj-sb-keluar', null, 'bi-box-arrow-right', 'Keluar');
+        nav.addEventListener('click', function (ev) {
+            var b = ev.target.closest ? ev.target.closest('.anj-sb-item') : null;
+            if (!b) return;
+            ev.preventDefault();
+            if (b.classList.contains('anj-sb-keluar')) {
+                keluarSiswa();
+                return;
+            }
+            if (b.classList.contains('anj-sb-muat')) {
+                muatUlangSeksi();
+                return;
+            }
+            bukaLaporan(b.dataset.tipe);
+        });
         return nav;
     }
 
@@ -631,6 +680,42 @@
             return;
         }
         jalankanLaporan(main, tipe);
+    }
+
+    /* Laporan dari sidebar bisa diminta dari seksi lain, saat kartu Info Siswa belum
+       pernah dimuat. Jenis laporan dibawa sebagai argumen, bukan lewat hash: pushState
+       saat mengaktifkan seksi membuang hash, dan alamatnya disamakan lagi sesudah itu. */
+    function bukaLaporan(tipe) {
+        var el = kartu('infosiswa');
+        if (!el || !tipe) return;
+        var main = el.querySelector('#is_main');
+        var combo = comboLaporan(main);
+        if (!combo && !el.dataset.nis) {
+            bukaModalMasuk();
+            return;
+        }
+        if (combo) {
+            /* Laporan hanya bisa tampil di kartunya sendiri. */
+            if (el.classList.contains('d-none')) aktifkan('infosiswa', true);
+            pilihLaporan(main, tipe);
+            return;
+        }
+        bukaIsiSiswa(el.dataset.nis, tipe);
+    }
+
+    /* "Muat ulang" mengikuti seksi yang sedang tampil: di dasbor ia mengulang laporan yang
+       ada, di seksi lain ia mengambil ulang potongan halamannya. */
+    function muatUlangSeksi() {
+        var el = document.querySelector('.anj-card:not(.d-none)');
+        if (!el) return;
+        var main = el.querySelector('#is_main');
+        var combo = comboLaporan(main);
+        if (combo) {
+            jalankanLaporan(main, combo.value);
+            return;
+        }
+        el.dataset.anjTermuat = '';
+        muatSeksi(el.getAttribute('data-seksi'));
     }
 
     /* Tautan /infosiswa/#keuangan dan tombol mundur/ maju browser. */
@@ -658,7 +743,8 @@
         var el = kartu('infosiswa');
         if (!el || el.classList.contains('d-none')) return;
         var combo = comboLaporan(el.querySelector('#is_main'));
-        var slug = combo && SLUG_LAPORAN[combo.value];
+        var tipe = combo ? combo.value : el.dataset.anjTipe;
+        var slug = tipe && SLUG_LAPORAN[tipe];
         if (!slug || location.hash === '#' + slug) return;
         history.replaceState({ seksi: 'infosiswa' }, '', location.pathname + '#' + slug);
     }
@@ -673,8 +759,10 @@
 
         if (!combo) {
             /* Bukan laporan lagi: form login lama warisan (pertama kali dibuka) atau hasil
-               Keluar. Isi kartu dibersihkan lalu sesi ditanyakan ke titik masuk login. */
-            kosongkanRel();
+               Keluar. Isi kartu dibersihkan lalu sesi ditanyakan ke titik masuk login.
+               Rel hanya dibongkar bila sesi memang tidak aktif — selama sesi hidup sidebar
+               laporan tetap dipakai dari seksi mana pun. */
+            if (!sesiSiswaAktif) kosongkanRel();
             var sudahCoba = parseInt(el.dataset.anjPulih || '0', 10);
             if (sudahCoba < 2) {
                 pane.textContent = '';
@@ -684,25 +772,9 @@
         }
 
         if (!nav) {
-            nav = bangunSidebar(main);
-            nav.addEventListener('click', function (ev) {
-                var b = ev.target.closest ? ev.target.closest('.anj-sb-item') : null;
-                if (!b) return;
-                if (b.classList.contains('anj-sb-keluar')) {
-                    keluarSiswa();
-                    return;
-                }
-                if (b.tagName === 'A') ev.preventDefault();
-                /* Combo dibaca dari DOM saat itu juga: konten warisan menulis ulang isi
-                   #is_main (select-nya jadi elemen baru), jadi referensi dari saat sidebar
-                   dibangun tidak bisa dipakai untuk mengirim change. */
-                var el = kartu('infosiswa');
-                var hidup = el ? el.querySelector('#is_main') : null;
-                var combo = comboLaporan(hidup);
-                if (!combo) return;
-                var tipe = b.classList.contains('anj-sb-muat') ? combo.value : b.dataset.tipe;
-                pilihLaporan(hidup, tipe);
-            });
+            /* Sidebar biasanya sudah dibangun saat sesi diketahui aktif (rel ikut tampil di
+               seksi lain); dibangun di sini hanya bila belum ada. */
+            nav = bangunSidebar();
             if (r) r.appendChild(nav);
             baruDibangun = true;
         }
