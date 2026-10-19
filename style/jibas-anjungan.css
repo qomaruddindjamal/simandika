@@ -41,17 +41,11 @@
     transition: background-color .18s ease;
 }
 
+/* Baris menu tetap padat (100%) walau kepala tergulir (user 2026-10-19: "masih kelihatan,
+   buat 100% baris menunya") — di baris inilah isi halaman yang lewat di bawahnya terbaca
+   sebagai noda putih. Yang tembus pandang hanya baris identitas di atasnya. */
 .anj-topbar.anj-gulung .anj-row-nav {
-    background: color-mix(in srgb, var(--jb-surface-2) 30%, transparent);
-    border-top-color: transparent;
-}
-
-/* Kartu tab aktif/ suspens ikut tembus pandang saat kepala tergulir. Tanpa ini warnanya
-   yang padat (#e8f2fb di fase Terang) terbaca sebagai kotak putih melayang di atas bar
-   yang sengaja tembus pandang; penanda tab aktif tetap warna primer di teks + garis bawah. */
-.anj-topbar.anj-gulung .anj-nav-link:hover,
-.anj-topbar.anj-gulung .anj-nav-link.active {
-    background: color-mix(in srgb, var(--jb-primary) 18%, transparent);
+    background: var(--jb-surface-2);
 }
 
 .anj-shell {

@@ -472,14 +472,16 @@ yang sedang aktif (Terang/Senja/Fajar/Gelap ikut), bukan warna baru, sehingga te
 tidak terkirim (sama seperti `requestAnimationFrame`) — kelas diuji dengan mengirim `new Event('scroll')`, dan nilai
 alpha harus dibaca setelah `transition` dimatikan karena nilai terhitung saat transisi berjalan adalah nilai antara.
 
-Sambungan 2026-10-19 (permintaan user: "saat di scroll ada warna putih ... tolong perbaiki agar tidak tampil bg putih
-tersebut"): yang tersisa sebagai kotak putih adalah **kartu tab menu aktif/ suspens**, karena `.anj-nav-link.active`
-memakai `--jb-sidebar-active-bg` yang padat (`#e8f2fb` di fase Terang) sementara barisnya sendiri 70% tembus pandang.
-Aturan baru `.anj-topbar.anj-gulung .anj-nav-link:hover, ... .active` mengganti latarnya menjadi
-`color-mix(in srgb, var(--jb-primary) 18%, transparent)` — penanda tab aktif tetap warna primer pada teks dan garis
-bawah. Di luar keadaan tergulir tab aktif tidak berubah. Ukur di browser: tergulir fase Terang =
-`color(srgb .059 .435 .722 / .18)`, fase Gelap = `color(srgb .29 .659 .91 / .18)`; tanpa gulir tetap
-`rgb(232,242,251)`, dan `backdrop-filter: blur(14px) saturate(1.2)` masih terpasang di `#anjTopbar`.
+Sambungan 2026-10-19 (user: "saat di scroll ada warna putih … tolong perbaiki agar tidak tampil bg putih tersebut",
+lalu "masih kelihatan, buat 100% baris menunya"): yang terbaca sebagai noda putih saat tergulir adalah **baris menu**
+yang ikut tembus pandang 70% — isi halaman (kartu putih) yang lewat di bawahnya menembus ke sana. Percobaan pertama
+mengubah kartu tab aktif/ suspens menjadi `color-mix(… --jb-primary 18%, transparent)` ternyata belum cukup, jadi
+keputusannya dibalik: **`.anj-topbar.anj-gulung .anj-row-nav` kini memakai `var(--jb-surface-2)` penuh (100%)** dan
+aturan cucian tab tadi dihapus — tab aktif kembali seperti keadaan tanpa gulir (`--jb-sidebar-active-bg`). Yang tetap
+tembus pandang 70% hanya baris identitas di atasnya, dan `backdrop-filter: blur(14px) saturate(1.2)` tetap di `#anjTopbar`.
+Ukur di browser saat tergulir: baris menu `rgb(238,242,248)` (Terang) dan `rgb(30,39,50)` (Gelap) — keduanya alfa 1,
+`border-top` kembali `rgb(216,224,236)`, tab aktif `rgb(232,242,251)`; baris identitas `color(srgb 1 1 1 / 0.3)` dan
+di fase Gelap `color(srgb .039 .059 .082 / 0.3)`.
 
 Tombol **Masuk** di baris identitas ikut menyesuaikan, dan **dipindah ke paling kanan, sesudah dropdown tema**
 (permintaan user 2026-10-19: "taruh di belakang theme saja, taruh samping kanan"). Selama sesi siswa aktif ia menjadi
