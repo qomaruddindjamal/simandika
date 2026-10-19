@@ -202,6 +202,10 @@
         var h1 = document.getElementById('anjHeroTitle');
         if (h1) h1.textContent = judul(key);
         if (push) history.pushState({ seksi: key }, '', '/' + (key === 'beranda' ? '' : key + '/'));
+        /* Kembali ke seksi ini lewat tombol nama: pushState di atas membuang hash, jadi
+           alamatnya disamakan lagi. Hanya untuk navigasi menu — perpindahan hash antar
+           laporan juga memanggil penangan popstate, dan di sana hash justru tujuannya. */
+        if (push && key === 'infosiswa') samakanHash();
         muatSeksi(key);
     }
 
@@ -622,6 +626,19 @@
 
     window.addEventListener('hashchange', bukaLaporanDariHash);
 
+    /* Alamat selalu mengikuti laporan yang tampil, termasuk setelah muat ulang di URL
+       tanpa hash dan saat kembali ke seksi ini lewat tombol nama. replaceState dipakai
+       supaya sinkronisasi otomatis ini tidak menambah riwayat; URL ditulis absolut
+       karena <base href="/anjungan/"> menimpa resolusi URL relatif. */
+    function samakanHash() {
+        var el = kartu('infosiswa');
+        if (!el || el.classList.contains('d-none')) return;
+        var combo = comboLaporan(el.querySelector('#is_main'));
+        var slug = combo && SLUG_LAPORAN[combo.value];
+        if (!slug || location.hash === '#' + slug) return;
+        history.replaceState({ seksi: 'infosiswa' }, '', location.pathname + '#' + slug);
+    }
+
     function pasangDasborSiswa(el) {
         var pane = el.querySelector('.anj-pane');
         var main = el.querySelector('#is_main');
@@ -652,26 +669,45 @@
                     return;
                 }
                 if (b.tagName === 'A') ev.preventDefault();
-                var tipe = b.classList.contains('anj-sb-muat') ? comboLaporan(main).value : b.dataset.tipe;
-                pilihLaporan(main, tipe);
+                /* Combo dibaca dari DOM saat itu juga: konten warisan menulis ulang isi
+                   #is_main (select-nya jadi elemen baru), jadi referensi dari saat sidebar
+                   dibangun tidak bisa dipakai untuk mengirim change. */
+                var el = kartu('infosiswa');
+                var hidup = el ? el.querySelector('#is_main') : null;
+                var combo = comboLaporan(hidup);
+                if (!combo) return;
+                var tipe = b.classList.contains('anj-sb-muat') ? combo.value : b.dataset.tipe;
+                pilihLaporan(hidup, tipe);
             });
             if (r) r.appendChild(nav);
             baruDibangun = true;
         }
-        /* Laporan warisan menulis ulang isi #is_main tiap ganti jenis: pengamat ini
-           membuat sidebar tersinkron (item aktif + kontrol lama tersembunyi) lagi. */
-        if (main && !el.dataset.anjPengamat) {
-            el.dataset.anjPengamat = '1';
-            new MutationObserver(function () { pasangDasborSiswa(el); })
-                .observe(main, { childList: true, subtree: true });
+        /* Laporan warisan menulis ulang isi #is_main tiap ganti jenis: pengamat ini membuat
+           sidebar tersinkron (item aktif + kontrol lama tersembunyi) lagi. Pengamat ikut
+           dipindah bila warisan mengganti simpul #is_main, supaya tidak menempel pada
+           simpul yang sudah lepas dari DOM. */
+        if (main && el._anjMain !== main) {
+            el._anjMain = main;
+            if (!el._anjPengamat) {
+                el._anjPengamat = new MutationObserver(function () { pasangDasborSiswa(el); });
+            } else {
+                el._anjPengamat.disconnect();
+            }
+            el._anjPengamat.observe(main, { childList: true, subtree: true });
         }
         tampilRel(true);
 
         sembunyikanKontrolLama(main);
         tandaiAktif(nav, combo.value);
         ubahTombolMasuk(true);
-        /* Halaman dibuka langsung pada satu laporan: /infosiswa/#rapor. */
-        if (baruDibangun) bukaLaporanDariHash();
+        /* Halaman dibuka langsung pada satu laporan: /infosiswa/#rapor. Alamat hanya
+           disamakan saat sidebar baru dibangun — di tengah muat laporan warisan combo-nya
+           sempat berisi nilai awal lagi, jadi menulis hash di sana akan membatalkan
+           laporan yang baru saja dipilih. */
+        if (baruDibangun) {
+            bukaLaporanDariHash();
+            samakanHash();
+        }
     }
 
     function pulihkanSesiSiswa(el, percobaan) {

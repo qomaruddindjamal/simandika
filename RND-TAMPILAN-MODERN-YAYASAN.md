@@ -387,8 +387,23 @@ tombor mundur/ maju browser ikut berpindah laporan. `pilihLaporan()` menulis has
 `hashchange` menjalankan laporannya (satu jalur untuk klik, tautan, dan navigasi history); kalau hash sudah sama,
 laporan dijalankan langsung supaya **Muat ulang** tetap bekerja. Item aktif diberi `aria-current="page"`.
 Teruji di browser 2026-10-19: klik → `/infosiswa/#keuangan` + combo `KEUANGAN` + item aktif, `history.back()` →
-`#datasiswa` + combo `PROFIL`, muat ulang halaman pada `/infosiswa/#perpustakaan` → langsung Perpustakaan, dan pindah
+`#datasiswa` + combo `PROFIL`, tautan dingin `/infosiswa/#perpustakaan` → langsung Perpustakaan, dan pindah
 seksi menghapus hash kembali ke URL bersih (`/`, `/infosiswa/`) tanpa scroll melompat dan tanpa galat konsol.
+
+**Reload tidak boleh kembali ke `/infosiswa/` tanpa hash** (permintaan user 2026-10-19: "harus sesuai dengan
+menunya"). `samakanHash()` menulis alamat mengikuti laporan yang sedang tampil lewat `history.replaceState`
+(bukan `pushState`, supaya sinkronisasi otomatis tidak menambah riwayat) dan dipanggil hanya di dua tempat:
+saat sidebar pertama dibangun (`baruDibangun` di `pasangDasborSiswa`) dan saat seksi dibuka lewat menu/chip
+(`aktifkan(key, push)` dengan `push === true`). URL-nya ditulis absolut (`location.pathname + '#' + slug`)
+karena `<base href="/anjungan/">` menimpa resolusi URL relatif. Dua jebakan yang ditemukan saat menguji:
+(1) `samakanHash()` **tidak boleh** berjalan dari jalur `MutationObserver` — di tengah muat laporan warisan combo
+sempat berisi nilai awal (`PROFIL`) lagi, sehingga hash dibatalkan menjadi `#datasiswa`; karena itu pemanggilannya
+diikat ke `baruDibangun`. (2) `location.hash = slug` di Chrome juga menjalankan penangan **`popstate`** (secara
+sinkron, sebelum `hashchange`), jadi `samakanHash()` di `aktifkan()` harus dikunci pada `push === true` —
+tanpa kunci itu klik laporan mana pun langsung dikembalikan ke `#datasiswa` dan laporannya tidak pernah berganti.
+Teruji setelah perbaikan: cold `/infosiswa/` → `#datasiswa`; klik Keuangan → `#keuangan` + isinya; reload di
+`#keuangan` → tetap Keuangan; Beranda → `/` lalu kembali lewat chip → `#rapor` (laporan terakhir) ; Muat ulang
+mempertahankan hash; Keluar → `/` tanpa hash dan rel dikosongkan; login ulang → `#datasiswa`. Konsol bersih.
 Node sidebar dipertahankan di rel dan hanya kolomnya yang di-toggle: pindah ke seksi lain memanggil `tampilRel(false)`
 (rel `display:none`, kartu kembali selebar halaman) dan kembali lewat tombol nama memanggil `tampilRel(true)` tanpa
 membangun ulang; `keluarSiswa()` membersihkan rel lewat `kosongkanRel()` karena isi kartu bukan lagi tempat sidebar.
