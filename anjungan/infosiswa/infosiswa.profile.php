@@ -648,17 +648,14 @@ $departemen = $row2['departemen'];
     ?>
     <input type="hidden" id="is_idtambahan" name="is_idtambahan" value="<?=$idtambahan?>">
 
-<div class="row g-2 g-md-3 align-items-center mb-2">
-    <div class="col-12 col-md-3"></div>
-    <div class="col-12 col-md-9">
+<div class="anj-form-aksi">
 <?		if ($IsAllowStudentEdit) { ?>		
-        <input type="button" value="Simpan" class="but" onclick="is_Simpan()">
+    <input type="button" value="Simpan" class="but" onclick="is_Simpan()">
 <?		} else { ?>
 		<span class="anj-tidak-boleh-ubah">
 			Tidak dapat mengubah data pribadi siswa. Silahkan hubungi Administrator JIBAS untuk mengatur perubahan data pribadi siswa.
 		</span>
 <?		} ?>
-    </div>
 </div>
 </div>
 </div>

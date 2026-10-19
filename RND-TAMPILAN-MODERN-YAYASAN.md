@@ -746,6 +746,25 @@ termasuk "September" pada 115 px. Tinggi baris Tanggal Lahir `52 px` = sama deng
 Lahir/Pendidikan/Pekerjaan/Penghasilan/Email (sebelumnya duakali), kontrol tetap `36 px`, `scrollWidth (816) ≤
 innerWidth (831)`, konsol bersih. `CACHE_ASET` → `jibas-aset-v54`.
 
+**Tombol Simpan dipindah rata kanan** (permintaan user 2026-10-19: "tombol simpan taruh sebelah kanan rapikan",
+gambarnya tombol pil `Simpan` menggantung di kiri). Barisnya dulu masih grid Bootstrap (`col-md-3` kosong +
+`col-md-9`) sehingga tombol duduk di tepi kiri lajur isian; grid itu dilepas dan diganti satu wadah
+`<div class="anj-form-aksi">` — flex `justify-content: flex-end` + `border-top` pemisah, jadi tombol menutup
+paruhnya di tepi kanan. Tampilannya tidak lagi memakai pil warisan (`.anj-pane input[type=button]`,
+`border-radius: 999px`) karena aturan baru `#is_profile .anj-form-aksi .but` menang spesifikitas (id + dua kelas
+melawan kelas + atribut + elemen): radius `.55 rem`, padding `.5rem 1.6rem`, `font-size: .9rem`,
+`background: var(--jb-primary)`, `color: var(--jb-primary-ink)`, `:hover { filter: brightness(.93) }`, dan
+`:focus-visible { box-shadow: 0 0 0 3px var(--jb-ring) }`. Cabang `!$IsAllowStudentEdit` tetap aman —
+`.anj-form-aksi .anj-tidak-boleh-ubah { flex: 1 1 auto }` membuat pesannya mengisi baris dan tetap rata kiri.
+Naskah PHP hanya berubah pada pembungkus tombol: `name="is_` tetap **63 = 63**, `php -l` bersih.
+
+Terukur 2026-10-19 di `?cb=v55a#datasiswa`: tepi kanan tombol **`769`** = tepi kanan form **`769`** pada viewport
+asli 831 px (sebelumnya tombol mulai `x=232`, sejajar kolom isian), dan **`1953`** = `1953` pada emulasi dua paruh
+(`col-lg-6` disuntik + `body.style.width=2000px`) — tombol duduk di ujung kanan paruh kanan, bukan di tengah.
+Komputasi gaya: `backgroundColor rgb(15, 111, 184)`, `color rgb(255,255,255)`, `borderRadius 8.8 px`,
+`padding 8px 25.6px`, `justifyContent flex-end`, garis pemisah `1px rgb(216, 224, 236)` di atas baris; ukuran tombol
+`103 × 40 px`, `scrollWidth (816) ≤ innerWidth (831)`, konsol bersih. `CACHE_ASET` → `jibas-aset-v55`.
+
 **Baris identitas "NIS - Nama" di dalam kartu laporan dihapus** (permintaan user 2026-10-19: "tidak usah ada
 hilangkan saja", gambarnya menunjukkan `900001 - Siswa Uji Coba`). Teks itu berasal dari `ShowReportHeader()` di
 `anjungan/infosiswa/infosiswa.class.php` (`<font style='font-size:17px; font-weight:bold; color:#666;'>`), dan

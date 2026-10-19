@@ -1218,6 +1218,45 @@ body.anj-iframe {
     color: var(--jb-danger);
 }
 
+/* Baris aksi form: tombol Simpan rata kanan di bawah garis pemisah, bukan menggantung
+   di kolom isian seperti tombol warisan. */
+#is_profile .anj-form-aksi {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: .6rem;
+    margin-top: 1.1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--jb-border);
+}
+
+#is_profile .anj-form-aksi .anj-tidak-boleh-ubah {
+    flex: 1 1 auto;
+    margin-top: 0;
+}
+
+#is_profile .anj-form-aksi .but {
+    font: inherit;
+    font-size: .9rem;
+    font-weight: 600;
+    letter-spacing: .01rem;
+    color: var(--jb-primary-ink);
+    background: var(--jb-primary);
+    border: 1px solid var(--jb-primary);
+    border-radius: .55rem;
+    padding: .5rem 1.6rem;
+    cursor: pointer;
+}
+
+#is_profile .anj-form-aksi .but:hover {
+    filter: brightness(.93);
+}
+
+#is_profile .anj-form-aksi .but:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--jb-ring);
+}
+
 /* ---------- 5. Menu warisan bergambar (pilihan departemen mading / info sekolah) ---------- */
 
 #mad_menu,
