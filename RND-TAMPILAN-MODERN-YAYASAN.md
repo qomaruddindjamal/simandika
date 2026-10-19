@@ -608,6 +608,9 @@ Masuk tidak terpengaruh — satu-satunya tersisa di kepala (`.anj-masuk`), dan `
 tidak berubah. Bukti browser 2026-10-19: `innerText` kaki = "JIBAS 33.0 · 05 Januari 2026", `querySelectorAll('a,button')`
 di dalam `.anj-foot` kosong, `document.querySelector('.anj-foot-links') === null`, tombol kepala masih ada
 (`.anj-masuk` berlabel "SU Siswa Uji Coba" karena sesi aktif), konsol bersih. `CACHE_ASET` → `jibas-aset-v44`.
+Lanjutan 2026-10-19 ("taruh samping kanan pada footer"): `.anj-foot-inner` yang tinggal satu anak dipindah dari
+`justify-content: space-between` ke `flex-end`, jadi baris versi rata kanan — terukur `jarak-kanan 16 px`
+(= padding `.anj-foot-inner`) dan `jarak-kiri 628 px` pada lebar kaki 816 px. `CACHE_ASET` → `jibas-aset-v46`.
 
 **Anjungan & form Info Siswa kini lebar penuh 100%** (permintaan user 2026-10-19: "belum bisa lebar 12 di anjungan
 dan infosiswa", lalu "sidebarnya digeser ke kiri juga buat tampilan lebar 100%"). Batas `max-width: 1240px`
