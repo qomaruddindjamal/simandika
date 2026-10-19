@@ -632,6 +632,20 @@ langsung dihapus setelah pengukuran. Distribusi `name` per paruh 37 (kiri) + 40 
 `font` tetap `display:none`, tombol **Simpan** `inline-block` (LOGOUT/REFRESH tetap `none`). `CACHE_ASET` →
 `jibas-aset-v48`.
 
+**Lebar 680 px pada tabel konten warisan dilepas** (permintaan user 2026-10-19: gambarnya memperlihatkan dua paruh
+sangat sempit di layar lebar dengan separuh kanan kosong — "kenapa begini kurang rapi harus dibagi 2"). Penyebabnya
+bukan grid Bootstrap, melainkan pembungkus lamanya: `anjungan/infosiswa/infosiswa.content.php` baris 40 masih
+`<table border="0" cellpadding="2" width="680">`, jadi seluruh form — termasuk `.anj-kol-form-blok` — dikurung sel
+selebar 680 px berapa pun lebar kartu, dan tiap paruh `col-lg-6` hanya kebagian ±340 px (isian penyok, combo
+tanggal terpotong `202`/`Ort`). Atributnya diubah menjadi `width="100%`; tidak ada aturan CSS baru.
+Terukur 2026-10-19: pada viewport 831 px tabel pembungkus `750 → 736 px` (sebelumnya mentok `680`) dan
+`.anj-kol-form-blok` `745 px`; pada eksperimen `body.style.width=2000px` pane `1934 px`, kedua tabel `1934/1920 px`,
+baris pembungkus `1929 px`, dan dengan aturan setara `col-lg-6` yang disuntik sementara kedua paruh menjadi
+`x=35` dan `x=1000` sama-sama **965 px** (isian `is_nama` 462 px, `is_namaayah` 223 px pada baris Ayah/Ibu 6-3-3),
+tinggi paruh seimbang `1443/1443 px`, `scrollWidth ≤ innerWidth`. Seksi lain yang memakai pembungkus yang sama
+(Keuangan, Presensi Harian, Rapor, Nilai) dimuat ulang tanpa overflow horizontal (`scrollWidth` tetap `816 px`,
+sama dengan lebar dokumen) dan tanpa pesan konsol.
+
 **Baris identitas "NIS - Nama" di dalam kartu laporan dihapus** (permintaan user 2026-10-19: "tidak usah ada
 hilangkan saja", gambarnya menunjukkan `900001 - Siswa Uji Coba`). Teks itu berasal dari `ShowReportHeader()` di
 `anjungan/infosiswa/infosiswa.class.php` (`<font style='font-size:17px; font-weight:bold; color:#666;'>`), dan

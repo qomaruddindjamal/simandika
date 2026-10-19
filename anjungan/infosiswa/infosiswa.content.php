@@ -37,7 +37,7 @@ $S = new CInfoSiswa();
 <?      $S->ShowIdentity(); ?>            
 <?      $S->ShowReportComboBox(); ?>
         <br><br>
-        <table border="0" cellpadding="2" width="680"><tr><td align="left" valign="top">
+        <table border="0" cellpadding="2" width="100%"><tr><td align="left" valign="top">
         <div id="infosiswa.content">
 <?      $S->ShowReportContent(); ?>
         </div>
