@@ -374,6 +374,21 @@ Dropdown "Laporan :", teks labelnya, dan tombol LOGOUT/REFRESH warisan hanya **d
 `dispatchEvent('change')` sehingga `GetReportContent()` warisan yang bekerja; sebuah `MutationObserver` pada `#is_main`
 (dipasang sekali per kartu lewat `data-anj-pengamat`) menyembunyikan ulang kontrol lama dan menyelaraskan item aktif
 setiap kali konten berganti. Item khusus: **Muat ulang** (mengulang laporan aktif) dan **Keluar**.
+
+**Tiap laporan punya alamat sendiri** (permintaan user 2026-10-19: "tambahkan contoh
+`https://data.yaishk.sch.id/infosiswa/#datasiswa` dan seterusnya"). Kesembilan item sidebar dibangun sebagai `<a>`
+(untuk **Muat ulang** dan **Keluar** tetap `<button>` karena bukan laporan) dengan `href="#<slug>"` dari tabel
+`SLUG_LAPORAN`: `PROFIL→datasiswa`, `KEUANGAN→keuangan`, `PRESENSIHARIAN→presensiharian`,
+`PRESENSIPELAJARAN→presensipelajaran`, `PRESENSIKEGIATAN→presensikegiatan`, `NILAI→nilai`, `RAPOR→rapor`,
+`PERPUSTAKAAN→perpustakaan`, `CBE→cbe`. Nilai combo warisan tetap satu-satunya sumber kebenaran isi laporan — hash
+hanya penanda, dan `bukaLaporanDariHash()` (listener `hashchange`) yang menerjemahkannya menjadi `combo.value` +
+`change`, sehingga tautan dingin `/infosiswa/#perpustakaan` membuka laporan itu langsung setelah sesi dipulihkan, dan
+tombor mundur/ maju browser ikut berpindah laporan. `pilihLaporan()` menulis hash lebih dulu dan membiarkan
+`hashchange` menjalankan laporannya (satu jalur untuk klik, tautan, dan navigasi history); kalau hash sudah sama,
+laporan dijalankan langsung supaya **Muat ulang** tetap bekerja. Item aktif diberi `aria-current="page"`.
+Teruji di browser 2026-10-19: klik → `/infosiswa/#keuangan` + combo `KEUANGAN` + item aktif, `history.back()` →
+`#datasiswa` + combo `PROFIL`, muat ulang halaman pada `/infosiswa/#perpustakaan` → langsung Perpustakaan, dan pindah
+seksi menghapus hash kembali ke URL bersih (`/`, `/infosiswa/`) tanpa scroll melompat dan tanpa galat konsol.
 Node sidebar dipertahankan di rel dan hanya kolomnya yang di-toggle: pindah ke seksi lain memanggil `tampilRel(false)`
 (rel `display:none`, kartu kembali selebar halaman) dan kembali lewat tombol nama memanggil `tampilRel(true)` tanpa
 membangun ulang; `keluarSiswa()` membersihkan rel lewat `kosongkanRel()` karena isi kartu bukan lagi tempat sidebar.

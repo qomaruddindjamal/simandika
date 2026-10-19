@@ -790,6 +790,7 @@
     padding: .5rem .6rem;
     font-size: .86rem;
     text-align: left;
+    text-decoration: none;
     cursor: pointer;
 }
 

@@ -494,6 +494,29 @@
         CBE: 'bi-display'
     };
 
+    /* Alamat laporan: /infosiswa/#datasiswa, #keuangan, dst. Nilai combo warisan tetap
+       sumber kebenaran isi laporan; hash hanya membuat tiap laporan bisa ditauti. */
+    var SLUG_LAPORAN = {
+        PROFIL: 'datasiswa',
+        KEUANGAN: 'keuangan',
+        PRESENSIHARIAN: 'presensiharian',
+        PRESENSIPELAJARAN: 'presensipelajaran',
+        PRESENSIKEGIATAN: 'presensikegiatan',
+        NILAI: 'nilai',
+        RAPOR: 'rapor',
+        PERPUSTAKAAN: 'perpustakaan',
+        CBE: 'cbe'
+    };
+
+    var TIPE_DARI_SLUG = {};
+    Object.keys(SLUG_LAPORAN).forEach(function (tipe) {
+        TIPE_DARI_SLUG[SLUG_LAPORAN[tipe]] = tipe;
+    });
+
+    function tipeDariHash() {
+        return TIPE_DARI_SLUG[location.hash.replace(/^#/, '')] || null;
+    }
+
     function comboLaporan(main) {
         return main ? main.querySelector('#reporttype') : null;
     }
@@ -513,15 +536,24 @@
 
     function tandaiAktif(nav, tipe) {
         [].slice.call(nav.querySelectorAll('.anj-sb-item[data-tipe]')).forEach(function (b) {
-            b.classList.toggle('active', b.dataset.tipe === tipe);
+            var aktif = b.dataset.tipe === tipe;
+            b.classList.toggle('active', aktif);
+            if (aktif) {
+                b.setAttribute('aria-current', 'page');
+            } else {
+                b.removeAttribute('aria-current');
+            }
         });
     }
 
     function item(nav, kelas, tip, ikon, label) {
-        var b = document.createElement('button');
-        b.type = 'button';
+        var b = document.createElement(tip ? 'a' : 'button');
+        if (!tip) b.type = 'button';
         b.className = 'anj-sb-item ' + kelas;
-        if (tip) b.dataset.tipe = tip;
+        if (tip) {
+            b.dataset.tipe = tip;
+            b.href = '#' + (SLUG_LAPORAN[tip] || tip.toLowerCase());
+        }
         var i = document.createElement('i');
         i.className = 'bi ' + ikon;
         i.setAttribute('aria-hidden', 'true');
@@ -552,18 +584,50 @@
         return nav;
     }
 
-    function pilihLaporan(main, tipe) {
+    function jalankanLaporan(main, tipe) {
         var combo = comboLaporan(main);
         if (!combo || !tipe) return;
+        var nav = rel() ? rel().querySelector('.anj-sb') : null;
+        if (nav) tandaiAktif(nav, tipe);
         combo.value = tipe;
         combo.dispatchEvent(new Event('change'));
     }
+
+    function pilihLaporan(main, tipe) {
+        var combo = comboLaporan(main);
+        if (!combo || !tipe) return;
+        var slug = SLUG_LAPORAN[tipe];
+        if (slug && location.hash !== '#' + slug) {
+            /* Ganti alamat dulu; hashchange yang memanggil laporan yang diminta. */
+            location.hash = slug;
+            return;
+        }
+        jalankanLaporan(main, tipe);
+    }
+
+    /* Tautan /infosiswa/#keuangan dan tombol mundur/ maju browser. */
+    function bukaLaporanDariHash() {
+        var tipe = tipeDariHash();
+        var el = tipe ? kartu('infosiswa') : null;
+        var main = el ? el.querySelector('#is_main') : null;
+        var combo = comboLaporan(main);
+        if (!combo) return;
+        if (combo.value === tipe) {
+            var nav = rel() ? rel().querySelector('.anj-sb') : null;
+            if (nav) tandaiAktif(nav, tipe);
+            return;
+        }
+        jalankanLaporan(main, tipe);
+    }
+
+    window.addEventListener('hashchange', bukaLaporanDariHash);
 
     function pasangDasborSiswa(el) {
         var pane = el.querySelector('.anj-pane');
         var main = el.querySelector('#is_main');
         var r = rel();
         var nav = r ? r.querySelector('.anj-sb') : null;
+        var baruDibangun = false;
         var combo = main ? comboLaporan(main) : null;
 
         if (!combo) {
@@ -587,11 +651,12 @@
                     keluarSiswa();
                     return;
                 }
+                if (b.tagName === 'A') ev.preventDefault();
                 var tipe = b.classList.contains('anj-sb-muat') ? comboLaporan(main).value : b.dataset.tipe;
-                tandaiAktif(nav, tipe);
                 pilihLaporan(main, tipe);
             });
             if (r) r.appendChild(nav);
+            baruDibangun = true;
         }
         /* Laporan warisan menulis ulang isi #is_main tiap ganti jenis: pengamat ini
            membuat sidebar tersinkron (item aktif + kontrol lama tersembunyi) lagi. */
@@ -605,6 +670,8 @@
         sembunyikanKontrolLama(main);
         tandaiAktif(nav, combo.value);
         ubahTombolMasuk(true);
+        /* Halaman dibuka langsung pada satu laporan: /infosiswa/#rapor. */
+        if (baruDibangun) bukaLaporanDariHash();
     }
 
     function pulihkanSesiSiswa(el, percobaan) {
