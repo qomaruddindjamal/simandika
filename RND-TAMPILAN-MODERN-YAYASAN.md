@@ -777,6 +777,28 @@ pemisah tetap **70 px** dan garis → tombol tetap **17 px** (tidak ada pergeser
 terkomputasi `-14.4 px`, `scrollWidth (816) ≤ innerWidth (831)`, konsol bersih. `CACHE_ASET` →
 `jibas-aset-v56`.
 
+**Tombol LOGOUT warisan di kepala kartu dihidupkan lagi, tapi lewat SweetAlert bertema** (permintaan user
+2026-10-19: "button keluar jadi tidak bisa muncul sweetalart"; dari tiga kandidat yang ditawarkan yang dipilih
+"LOGOUT lama di dalam kartu"). Tombol itu sebelumnya ikut disembunyikan `sembunyikanKontrolLama()` bersama
+REFRESH, dan kalaupun tampil alurnya tetap `is_Logout()` di `anjungan/infosiswa/infosiswa.js:18` yang memakai
+`confirm()` bawaan browser. **File warisan tidak disentuh**: penyaring tombol kini mengenali LOGOUT dari atribut
+`onclick` (`/is_Logout/`), melepas `style='color:red'` bawaannya, memberi kelas `anj-kontrol-logout`, lalu
+menimpa `tombol.onclick = function () { keluarSiswa(); }` — penugasan properti mengalahkan handler hasil
+kompilasi atribut, jadi urutan pemuatan `infosiswa.js` (yang mendefinisikan `is_Logout` setelah `anjungan.js`)
+tidak berpengaruh; atribut `onclick` dibiarkan apa adanya untuk permukaan `/anjungan/` lama. REFRESH tetap
+tersembunyi karena sidebar sudah punya "Muat ulang". CSS baru: `.anj-pane .anj-kontrol-logout { display:block;
+width:fit-content; margin:0 0 .55rem auto }` — rata kanan memakai `margin-left:auto`, bukan `float`, karena
+tabel konten di bawahnya membentuk BFC dan akan menyempit kalau ada float di kirinya.
+
+Terukur 2026-10-19 di `?cb=v57a#datasiswa`: LOGOUT kembali tampil `84 × 32 px` dengan tepi kanan `776` pada sel
+kepala yang bertepi kanan `783` (rata kanan, bukan di kiri seperti aslinya), `color` terkomputasi `rgb(255,255,255)`
+di atas `rgb(15,111,184)` (merah inline warisan dilepas), `display:block`; diklik → `.swal2-popup` muncul
+berjudul **"Keluar dari Informasi Siswa?"** dengan tombol `Batal` / `Ya, keluar`, sementara `window.confirm`
+yang dipasangi penghitung terpanggil **0** kali dan `window.alert` **0** kali — tidak ada dialog bawaan browser.
+Hal yang sama diuji ulang di seksi **Keuangan** (pengikatan terjadi pada setiap memuat seksi): tombol tetap
+`692 → 776`, SweetAlert muncul, `confirm` natif **0**. REFRESH tetap `display:none`, `Simpan` di `#is_profile`
+tidak terpengaruh (`103 × 40 px`, radius `8.8 px`), konsol bersih. `CACHE_ASET` → `jibas-aset-v57`.
+
 **Baris identitas "NIS - Nama" di dalam kartu laporan dihapus** (permintaan user 2026-10-19: "tidak usah ada
 hilangkan saja", gambarnya menunjukkan `900001 - Siswa Uji Coba`). Teks itu berasal dari `ShowReportHeader()` di
 `anjungan/infosiswa/infosiswa.class.php` (`<font style='font-size:17px; font-weight:bold; color:#666;'>`), dan

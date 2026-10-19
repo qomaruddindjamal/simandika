@@ -1008,6 +1008,16 @@ body.anj-iframe {
     filter: brightness(1.06);
 }
 
+/* Tombol Keluar warisan yang dipertahankan di kepala kartu (lihat anjungan.js:
+   sembunyikanKontrolLama). Dibuat blok + margin-left auto supaya rata kanan tanpa
+   float — float akan menyempitkan tabel konten di bawahnya karena tabel membentuk BFC. */
+.anj-pane .anj-kontrol-logout {
+    display: block;
+    width: -webkit-fit-content;
+    width: fit-content;
+    margin: 0 0 .55rem auto;
+}
+
 .anj-pane table[border] td,
 .anj-pane table[border] th,
 .anj-iframe table[border] td,

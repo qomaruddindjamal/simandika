@@ -604,6 +604,16 @@
         combo.style.display = 'none';
         [].slice.call(main.querySelectorAll('input.but')).forEach(function (tombol) {
             if (tombol.closest('#is_profile')) return;
+            if (/is_Logout/.test(tombol.getAttribute('onclick') || '')) {
+                /* Keluar tetap tampil, tapi alurnya dialihkan: is_Logout() warisan memakai
+                   confirm() bawaan browser, sedangkan halaman ini sudah punya konfirmasi
+                   bertema. Handler properti menimpa atribut onclick tanpa menyentuh file
+                   warisan, dan urutan pemuatan skrip tidak lagi berpengaruh. */
+                tombol.removeAttribute('style');
+                tombol.classList.add('anj-kontrol-logout');
+                tombol.onclick = function () { keluarSiswa(); };
+                return;
+            }
             tombol.style.display = 'none';
         });
         /* Baris kepala (identitas + combo + tombol) sudah rata hilang, jadi <br> penata
