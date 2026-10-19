@@ -765,6 +765,18 @@ Komputasi gaya: `backgroundColor rgb(15, 111, 184)`, `color rgb(255,255,255)`, `
 `padding 8px 25.6px`, `justifyContent flex-end`, garis pemisah `1px rgb(216, 224, 236)` di atas baris; ukuran tombol
 `103 × 40 px`, `scrollWidth (816) ≤ innerWidth (831)`, konsol bersih. `CACHE_ASET` → `jibas-aset-v55`.
 
+**Baris Simpan diturunkan sedikit** (permintaan user 2026-10-19: "kebawah sedikit"; dari tiga opsi yang ditawarkan
+yang dipilih "turun sedikit saja" — ruang di bawah tombol dikecilkan, bukan barisnya dipindah). Tombol memang
+sudah menjadi elemen terakhir form, jadi satu-satunya cara menurunkannya secara visual adalah memangkas ruang
+kosong di bawahnya: `#is_profile .anj-form-aksi { margin-bottom: -.9rem }`. Jarak di atas tombol sengaja tidak
+diubah supaya garis pemisah tidak menempel field terakhir.
+
+Terukur 2026-10-19 di `?cb=v56a#datasiswa`: tepi bawah tombol tetap `3310`, tetapi tepi bawah kartu naik dari
+`3336` → `3322`, sehingga ruang kosong di bawah tombol menyusut **26 px → 12 px**; jarak field terakhir → garis
+pemisah tetap **70 px** dan garis → tombol tetap **17 px** (tidak ada pergeseran ke atas), `marginBottom`
+terkomputasi `-14.4 px`, `scrollWidth (816) ≤ innerWidth (831)`, konsol bersih. `CACHE_ASET` →
+`jibas-aset-v56`.
+
 **Baris identitas "NIS - Nama" di dalam kartu laporan dihapus** (permintaan user 2026-10-19: "tidak usah ada
 hilangkan saja", gambarnya menunjukkan `900001 - Siswa Uji Coba`). Teks itu berasal dari `ShowReportHeader()` di
 `anjungan/infosiswa/infosiswa.class.php` (`<font style='font-size:17px; font-weight:bold; color:#666;'>`), dan

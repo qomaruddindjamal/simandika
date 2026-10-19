@@ -1226,6 +1226,7 @@ body.anj-iframe {
     align-items: center;
     gap: .6rem;
     margin-top: 1.1rem;
+    margin-bottom: -.9rem;
     padding-top: 1rem;
     border-top: 1px solid var(--jb-border);
 }
