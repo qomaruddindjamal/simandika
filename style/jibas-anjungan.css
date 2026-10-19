@@ -1150,10 +1150,12 @@ body.anj-iframe {
     color: var(--jb-text-muted);
 }
 
-/* combo Tanggal Lahir: Tahun / Bulan / Tanggal rata tinggi, boleh melingkar */
+/* combo Tanggal Lahir: Tahun / Bulan / Tanggal SELALU satu baris — di dalam lajur Ayah/Ibu (±273 px)
+   basis 6.5 rem membuat "Tanggal" melingkar ke baris kedua, jadi tahun & tanggal sebesar isinya dan
+   bulan yang menyerap sisa ruang (butuh paling lebar: "September"). */
 #is_profile .anj-kombo-tanggal {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: .4rem;
 }
 
@@ -1162,10 +1164,15 @@ body.anj-iframe {
 }
 
 #is_profile .anj-kombo-tanggal select.inputbox {
-    flex: 1 1 6.5rem;
+    flex: 0 1 auto;
     min-width: 0;
     max-width: 9rem;
     width: auto;
+}
+
+#is_profile .anj-kombo-tanggal > select:nth-of-type(2) {
+    flex: 1 1 auto;
+    min-width: 7rem;
 }
 
 /* Asal Sekolah: jenjang di atas, daftar sekolah di bawahnya */

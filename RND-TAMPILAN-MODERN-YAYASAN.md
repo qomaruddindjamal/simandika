@@ -724,6 +724,28 @@ isian mulai **`x=232`** (sebelumnya 293 → bergeser 61 px ke kiri); `#is_nisn`,
 `scrollWidth ≤ innerWidth`, AJAX tanggal hidup (Februari → 28 opsi, tinggi 36 px), konsol bersih.
 `CACHE_ASET` → `jibas-aset-v53`.
 
+**Kombo Tanggal Lahir blok Orangtua dipaksa satu baris** (permintaan user 2026-10-19: "yang ini masih butuh
+dirapikan", gambarnya baris Tanggal Lahir pada lajur Ayah dan Ibu). Penyebabnya murni CSS: `.anj-kombo-tanggal`
+masih `flex-wrap: wrap` dengan basis `flex: 1 1 6.5rem`, sedangkan lajur Ayah/Ibu hasil pembagian 3 : 9 hanya
+selebar **273 px** — tiga combo + dua gap menuntut ±325 px sehingga "Tanggal" melingkar ke baris kedua dan tinggi
+baris menjadi duakali baris lain. Aturan diubah menjadi `flex-wrap: nowrap` dengan **Tahun dan Tanggal sebesar
+isinya** (`flex: 0 1 auto`, `min-width: 0`, batas atas `9 rem` tetap) dan **Bulan menyerap sisa ruang**
+(`> select:nth-of-type(2) { flex: 1 1 auto; min-width: 7 rem }`) — versi pertama yang dibagi rata tiga-tiganya
+(`flex: 1 1 0`) memang satu baris, tetapi terukur memotong opsi "September" saat combo menyusut ke 81 px, jadi
+ruang diberikan ke kolom yang paling lebar isinya. `> span { display: contents }` dipertahankan agar
+`#is_divTglLahirAyah/Ibu` hasil AJAX tidak menjadi pembungkus yang memutus flex. Naskah PHP tidak berubah —
+`name="is_` tetap **63 = 63**.
+
+Terukur 2026-10-19 di `?cb=20261019w54#datasiswa` dengan CSS disegarkan `fetch(..., {cache:'reload'})`: ketiga
+`.anj-kombo-tanggal` (siswa, Ayah, Ibu) tampil pada **1 baris** (himpunan `getBoundingClientRect().top` berukuran 1)
+dengan lebar `72 / 144 / 57 px` untuk siswa dan `72 / 115 / 57 px` untuk Ayah serta Ibu pada viewport asli 831 px
+(lajur Ayah `273`, Ibu `280`, kombo `257` — muat tanpa limpas); emulasi layar lebar (aturan `col-lg-6` disuntik
+sementara + `body.style.width=2000px`, lajur Ayah `355` / Ibu `362`) tetap `72 / 144 / 57 px` dan `overflow: false`.
+Setiap combo diputar melalui **seluruh** opsinya (`selectedIndex` 0..n) dan **0** kali `scrollWidth > clientWidth`,
+termasuk "September" pada 115 px. Tinggi baris Tanggal Lahir `52 px` = sama dengan baris Status/Tempat
+Lahir/Pendidikan/Pekerjaan/Penghasilan/Email (sebelumnya duakali), kontrol tetap `36 px`, `scrollWidth (816) ≤
+innerWidth (831)`, konsol bersih. `CACHE_ASET` → `jibas-aset-v54`.
+
 **Baris identitas "NIS - Nama" di dalam kartu laporan dihapus** (permintaan user 2026-10-19: "tidak usah ada
 hilangkan saja", gambarnya menunjukkan `900001 - Siswa Uji Coba`). Teks itu berasal dari `ShowReportHeader()` di
 `anjungan/infosiswa/infosiswa.class.php` (`<font style='font-size:17px; font-weight:bold; color:#666;'>`), dan
