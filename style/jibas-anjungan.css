@@ -840,6 +840,60 @@
     }
 }
 
+/* ---------- 3d. Dialog konfirmasi SweetAlert2 (Keluar) ---------- */
+
+/* Pustaka aslinya style/sweetalert2.min.css dipakai apa adanya; warnanya ditimpa lewat
+   variabel bawaannya supaya popup ikut empat fase tema tanpa memilih mode terang/gelap
+   pustaka. Peninggi spesifisitas: pustaka menulis selector di dalam div:where(...) yang
+   bernilai 0, jadi cukup kelas biasa di sini. */
+.swal2-container {
+    --swal2-background: var(--jb-surface);
+    --swal2-color: var(--jb-text);
+    --swal2-border: 1px solid var(--jb-border);
+    --swal2-border-radius: .9rem;
+    --swal2-backdrop: color-mix(in srgb, #05070a 45%, transparent);
+    --swal2-confirm-button-background-color: var(--jb-danger);
+    --swal2-confirm-button-color: #ffffff;
+    --swal2-confirm-button-border-radius: .6rem;
+    --swal2-cancel-button-background-color: var(--jb-surface-2);
+    --swal2-cancel-button-color: var(--jb-text);
+    --swal2-cancel-button-border-radius: .6rem;
+    --swal2-close-button-color: var(--jb-text-muted);
+    --swal2-icon-animations: none;
+}
+
+.swal2-container .swal2-popup {
+    box-shadow: var(--jb-shadow);
+    font-size: .95rem;
+}
+
+.swal2-container .swal2-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.swal2-container .swal2-html-container {
+    color: var(--jb-text-muted);
+}
+
+.swal2-container .swal2-styled {
+    padding: .55rem 1.15rem;
+    font-weight: 600;
+    transition: filter .15s ease, background-color .15s ease;
+}
+
+.swal2-container .swal2-cancel {
+    border: 1px solid var(--jb-border);
+}
+
+.swal2-container .swal2-confirm:hover {
+    filter: brightness(.94);
+}
+
+.swal2-container .swal2-cancel:hover {
+    background-color: color-mix(in srgb, var(--jb-surface-2) 75%, var(--jb-border)) !important;
+}
+
 /* ---------- 4. Isi warisan: tabel, teks, form ---------- */
 
 /* Skema lama memakai <font color="..."> dan bgcolor untuk halaman terang;

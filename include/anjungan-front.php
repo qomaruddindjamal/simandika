@@ -104,14 +104,16 @@ if (!function_exists('jb_anj_sections')) {
             'infosekolah' => array('infosekolah/infosekolah.js'),
             'mading' => array('mading/mading.js'),
             'infosiswa' => array('infosiswa/infosiswa.js', 'infosiswa/infosiswa.cbe.js',
-                'script/SpryAssets/SpryTabbedPanels.js'),
+                'script/SpryAssets/SpryTabbedPanels.js', '/script/sweetalert2.min.js'),
             'jadkal' => array('jadkal/jadkal.js'),
             'pegawai' => array('pegawai/struktur.js'),
             'psb' => array('psb/psb.js'),
         );
-        /* Laporan Nilai & Rapor warisan merangkai tab dengan Spry: CSS-nya ikut dimuat per seksi. */
+        /* Laporan Nilai & Rapor warisan merangkai tab dengan Spry: CSS-nya ikut dimuat per seksi.
+           Path ber-titik-slash di depan absolut terhadap akar — <base href="/anjungan/"> akan
+           menyeret path relatif ke folder anjungan. */
         $styles = array(
-            'infosiswa' => array('script/SpryAssets/SpryTabbedPanels.css'),
+            'infosiswa' => array('script/SpryAssets/SpryTabbedPanels.css', '/style/sweetalert2.min.css'),
         );
         foreach ($libs as $key => $urls) {
             $sections[$key]['lib'] = $urls;

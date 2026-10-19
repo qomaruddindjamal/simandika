@@ -416,6 +416,29 @@ Node sidebar dipertahankan di rel dan hanya kolomnya yang di-toggle: pindah ke s
 (rel `display:none`, kartu kembali selebar halaman) dan kembali lewat tombol nama memanggil `tampilRel(true)` tanpa
 membangun ulang; `keluarSiswa()` membersihkan rel lewat `kosongkanRel()` karena isi kartu bukan lagi tempat sidebar.
 
+**Konfirmasi Keluar memakai dialog SweetAlert2, bukan `window.confirm` browser** (permintaan user 2026-10-19:
+"buat modal sweetalert saja biar bagus" — dialog bawaan tampil sebagai milik browser dan tidak ikut tema halaman).
+Pustakanya dijual lokal, bukan dari CDN: `script/sweetalert2.min.js` 48 KB + `style/sweetalert2.min.css` 30 KB
+(v11.22.0, MIT), ditaruh di `script/` dan `style/` tanpa folder baru, dan dimuat **hanya bersama seksi Info Siswa**
+lewat `$libs`/`$styles` di `include/anjungan-front.php` (path diawali `/` karena `<base href="/anjungan/">`;
+`muatSeksi()` sudah menyelesaikan keduanya dengan `new URL(rel, document.baseURI)`), sehingga halaman lain tidak
+menanggung bebannya dan keduanya tidak perlu masuk `ASET_INTI` — `sw.js` sudah menyimpan aset `/script/` dan
+`/style/` lewat *stale-while-revalidate*. `keluarSiswa()` menjadi `Swal.fire({icon:'warning', ...}).then(hasil => ...)`
+dengan `allowOutsideClick: false` (aturan modal proyek: dialog hanya lekat lewat tombolnya sendiri) dan
+`reverseButtons: true`; badan aslinya dipindah ke `tutupSesiSiswa()`. Warnanya tidak dilawan dengan `customClass`,
+melalui variabel bawaan pustaka di `.swal2-container` (`style/jibas-anjungan.css` bagian 3d): `--swal2-background`,
+`--swal2-color`, `--swal2-border`, `--swal2-confirm-button-background-color: var(--jb-danger)`,
+`--swal2-cancel-button-background-color: var(--jb-surface-2)` dll, jadi popup ikut empat fase tema tanpa memilih mode
+terang/gelap pustaka. Bukti browser 2026-10-19: fase Terang — popup `rgb(255,255,255)` bertuliskan `1px solid rgb(216,224,236)`,
+radius 14,4 px, bayangan token `--jb-shadow`, "Ya, keluar" `rgb(200,56,47)`; fase Gelap — popup `rgb(22,29,38)`,
+teks `rgb(223,231,239)`, "Ya, keluar" `rgb(242,104,107)`, "Batal" `rgb(30,39,50)` + border `rgb(39,51,63)`;
+tombol deny bawaan tersembunyi (`display:none`, hanya Batal + Ya, keluar yang tampil); klik di luar dialog tidak
+menutupnya; Batal → sesi utuh; Ya, keluar → `POST /login-siswa.php?aksi=keluar` lalu `GET beranda/beranda.php` dan
+`?aksi=status` membalas `login:false` dengan toast "Anda telah keluar dari Informasi Siswa.".
+Jebakan pengukuran di tab tak-melukis: transisi `background-color .1s` pustaka membuat warna *backdrop* terbaca
+`rgba(0,0,0,0)` selama animasi tidak berjalan — nilai sebenarnya (`color(srgb .02 .03 .04 / .45)`) baru terbaca setelah
+`transition` dimatikan, sama seperti kasus kepala tembus pandang di atas.
+
 **Keluar tidak lagi ke form login warisan** (permintaan user 2026-10-19: siswa logout diarahkan ke area login lama di
 dalam folder `anjungan/infosiswa`). Item Keluar memanggil `keluarSiswa()` di `script/anjungan.js`: konfirmasi, POST
 `login-siswa.php?aksi=keluar` (cabang baru, hanya menerima POST — sesi `_JIBAS_ANJUNGAN_IS__` dikosongkan, cookienya
@@ -423,8 +446,7 @@ dihapus, `session_destroy()`), lalu kartu `infosiswa` dibersihkan (`data-nis` di
 tinggi supaya sesi yang baru ditutup tidak otomatis dipulihkan), tombol kepala kembali menjadi **Masuk**, halaman pindah
 ke **Beranda**, dan kabar `.anj-kabari` ("Anda telah keluar dari Informasi Siswa.") muncul di kanan atas lalu hilang
 sendiri dalam ±4 detik. `is_Logout()` warisan tidak dipakai lagi; fungsi itu menulis form login lama ke `#is_main`.
-Fungsionalitasnya tetap warisan dan masih bisa dipakai lewat `/anjungan/` lama karena `infosiswa.logout.php` tidak
-diubah — ia hanya meninggalkan `infosiswa.nis` di sesi, dan `?aksi=status` sudah memeriksa `islogin` lebih dulu
+Fungsionalitasnya tetap warisan dan masih bisa dipakai lewat `/anjungan/` lama karena `infosiswa.logout.php` tidakdiubah — ia hanya meninggalkan `infosiswa.nis` di sesi, dan `?aksi=status` sudah memeriksa `islogin` lebih dulu
 sehingga nilai sisa itu tidak bisa dipakai. Teruji di browser 2026-10-19: sesi tertutup (`?aksi=status` → `login:false`),
 laporan tidak lagi menampilkan data, kartu aktif kembali ke `anj-kartu-beranda`, toast terlihat (`opacity:1`) lalu
 terhapus, dan modal Masuk terbuka kembali dengan fokus di NISN.

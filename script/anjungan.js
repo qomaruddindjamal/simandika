@@ -319,7 +319,25 @@
     /* Keluar dari dasbor siswa ditutup di titik masuk login, lalu halaman kembali ke beranda.
        Alur logout warisan tidak dipakai: ia menggambar ulang form login lama ke dalam pane. */
     function keluarSiswa() {
-        if (!window.confirm('Anda akan keluar dari halaman Informasi Siswa. Lanjutkan?')) return;
+        /* Konfirmasi memakai SweetAlert2 (pustaka + CSS-nya ikut dimuat bersama seksi Info
+           Siswa): dialog bawaan browser tampil sebagai milik browser, tanpa tema halaman.
+           allowOutsideClick ditutup — sama seperti aturan modal Bootstrap di proyek ini,
+           dialog hanya lekat lewat tombolnya sendiri. */
+        Swal.fire({
+            icon: 'warning',
+            title: 'Keluar dari Informasi Siswa?',
+            text: 'Anda akan keluar dari halaman Informasi Siswa. Lanjutkan?',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, keluar',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+            allowOutsideClick: false
+        }).then(function (hasil) {
+            if (hasil.isConfirmed) tutupSesiSiswa();
+        });
+    }
+
+    function tutupSesiSiswa() {
         fetch(URL_LOGIN + '?aksi=keluar', { method: 'POST', credentials: 'same-origin' })
             .then(function (res) { return res.ok ? res.json() : null; })
             .then(function () {
