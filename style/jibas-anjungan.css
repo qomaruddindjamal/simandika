@@ -1034,7 +1034,7 @@ body.anj-iframe {
 
 /* ---------- 4b. Form Data Pribadi siswa — grid 12 kolom Bootstrap ---------- */
 
-/* Satu isian per baris: label 3 kolom, isian 9 kolom (parent 2/5/5 untuk Ayah & Ibu).
+/* Satu isian per baris: label 6 kolom, isian 6 kolom (Ayah & Ibu 6-3-3).
    Tidak ada batas lebar — form ikut melebar bersama kartu (lihat catatan lebar penuh di §1). */
 
 #is_profile .anj-form-judul {

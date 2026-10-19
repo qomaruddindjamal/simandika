@@ -557,8 +557,8 @@ tab otomatis tidak melukis frame).
 biar rapi", lalu memilih "Tulis ulang form ke Bootstrap" + "Satu isian per baris"). Seluruh `<table border=0>`
 plus `bgcolor="#DBD8F3"/#E9AFCF"` dan kepala `<font style="background-color:#557d1d">` di
 `anjungan/infosiswa/infosiswa.profile.php` diganti `<form class="anj-form">` + `<h3 class="anj-form-judul">` per blok
-+ baris `<div class="row g-2 g-md-3">` dengan label `col-12 col-md-3` dan isian `col-12 col-md-9` — 52 baris, 6 judul
-blok, tidak ada lagi `<table>`/`bgcolor` di file itu. Blok Ayah & Ibu memakai `col-md-2` (label) + dua `col-md-5`
++ baris `<div class="row g-2 g-md-3">` dengan label dan isian masing-masing setengah lebar grid — 52 baris, 6 judul
+blok, tidak ada lagi `<table>`/`bgcolor` di file itu. Blok Ayah & Ibu memakai label + dua lajur Ayah/Ibu
 (`.anj-kol-ayah` / `.anj-kol-ibu`, dipisahkan border kiri + kepala kolom `.anj-kepala-kol`), isian pendek berdampingan
 dengan satuan (`km`, `kg`, `orang`) pakai `.anj-input-kecil`/`.anj-input-sedang` + `.anj-satuan` di dalam
 `d-flex flex-wrap gap-2`. Semua `name`, `id`, `maxlength`, `onblur/onfocus="formatRupiah(...)"`, dan pemanggilan
@@ -599,6 +599,14 @@ Dua konsekuensi yang perlu diketahui: halaman **lama** `/anjungan/` tidak memuat
 terbaca sebagai blok bertumpuk tanpa gaya — masih bisa diisi, hanya tidak rapi; permukaan yang dipakai siswa
 (`data.yaishk.sch.id`) tetap benar. Dan `is_ValidateInput()` masih menutupnya dengan `confirm()` bawaan browser
 serta `Validator.*` memakai `alert()` — tidak diubah di pekerjaan ini karena di luar permintaan tata letak.
+
+**Form Data Pribadi dibagi 6:6** (permintaan user 2026-10-19: "untuk formnya bagi menjadi 6:6 buat yang rapi").
+Proporsi baris diubah dari label 3 / isian 9 menjadi **label `col-12 col-md-6` / isian `col-12 col-md-6`**, dan blok
+Ayah & Ibu dari 2-5-5 menjadi **label 6 / Ayah `col-md-3` / Ibu `col-md-3`** supaya tepi kiri lajur isian tetap satu
+garis dengan baris biasa. Distribusi kelas setelah ubah: 97 sel `col-md-6` (44 label + 44 isian + 9 label blok
+orangtua) dan 18 sel `col-md-3` (dua lajur ayah/ibu pada sembilan baris), `php -l` bersih. Terukur di browser pada
+viewport 831 px: label `x=39` lebar `341`, isian `x=380` lebar `341` (682 = lebar kartu, tidak ada overflow),
+Ayah `x=380` dan Ibu `x=551` sama-sama lebar `170`, tombol Simpan `x=388` sejajar lajur isian.
 
 **Tautan "Anjungan" dan tombol "Masuk" di kaki halaman dihapus** (permintaan user 2026-10-19: "hilangkan text pada
 gambar" yang memperlihatkan baris kaki `<a>Anjungan</a> <button>Masuk</button>`). Blok `<span class="anj-foot-links">`
