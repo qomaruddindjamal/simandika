@@ -685,6 +685,29 @@ false`, `0` label terpotong, konsol bersih. Catatan untuk pekerjaan berikutnya: 
 daftar yang terpotong **tidak otomatis** berarti dipotong jadi jendela gulir — pada rel laporan ini pengguna
 lebih memilih daftar penuh. `CACHE_ASET` → `jibas-aset-v51`.
 
+**Proporsi form dirapikan menjadi label 4 : isian 8** (permintaan user 2026-10-19: "form nya juga dirapikan, buat
+proporsional dan rapi"; opsi yang dipilih "Label 4 : isian 8 + batas lebar isian"). Setelah label pindah ke rata
+kiri, lajur label yang masih 6/12 meninggalkan jarak kosong ±340 px antara teks label dan isian — itu sumber
+"tidak proporsional". Naskah form diubah lewat skrip terarah (bukan pencarian-ganti buta): sel ber-`anj-label`
+dan dua sel kosong penata ruang → `col-12 col-md-4`, sembilan lajur Ayah/Ibu `col-md-3` → `col-md-4` (blok
+orangtua jadi 4-4-4), dan seluruh sel isian → `col-12 col-md-8`. Hasil hitungan: **71** sel `col-md-4` + **44**
+sel `col-md-8`, `col-md-6`/`col-md-3` **0**, `diff --stat` = 115 baris berubah / 115 (persis jumlah sel grid,
+tidak ada baris lain tersentuh), `name="is_` tetap **63 = 63**, `php -l` bersih. CSS §4b baru:
+`#is_profile .form-control, #is_profile .inputbox { max-width: 22rem }` dengan pengecualian
+`textarea.form-control` dan `.anj-kombo-bertingkat > *` supaya isian pendek (NISN/NIK/telepon/kode pos) tidak
+melar sepanjang lajur 8/12 sementara alamat & riwayat penyakit tetap penuh.
+
+Terukur 2026-10-19 di `?cb=prop48#datasiswa` (viewport 831 px, lajur bertumpuk): label **semua** `x=39` lebar
+**246 px** (sebelumnya 369), isian mulai `x=293` (sebelumnya 416) → jarak label↔isian turun dari ±340 px menjadi
+±8 px; `#is_nisn`/`#is_nama`/`#is_agama` 352 px (= 22 rem, terpotong batas), `#is_alamatsiswa` & `#is_kesehatan`
+476 px penuh lajur, `#is_telponsiswa` 240 px (`.anj-input-sedang`), `#is_berat` 88 px (`.anj-input-kecil`),
+combo Asal Sekolah `is_dep_asal` 476 px (dikecualikan), tiga combo tanggal 144 px, **21** `select` dan **0** di
+antaranya terpotong (`scrollWidth ≤ clientWidth`), tinggi seluruh kontrol seragam **36 px**, `scrollWidth ≤
+innerWidth`. Mode dua paruh (aturan `col-lg-6` disuntik sementara): paruh `373 px` pada `x=35` dan `x=408`, label
+`122 px`, lajur isian mulai `161`/`534`, Ayah `106` dan Ibu `98 px`. AJAX masih hidup — mengubah `#is_blnlahir`
+ke Februari membangun `#is_tgllahir` dengan **28** opsi tinggi 36 px; konsol bersih. `CACHE_ASET` →
+`jibas-aset-v52`.
+
 **Baris identitas "NIS - Nama" di dalam kartu laporan dihapus** (permintaan user 2026-10-19: "tidak usah ada
 hilangkan saja", gambarnya menunjukkan `900001 - Siswa Uji Coba`). Teks itu berasal dari `ShowReportHeader()` di
 `anjungan/infosiswa/infosiswa.class.php` (`<font style='font-size:17px; font-weight:bold; color:#666;'>`), dan

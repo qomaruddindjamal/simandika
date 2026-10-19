@@ -1097,6 +1097,20 @@ body.anj-iframe {
     width: 100%;
 }
 
+/* Proporsi label 4 : isian 8 (permintaan user 2026-10-19: "form nya juga dirapikan, buat
+   proporsional dan rapi"). Lajur isian selebar 8/12 membuat isian pendek melar tidak wajar,
+   jadi dibatasi 22 rem — cukup untuk NISN/NIK/telepon/kode pos. Textarea (alamat, keterangan,
+   riwayat penyakit) dan combo bertingkat Asal Sekolah tetap mengisi lajur. */
+#is_profile .form-control,
+#is_profile .inputbox {
+    max-width: 22rem;
+}
+
+#is_profile textarea.form-control,
+#is_profile .anj-kombo-bertingkat > * {
+    max-width: none;
+}
+
 #is_profile .form-control:focus,
 #is_profile .inputbox:focus {
     border-color: var(--jb-primary);
