@@ -58,8 +58,10 @@
     background: transparent;
 }
 
+/* Lebar penuh: kepala, hero, konten, dan kaki tidak lagi dipusatkan pada 1240 px
+   (permintaan user 2026-10-19: "buat tampilan lebar 100%", sidebar laporan ikut ke kiri). */
 .anj-shell {
-    max-width: 1240px;
+    max-width: none;
     margin: 0 auto;
     padding: .5rem 1rem;
     display: flex;
@@ -450,7 +452,7 @@
 
 .anj-hero-inner {
     position: relative;
-    max-width: 1240px;
+    max-width: none;
     margin: 0 auto;
     padding: 1.7rem 1rem 1.9rem;
 }
@@ -480,7 +482,7 @@
 .anj-main {
     flex: 1 1 auto;
     width: 100%;
-    max-width: 1240px;
+    max-width: none;
     margin: 0 auto;
     padding: 1.1rem 1rem 2rem;
     display: grid;
@@ -651,7 +653,7 @@
 }
 
 .anj-foot-inner {
-    max-width: 1240px;
+    max-width: none;
     margin: 0 auto;
     padding: .8rem 1rem;
     display: flex;
@@ -1031,10 +1033,8 @@ body.anj-iframe {
 
 /* ---------- 4b. Form Data Pribadi siswa — grid 12 kolom Bootstrap ---------- */
 
-/* Satu isian per baris: label 3 kolom, isian 9 kolom (parent 2/5/5 untuk Ayah & Ibu). */
-#is_profile .anj-form {
-    max-width: 60rem;
-}
+/* Satu isian per baris: label 3 kolom, isian 9 kolom (parent 2/5/5 untuk Ayah & Ibu).
+   Tidak ada batas lebar — form ikut melebar bersama kartu (lihat catatan lebar penuh di §1). */
 
 #is_profile .anj-form-judul {
     font-size: .95rem;

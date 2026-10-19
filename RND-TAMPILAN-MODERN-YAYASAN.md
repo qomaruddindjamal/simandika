@@ -609,6 +609,21 @@ tidak berubah. Bukti browser 2026-10-19: `innerText` kaki = "JIBAS 33.0 · 05 Ja
 di dalam `.anj-foot` kosong, `document.querySelector('.anj-foot-links') === null`, tombol kepala masih ada
 (`.anj-masuk` berlabel "SU Siswa Uji Coba" karena sesi aktif), konsol bersih. `CACHE_ASET` → `jibas-aset-v44`.
 
+**Anjungan & form Info Siswa kini lebar penuh 100%** (permintaan user 2026-10-19: "belum bisa lebar 12 di anjungan
+dan infosiswa", lalu "sidebarnya digeser ke kiri juga buat tampilan lebar 100%"). Batas `max-width: 1240px`
+dilepas pada empat wadahnya — `.anj-shell` (kepala + baris menu), `.anj-hero-inner`, `.anj-main` (rel + kartu), dan
+`.anj-foot-inner` — menjadi `max-width: none`, sedang `.anj-main` tetap `width:100%` dengan `padding: 1.1rem 1rem 2rem`
+sehingga rel laporan otomatis berpindah ke sisi kiri layar (kolom grid `13.5rem minmax(0,1fr)` tidak berubah, hanya
+wadahnya yang tidak lagi dipusatkan). Batas `#is_profile .anj-form { max-width: 60rem }` ikut dihapus supaya grid
+12 kolom form benar-benar memakai lebar kartu. `CACHE_ASET` → `jibas-aset-v45`.
+
+Bukti 2026-10-19: viewport otomatis hanya 831 px (di bawah batas lama, jadi tidak bisa memperlihatkan efeknya
+langsung), karena itu diukur dengan eksperimen terkendali — `document.body.style.width` dipasang ke **2000 px**, lalu
+dibaca lagi: `.anj-shell`, `.anj-hero-inner`, `.anj-main`, dan `.anj-foot-inner` semuanya **2000 px** (sebelumnya
+berhenti di 1240 px) dengan `getComputedStyle(...).maxWidth === "none"`; setelah pengukuran `style.width` body
+dikembalikan. Pada 831 px tidak ada regresi (semua 816 px) dan `#is_profile .anj-form` `max-width: none` dengan label
+di `x=39` / isian di `x=210` — garis vertikal tetap sejajar.
+
 Pengecualian jujur atas anggaran §7: jalur anjungan masih memakai jQuery + library warisan (syarat potongan
 `anjungan/*`), tetapi hanya **1 seksi per muat awal** (dulu 8 permintaan AJAX serentak) dan tanpa TinyMCE,
 bgStretcher, serta jVertTabs, sehingga jumlah request awal turun dan halaman tetap bisa di-cache service worker.
