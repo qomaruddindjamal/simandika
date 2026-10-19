@@ -31,6 +31,21 @@
     box-shadow: var(--jb-shadow);
 }
 
+/* Saat halaman digulir, kepala jadi tembus pandang 70% (kelas dipasang script/anjungan.js).
+   Warna fase tetap dipakai, hanya alfa-nya yang turun, dan isi di bawahnya dilembutkan. */
+.anj-topbar.anj-gulung {
+    background: color-mix(in srgb, var(--jb-navbar-bg) 30%, transparent);
+    box-shadow: none;
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    backdrop-filter: blur(14px) saturate(1.2);
+    transition: background-color .18s ease;
+}
+
+.anj-topbar.anj-gulung .anj-row-nav {
+    background: color-mix(in srgb, var(--jb-surface-2) 30%, transparent);
+    border-top-color: transparent;
+}
+
 .anj-shell {
     max-width: 1240px;
     margin: 0 auto;
@@ -456,6 +471,14 @@
     max-width: 1240px;
     margin: 0 auto;
     padding: 1.1rem 1rem 2rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.1rem;
+    align-items: start;
+}
+
+.anj-main.anj-ber-rail {
+    grid-template-columns: 13.5rem minmax(0, 1fr);
 }
 
 .anj-notice {
@@ -716,21 +739,27 @@
 
 /* ---------- 3c. Dasbor Info Siswa: sidebar laporan ---------- */
 
-.anj-pane.anj-dasbor {
-    display: flex;
-    gap: 1.1rem;
-    align-items: flex-start;
+/* Kabarnya tampil selebar halaman, bukan hanya di kolom pertama. */
+.anj-notice {
+    grid-column: 1 / -1;
 }
 
-.anj-pane.anj-dasbor > #is_main {
-    flex: 1 1 auto;
-    min-width: 0;
+.anj-rail {
+    display: none;
+}
+
+/* Rel di luar kartu dan ditahan: tingginya dikurangi tinggi topbar agar daftar
+   laporan tidak ikut tergulir ke atas (nilai vars dari offsetTopbar #anjTopbar). */
+.anj-ber-rail .anj-rail {
+    display: block;
+    position: sticky;
+    top: calc(var(--anj-topbar-tinggi, 7rem) + 1rem);
+    max-height: calc(100vh - var(--anj-topbar-tinggi, 7rem) - 2rem);
+    overflow: auto;
+    overscroll-behavior: contain;
 }
 
 .anj-sb {
-    flex: 0 0 216px;
-    position: sticky;
-    top: 1rem;
     display: flex;
     flex-direction: column;
     gap: .12rem;
@@ -794,15 +823,21 @@
     background: color-mix(in srgb, var(--jb-danger) 12%, var(--jb-surface));
 }
 
-@media (max-width: 767.98px) {
-    .anj-pane.anj-dasbor {
-        flex-direction: column;
+/* Di bawah 992 px kartu laporan terlalu sempit bila berdampingan dengan rel:
+   rel naik ke atas kartu dan daftar laporan jadi baris mendatar. */
+@media (max-width: 991.98px) {
+    .anj-main.anj-ber-rail {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .anj-ber-rail .anj-rail {
+        position: static;
+        top: auto;
+        max-height: none;
+        overflow: visible;
     }
 
     .anj-sb {
-        position: static;
-        flex: none;
-        width: 100%;
         flex-direction: row;
         flex-wrap: wrap;
         gap: .3rem;

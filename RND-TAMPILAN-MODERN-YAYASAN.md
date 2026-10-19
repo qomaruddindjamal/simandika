@@ -361,12 +361,22 @@ tombolnya sendiri (X / Batal / aksi eksplisit), tidak boleh hilang karena klik d
 Setelah login, **Info Siswa tampil sebagai dasbor bersidebar** (permintaan user 2026-10-19: menu samping, bukan dropdown;
 kepala halaman anjungan tetap seperti adanya). Kartunya ditandai `data-dasbor="siswa"`; `script/anjungan.js` membaca option
 `<select id="reporttype">` warisan sebagai satu-satunya daftar laporan (tidak ada duplikasi daftar di PHP), lalu membangun
-`.anj-sb` di dalam `.anj-pane` sebagai **sibling sebelum `#is_main`** — karena seluruh navigasi warisan menulis ke `#is_main`,
-sidebar tidak ikut tertimpa. Dropdown "Laporan :", teks labelnya, dan tombol LOGOUT/REFRESH warisan hanya **disembunyikan**
+`.anj-sb` di **rel luar kartu** (`<aside class="anj-rail">` di dalam `main.anj-main`, `include/anjungan-front.php`) —
+permintaan user 2026-10-19: "sidebar menu taruh di luar card dan saat di scroll halaman ke atas jangan ikut ke atas".
+`main.anj-main` menjadi grid dua kolom (`13.5rem` + `minmax(0,1fr)`) hanya saat kelas `anj-ber-rail` terpasang, jadi
+seksi lain tetap lebar penuh; `.anj-notice` melintang `1 / -1`. Rel-nya `position: sticky` dengan
+`top: calc(var(--anj-topbar-tinggi) + 1rem)` dan `max-height` sisanya (`overflow:auto`), dan variabel tinggi itu diisi
+`ukurKepala()` dari `#anjTopbar.offsetHeight` (118 px terukur) saat mulai, saat `load`, dan saat `resize` — angka hardcoded
+tidak dipakai karena tinggi kepala berubah menurut lebar layar. `#is_main` warisan tidak pernah menelan sidebar: seluruh
+navigasi warisan hanya menulis ke `#is_main`, dan sidebar sekarang bahkan bukan turunannya.
+Dropdown "Laporan :", teks labelnya, dan tombol LOGOUT/REFRESH warisan hanya **disembunyikan**
 (`display:none`, nilai combo tetap dipakai fungsi warisan), bukan dihapus. Klik item sidebar = `combo.value = tipe` +
 `dispatchEvent('change')` sehingga `GetReportContent()` warisan yang bekerja; sebuah `MutationObserver` pada `#is_main`
-menyembunyikan ulang kontrol lama dan menyelaraskan item aktif setiap kali konten berganti. Item khusus: **Muat ulang**
-(mengulang laporan aktif) dan **Keluar**.
+(dipasang sekali per kartu lewat `data-anj-pengamat`) menyembunyikan ulang kontrol lama dan menyelaraskan item aktif
+setiap kali konten berganti. Item khusus: **Muat ulang** (mengulang laporan aktif) dan **Keluar**.
+Node sidebar dipertahankan di rel dan hanya kolomnya yang di-toggle: pindah ke seksi lain memanggil `tampilRel(false)`
+(rel `display:none`, kartu kembali selebar halaman) dan kembali lewat tombol nama memanggil `tampilRel(true)` tanpa
+membangun ulang; `keluarSiswa()` membersihkan rel lewat `kosongkanRel()` karena isi kartu bukan lagi tempat sidebar.
 
 **Keluar tidak lagi ke form login warisan** (permintaan user 2026-10-19: siswa logout diarahkan ke area login lama di
 dalam folder `anjungan/infosiswa`). Item Keluar memanggil `keluarSiswa()` di `script/anjungan.js`: konfirmasi, POST
@@ -387,8 +397,20 @@ Sesi dipulihkan lewat `login-siswa.php?aksi=status` (cabang GET, hanya membaca `
 saat `/infosiswa/` dibuka ulang atau dituju langsung lewat URL, `infosiswa.php` warisan selalu menampilkan form loginnya
 (karena file itu tidak membuka sesi siswa), jadi isinya dibersihkan dan diganti — dasbor bila sesi masih ada, jika tidak
 placeholder "Masuk dulu…" plus modal. Percobaan pemulihan dibatasi dua kali per kartu (`data-anj-pulih`) agar konten
-warisan yang rusak tidak memicu muat ulang tanpa henti. Pada ≤767,98 px sidebar menjadi baris chip yang mengemas diri
-(`flex-wrap`), tanpa scrollbar horizontal.
+warisan yang rusak tidak memicu muat ulang tanpa henti. Pada ≤991,98 px kartu laporan terlalu sempit bila berdampingan
+dengan rel, jadi rel pindah ke atas kartu (`position: static`, satu kolom grid) dan daftar laporan menjadi baris chip
+yang mengemas diri (`flex-wrap`), tanpa scrollbar horizontal.
+
+**Kepala anjungan tembus pandang 70% saat digulir** (permintaan user 2026-10-19). `pantauGulir()` memasang listener
+`scroll` (passive) yang men-toggle kelas `anj-gulung` pada `#anjTopbar` di atas `scrollY` 12 px; CSS-nya mengganti
+latar baris identitas dan baris menu dengan `color-mix(in srgb, <warna fase> 30%, transparent)` — jadi 70% tembus pandang,
+alpha 0,3 — plus `backdrop-filter: blur(14px) saturate(1.2)` dan bayangan dilepas. Yang diturunkan hanya alfa warna fase
+yang sedang aktif (Terang/Senja/Fajar/Gelap ikut), bukan warna baru, sehingga teks kepala tetap sesuai token
+`--jb-navbar-text`. Verifikasi browser 2026-10-19: dengan transisi dimatikan, `backgroundColor` terhitung
+`color(srgb 1 1 1 / 0.3)` (baris identitas) dan `color(srgb .933 .949 .973 / 0.3)` (baris menu); kelas dan
+`backdrop-filter` hanya muncul sesudah gulir. Catatan: di tab otomatis yang tidak melukis frame, event `scroll` asli
+tidak terkirim (sama seperti `requestAnimationFrame`) — kelas diuji dengan mengirim `new Event('scroll')`, dan nilai
+alpha harus dibaca setelah `transition` dimatikan karena nilai terhitung saat transisi berjalan adalah nilai antara.
 
 Tombol **Masuk** di baris identitas ikut menyesuaikan, dan **dipindah ke paling kanan, sesudah dropdown tema**
 (permintaan user 2026-10-19: "taruh di belakang theme saja, taruh samping kanan"). Selama sesi siswa aktif ia menjadi

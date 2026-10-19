@@ -147,6 +147,46 @@
             });
     }
 
+    /* ---------- rel sidebar & kepala transparan saat digulir ---------- */
+
+    function rel() {
+        return document.querySelector('.anj-rail');
+    }
+
+    /* Sidebar laporan tinggal di rel di luar kartu. Kelas pengatur kolom hanya dipasang
+       selama seksi Info Siswa aktif dan sidebar benar-benar ada, jadi seksi lain
+       tetap memakai lebar penuh. */
+    function tampilRel(aktif) {
+        var utama = document.querySelector('.anj-main');
+        var r = rel();
+        if (utama) {
+            utama.classList.toggle('anj-ber-rail', aktif && !!(r && r.querySelector('.anj-sb')));
+        }
+    }
+
+    function kosongkanRel() {
+        var r = rel();
+        if (r) r.textContent = '';
+        tampilRel(false);
+    }
+
+    /* Rel ditahan di bawah kepala yang lengket, jadi tingginya harus terukur. */
+    function ukurKepala() {
+        var bar = document.getElementById('anjTopbar');
+        if (bar) root.style.setProperty('--anj-topbar-tinggi', bar.offsetHeight + 'px');
+    }
+
+    function pantauGulir() {
+        var bar = document.getElementById('anjTopbar');
+        if (!bar) return;
+        var cek = function () {
+            bar.classList.toggle('anj-gulung', window.scrollY > 12);
+        };
+        window.addEventListener('scroll', cek, { passive: true });
+        window.addEventListener('resize', function () { ukurKepala(); cek(); }, { passive: true });
+        cek();
+    }
+
     /* ---------- navigasi menu atas ---------- */
 
     function aktifkan(key, push) {
@@ -155,6 +195,7 @@
         [].slice.call(document.querySelectorAll('.anj-card')).forEach(function (c) {
             c.classList.toggle('d-none', c !== el);
         });
+        tampilRel(key === 'infosiswa');
         [].slice.call(document.querySelectorAll('.anj-nav-link')).forEach(function (a) {
             a.classList.toggle('active', a.getAttribute('data-seksi') === key);
         });
@@ -283,6 +324,8 @@
                     var pane = el.querySelector('.anj-pane');
                     if (pane) pane.textContent = '';
                 }
+                /* Sidebar laporan bukan bagian kartu lagi, jadi perlu dilepas sendiri. */
+                kosongkanRel();
                 ubahTombolMasuk(false);
                 aktifkan('beranda', true);
                 kabari('Anda telah keluar dari Informasi Siswa.');
@@ -519,15 +562,14 @@
     function pasangDasborSiswa(el) {
         var pane = el.querySelector('.anj-pane');
         var main = el.querySelector('#is_main');
-        if (!pane || !main) return;
-        var nav = pane.querySelector('.anj-sb');
-        var combo = comboLaporan(main);
+        var r = rel();
+        var nav = r ? r.querySelector('.anj-sb') : null;
+        var combo = main ? comboLaporan(main) : null;
 
         if (!combo) {
             /* Bukan laporan lagi: form login lama warisan (pertama kali dibuka) atau hasil
                Keluar. Isi kartu dibersihkan lalu sesi ditanyakan ke titik masuk login. */
-            if (nav) nav.parentNode.removeChild(nav);
-            pane.classList.remove('anj-dasbor');
+            kosongkanRel();
             var sudahCoba = parseInt(el.dataset.anjPulih || '0', 10);
             if (sudahCoba < 2) {
                 pane.textContent = '';
@@ -549,11 +591,16 @@
                 tandaiAktif(nav, tipe);
                 pilihLaporan(main, tipe);
             });
-            pane.classList.add('anj-dasbor');
-            pane.insertBefore(nav, main);
+            if (r) r.appendChild(nav);
+        }
+        /* Laporan warisan menulis ulang isi #is_main tiap ganti jenis: pengamat ini
+           membuat sidebar tersinkron (item aktif + kontrol lama tersembunyi) lagi. */
+        if (main && !el.dataset.anjPengamat) {
+            el.dataset.anjPengamat = '1';
             new MutationObserver(function () { pasangDasborSiswa(el); })
                 .observe(main, { childList: true, subtree: true });
         }
+        tampilRel(true);
 
         sembunyikanKontrolLama(main);
         tandaiAktif(nav, combo.value);
@@ -621,6 +668,8 @@
 
     function mulai() {
         var aktif = document.body.dataset.anjActive || 'beranda';
+        ukurKepala(); pantauGulir();
+        window.addEventListener('load', ukurKepala, { passive: true });
         initMasuk(); latar(); aktifkan(aktif, false);
         /* Kartu Info Siswa sudah menanyakan sesi sendiri saat dipulihkan. */
         if (aktif !== 'infosiswa') cekSesiHalaman();

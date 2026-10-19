@@ -282,6 +282,10 @@ $tanggal = $hari[(int)date('w')] . ', ' . (int)date('j') . ' ' . $bulan[(int)dat
         <button type="button" class="btn btn-sm btn-link p-0 ms-1" data-jb-pwa-reload>Muat ulang</button>
     </div>
 
+    <!-- Rel sidebar laporan siswa: di luar kartu, ditempel script/anjungan.js dan
+         ditahan posisinya saat halaman digulir. -->
+    <aside class="anj-rail" aria-label="Laporan siswa"></aside>
+
     <?php foreach ($sections as $key => $sek) { ?>
     <section class="anj-card<?= $key === $active ? '' : ' d-none' ?>" id="anj-kartu-<?= jb_anj_e($key) ?>"
              data-seksi="<?= jb_anj_e($key) ?>" data-src="<?= jb_anj_e($sek['src']) ?>"
