@@ -49,11 +49,14 @@ OpenDb();
             $dept = $row[0];
         $sel = $dept == $row[0] ? "selected" : "";
         ?>
-        <option value='<?=$row[0]?>' <?=$sel?> ><?=$row[0]?></option>
+        <option value='<?= htmlspecialchars($row[0], ENT_QUOTES) ?>' <?=$sel?> ><?=$row[0]?></option>
 <?  }   ?>
     </select>
     
-<?  $sql = "SELECT replid
+<?  /* Lembaga default diambil dari database, jadi tidak ikut tersanitasi seperti nilai
+       request: di-escape agar nama berpetik satu tidak merusak SQL. */
+    $dept = mysqli_real_escape_string($mysqlconnection, $dept);
+    $sql = "SELECT replid
               FROM jbsakad.tahunajaran
              WHERE departemen = '$dept'
                AND aktif = 1";

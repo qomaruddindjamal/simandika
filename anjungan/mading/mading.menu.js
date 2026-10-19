@@ -58,11 +58,14 @@ mad_MenuVideoClicked = function() {
 
 mad_DepartemenChanged = function() {
 	
-	if (mad_ActiveTab == "notes")
-		$('#mad_notes_content').attr('src', 'mading/notes.php');
-	else if (mad_ActiveTab == "notes")
-		$('#mad_galeri_content').attr('src', 'mading/galeri.php');
-	else if (mad_ActiveTab == "notes")
-		$('#mad_video_content').attr('src', 'mading/video.php');
+	/* Cabang di bawah ini dulu ketiganya =="notes", jadi galeri & video tidak pernah
+	   dimuat ulang. Show* mencatat lembaga per frame, sehingga tab yang sedang tidak
+	   tampil ikut tersegar saat diklik setelah lembaga diganti. */
+	if (mad_ActiveTab == "galeri")
+		mad_ShowGaleri();
+	else if (mad_ActiveTab == "video")
+		mad_ShowVideo();
+	else
+		mad_ShowNotes();
 		
 }

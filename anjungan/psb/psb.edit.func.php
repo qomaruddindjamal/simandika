@@ -43,15 +43,19 @@ function ShowDepartemenCombo2()
  
         $sel = ($selDept == $row[0]) ? "selected" : "";
             
-		echo "<option value='" . $row[0] . "' $sel>" . $row[0] . "</option>";
+		echo "<option value='" . htmlspecialchars($row[0], ENT_QUOTES) . "' $sel>" . $row[0] . "</option>";
 	}
     echo "</select>";         
 }
 
 function ShowPenerimaanCombo2($selDept)
 {
-    global $selProses;
-    
+    global $selProses, $mysqlconnection;
+
+    /* $selDept bisa datang dari baris pertama combo (database), bukan dari request,
+       jadi belum tersanitasi: nama lembaga berpetik satu merusak SQL-nya. */
+    $selDept = mysqli_real_escape_string($mysqlconnection, $selDept);
+
     $sql = "SELECT replid, proses
               FROM jbsakad.prosespenerimaansiswa
              WHERE aktif = 1

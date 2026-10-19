@@ -37,7 +37,7 @@ if (!function_exists('jb_anj_sections')) {
         $sections = array(
             'beranda' => array(
                 'label' => 'Beranda', 'icon' => 'bi-house-door', 'pane' => 'a',
-                'src' => 'beranda/beranda.php', 'judul' => 'Beranda Informasi',
+                'src' => 'beranda/beranda.berita.php', 'judul' => 'Beranda Informasi',
             ),
             'infosekolah' => array(
                 'label' => 'Info Sekolah', 'label_pendek' => 'Sekolah', 'icon' => 'bi-buildings', 'pane' => 'b',

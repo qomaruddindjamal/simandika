@@ -30,5 +30,5 @@ $FILESHARE_UPLOAD_DIR = "C:\\YIM\\JIBAS\\xampp\\htdocs\\filesharing\\";
    PERHATIAN:
      UNTUK PENGGUNAAN MULTIUSER di LOCAL AREA NETWORK
      JANGAN MENGGUNAKAN localhost TETAPI GUNAKAN IP ADDRESS atau HOSTNAME */
-$FILESHARE_ADDR = "http://localhost/filesharing/";
+$FILESHARE_ADDR = "https://data.yaishk.sch.id/filesharing/";
 ?>

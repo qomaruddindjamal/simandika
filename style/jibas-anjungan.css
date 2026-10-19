@@ -1312,3 +1312,249 @@ body.anj-iframe {
     padding: .28rem .5rem;
     font-size: .82rem;
 }
+
+/* ---------- 6. Beranda: kisi kartu berita lintas lembaga ---------- */
+
+/* Kisi diisi anjungan/beranda/beranda.berita.php lewat beranda/berita.data.php.
+   Kartu wajib menampilkan lembaga dan penulis di kakinya (permintaan user 2026-10-19). */
+.anj-berita {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.anj-berita-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: .9rem 1.2rem;
+    padding: .85rem 1rem;
+    border: 1px solid var(--jb-border);
+    border-radius: .9rem;
+    background: var(--jb-surface-2);
+}
+
+.anj-berita-filter {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+}
+
+.anj-berita-filter .form-select {
+    min-width: 240px;
+}
+
+.anj-berita-label {
+    margin: 0;
+    font-size: .72rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--jb-text-muted);
+}
+
+.anj-berita-hitung {
+    margin: 0 0 .35rem auto;
+    font-size: .8rem;
+    color: var(--jb-text-muted);
+}
+
+.anj-berita-chip {
+    border: 1px solid var(--jb-border);
+    background: var(--jb-surface);
+    color: var(--jb-text-muted);
+    font-size: .8rem;
+}
+
+.anj-berita-chip:hover {
+    color: var(--jb-primary);
+    border-color: var(--jb-primary);
+}
+
+.anj-berita-chip.active {
+    background: var(--jb-primary);
+    border-color: var(--jb-primary);
+    color: var(--jb-primary-ink);
+}
+
+.anj-berita-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 1.1rem;
+}
+
+.anj-berita-kartu {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--jb-border);
+    border-radius: .95rem;
+    background: var(--jb-surface);
+    box-shadow: var(--jb-shadow);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+
+.anj-berita-kartu:hover {
+    transform: translateY(-3px);
+    border-color: var(--jb-primary);
+}
+
+.anj-berita-kartu:focus-visible {
+    outline: 2px solid var(--jb-primary);
+    outline-offset: 2px;
+}
+
+.anj-berita-media {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--jb-surface-2);
+    overflow: hidden;
+}
+
+.anj-berita-foto {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Berita tanpa foto tetap terlihat utuh: papan nama lembaga di atas warna fase. */
+.anj-berita-media-tanpa-foto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg,
+        color-mix(in srgb, var(--jb-primary) 82%, #000) 0%,
+        color-mix(in srgb, var(--jb-accent) 82%, #000) 100%);
+}
+
+.anj-berita-inisial {
+    padding: 0 1rem;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-align: center;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, .45);
+}
+
+.anj-berita-badge {
+    position: absolute;
+    top: .6rem;
+    left: .6rem;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    padding: .2rem .6rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--jb-surface) 90%, transparent);
+    color: var(--jb-primary);
+    font-size: .7rem;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .18);
+}
+
+.anj-berita-tubuh {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+    padding: .85rem 1rem .3rem;
+}
+
+.anj-berita-judul {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--jb-text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.anj-berita-kutip {
+    margin: 0;
+    font-size: .83rem;
+    line-height: 1.45;
+    color: var(--jb-text-muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.anj-berita-meta {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem .9rem;
+    margin: .6rem 0 0;
+    padding: .6rem 1rem .9rem;
+    border-top: 1px solid color-mix(in srgb, var(--jb-border) 65%, transparent);
+    font-size: .76rem;
+    color: var(--jb-text-muted);
+}
+
+.anj-berita-meta li {
+    display: inline-flex;
+    align-items: center;
+    gap: .32rem;
+    min-width: 0;
+}
+
+.anj-berita-meta i {
+    color: var(--jb-primary);
+    font-size: .85rem;
+}
+
+.anj-berita-pager {
+    display: flex;
+    justify-content: center;
+}
+
+.anj-berita-kosong {
+    margin: 0;
+    padding: 1.4rem 0;
+    text-align: center;
+    font-size: .9rem;
+    color: var(--jb-text-muted);
+}
+
+.anj-berita-modal-head {
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+    padding-right: 1rem;
+}
+
+.anj-berita-badge-modal {
+    position: static;
+    align-self: flex-start;
+    background: var(--jb-sidebar-active-bg);
+}
+
+.anj-berita-meta-modal {
+    margin: 0 0 .8rem;
+    padding: 0 0 .6rem;
+    border-top: 0;
+    border-bottom: 1px solid var(--jb-border);
+    font-size: .82rem;
+}
+
+.anj-berita-isi {
+    font-size: .92rem;
+    line-height: 1.65;
+    color: var(--jb-text);
+}
+
+.anj-berita-isi img {
+    max-width: 100%;
+    height: auto;
+    border-radius: .6rem;
+}
+
+.anj-berita-isi p:last-child {
+    margin-bottom: 0;
+}

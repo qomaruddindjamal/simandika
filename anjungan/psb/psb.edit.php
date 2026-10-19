@@ -735,10 +735,13 @@ $jenjangsekolah = $row2['departemen'];
     </td>
 </tr>
 <?php
+    /* $selDept diambil dari baris database di atas, bukan dari request, jadi belum
+       tersanitasi: nama lembaga berpetik satu akan merusak SQL ini. */
+    $deptSql = mysqli_real_escape_string($mysqlconnection, $selDept);
     $sql = "SELECT replid, kolom, jenis
               FROM tambahandata 
              WHERE aktif = 1
-               AND departemen = '$selDept'
+               AND departemen = '$deptSql'
              ORDER BY urutan";
     $res2 = QueryDb($sql);
     $idtambahan = "";

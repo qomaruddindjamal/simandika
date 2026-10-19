@@ -40,15 +40,19 @@ function ShowDepartemenCombo()
         if ($selDept == "")
             $selDept = $row[0];
             
-		echo "<option value='" . $row[0] . "' >" . $row[0] . "</option>";
+		echo "<option value='" . htmlspecialchars($row[0], ENT_QUOTES) . "' >" . $row[0] . "</option>";
 	}
     echo "</select>";         
 }
 
 function ShowPenerimaanCombo($selDept)
 {
-    global $selProses;
-    
+    global $selProses, $mysqlconnection;
+
+    /* $selDept bisa datang dari baris pertama combo (database), bukan dari request,
+       jadi belum tersanitasi: nama lembaga berpetik satu merusak SQL-nya. */
+    $selDept = mysqli_real_escape_string($mysqlconnection, $selDept);
+
     $sql = "SELECT replid, proses
               FROM jbsakad.prosespenerimaansiswa
              WHERE aktif = 1

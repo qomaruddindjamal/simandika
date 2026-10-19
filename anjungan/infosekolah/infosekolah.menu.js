@@ -58,11 +58,14 @@ ifse_MenuVideoClicked = function() {
 
 ifse_DepartemenChanged = function() {
 	
-	if (ifse_ActiveTab == "notes")
-		$('#ifse_notes_content').attr('src', 'infosekolah/notes.php');
-	else if (ifse_ActiveTab == "notes")
-		$('#ifse_galeri_content').attr('src', 'infosekolah/galeri.php');
-	else if (ifse_ActiveTab == "notes")
-		$('#ifse_video_content').attr('src', 'infosekolah/video.php');
+	/* Cabang di bawah ini dulu ketiganya =="notes", jadi galeri & video tidak pernah
+	   dimuat ulang. Show* mencatat lembaga per frame, sehingga tab yang sedang tidak
+	   tampil ikut tersegar saat diklik setelah lembaga diganti. */
+	if (ifse_ActiveTab == "galeri")
+		ifse_ShowGaleri();
+	else if (ifse_ActiveTab == "video")
+		ifse_ShowVideo();
+	else
+		ifse_ShowNotes();
 		
 }

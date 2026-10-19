@@ -78,8 +78,9 @@
 
     function pasangIsi(kartuEl, html) {
         var doc = new DOMParser().parseFromString(html, 'text/html');
-        var paneEl = doc.body;
-        var scripts = [].slice.call(paneEl.querySelectorAll('script'));
+        /* Fragment yang diawali tag <script> atau <link> akan diangkat DOMParser ke <head>,
+           jadi seluruh dokumen — bukan hanya <body> — yang dipindai dan dipindahkan. */
+        var scripts = [].slice.call(doc.querySelectorAll('script'));
         scripts.forEach(function (s) { s.parentNode.removeChild(s); });
 
         var target = kartuEl.querySelector('.anj-pane');
@@ -94,7 +95,9 @@
             tujuan.id = wadahId;
             target.appendChild(tujuan);
         }
-        while (paneEl.firstChild) tujuan.appendChild(paneEl.firstChild);
+        [doc.head, doc.body].forEach(function (sumber) {
+            while (sumber.firstChild) tujuan.appendChild(sumber.firstChild);
+        });
         target.querySelectorAll('iframe').forEach(temaIframe);
 
         var rantai = Promise.resolve();
