@@ -674,6 +674,17 @@ dibersihkan, CSS diambil ulang dengan `cache:'reload'`): **50/50** `.anj-label` 
 **0** label terpotong (`scrollWidth ≤ clientWidth`), kedua paruh tetap `745 px`, `scrollWidth ≤ innerWidth`,
 konsol bersih. `CACHE_ASET` → `jibas-aset-v50`.
 
+**Jendela 5 baris di rel laporan DIBATALKAN** (permintaan user 2026-10-19 setelahnya: "sidebar menunya benar
+kaya awal bukan yang sekarang"). Kedua potongan commit `a39094a` dilepas — `max-height` `.anj-ber-rail .anj-rail`
+kembali ke `calc(100vh - var(--anj-topbar-tinggi, 7rem) - 2rem)` dan aturan `.anj-sb-item > span { nowrap +
+ellipsis }` dihapus — sehingga rel kembali menampilkan daftar laporan penuh. Bukti rollback: `git diff 1edad80 --
+style/jibas-anjungan.css` (kondisi sebelum jendela 5 baris) kini **hanya** berbeda pada blok label rata kiri, jadi
+bagian rel identik byte dengan aslinya; terukur di mode lebar (aturan desktop disuntik sementara, lalu dilepas)
+rel `216 px` dengan `max-height 641 px` dan `scrollHeight 508 px` → **11/11** item terlihat penuh, `bisaGulir
+false`, `0` label terpotong, konsol bersih. Catatan untuk pekerjaan berikutnya: permintaan "5 per layar" untuk
+daftar yang terpotong **tidak otomatis** berarti dipotong jadi jendela gulir — pada rel laporan ini pengguna
+lebih memilih daftar penuh. `CACHE_ASET` → `jibas-aset-v51`.
+
 **Baris identitas "NIS - Nama" di dalam kartu laporan dihapus** (permintaan user 2026-10-19: "tidak usah ada
 hilangkan saja", gambarnya menunjukkan `900001 - Siswa Uji Coba`). Teks itu berasal dari `ShowReportHeader()` di
 `anjungan/infosiswa/infosiswa.class.php` (`<font style='font-size:17px; font-weight:bold; color:#666;'>`), dan

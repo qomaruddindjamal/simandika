@@ -729,17 +729,12 @@
 }
 
 /* Rel di luar kartu dan ditahan: tingginya dikurangi tinggi topbar agar daftar
-   laporan tidak ikut tergulir ke atas (nilai vars dari offsetTopbar #anjTopbar).
-   Jendela 5 baris (permintaan user 2026-10-19): maksimum tingginya dibatasi pada lima
-   .anj-sb-item — 2.5rem tinggi satu item + .12rem gap — ditambah padding/kepala .anj-sb
-   (2.9rem), sehingga laporan ke-6 dst. terbuka dengan menggulir, bukan terpotong layar.
-   Di bawah 992 px aturan ini dinolkan lagi oleh blok @media di bawah (rel jadi baris mendatar). */
+   laporan tidak ikut tergulir ke atas (nilai vars dari offsetTopbar #anjTopbar). */
 .anj-ber-rail .anj-rail {
     display: block;
     position: sticky;
     top: calc(var(--anj-topbar-tinggi, 7rem) + 1rem);
-    max-height: min(calc(100vh - var(--anj-topbar-tinggi, 7rem) - 2rem),
-                    calc(5 * (2.5rem + .12rem) + 2.9rem));
+    max-height: calc(100vh - var(--anj-topbar-tinggi, 7rem) - 2rem);
     overflow: auto;
     overscroll-behavior: contain;
 }
@@ -792,15 +787,6 @@
 .anj-sb-item .bi {
     font-size: 1rem;
     flex: 0 0 auto;
-}
-
-/* Satu baris per laporan: tanpa ini label panjang membungkus dan mengacaukan jendela
-   5 baris di .anj-rail; sisanya dipotong dengan elipsis. */
-.anj-sb-item > span {
-    min-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .anj-sb-sep {
