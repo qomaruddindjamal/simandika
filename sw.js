@@ -1,7 +1,7 @@
 /* Service worker JIBAS: cache aset statis, selalu network untuk PHP (data sesi), fallback luring. */
 'use strict';
 
-const CACHE_ASET = 'jibas-aset-v48';
+const CACHE_ASET = 'jibas-aset-v49';
 const CACHE_HALAMAN = 'jibas-halaman-v1';
 
 const ASET_INTI = [

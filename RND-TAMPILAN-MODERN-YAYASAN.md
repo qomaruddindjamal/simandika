@@ -646,6 +646,25 @@ tinggi paruh seimbang `1443/1443 px`, `scrollWidth ≤ innerWidth`. Seksi lain y
 (Keuangan, Presensi Harian, Rapor, Nilai) dimuat ulang tanpa overflow horizontal (`scrollWidth` tetap `816 px`,
 sama dengan lebar dokumen) dan tanpa pesan konsol.
 
+**Rel laporan siswa kini menjadi jendela 5 baris** (permintaan user 2026-10-19: gambarnya memperlihatkan menu
+sidebar terpotong di bawah layar — "buat tampil data masing-masing 5 dari menu sidebarnya"; opsi yang dipilih
+"Jendela 5 baris + gulir"). Hanya CSS, tanpa DOM maupun logika baru: `max-height` pada `.anj-ber-rail .anj-rail`
+diubah dari `calc(100vh - topbar - 2rem)` menjadi `min(calc(100vh - ... ), calc(5 * (2.5rem + .12rem) + 2.9rem))`
+— `2.5rem` tinggi satu `.anj-sb-item`, `.12rem` gap-nya, `2.9rem` padding + kepala `.anj-sb` — sedang
+`overflow:auto` + `overscroll-behavior:contain` yang sudah ada membuat laporan ke-6 dst. terbuka dengan menggulir.
+Tambahan pengaman: `.anj-sb-item > span { min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }`
+supaya label panjang tidak membungkus jadi dua baris (kalau membungkus, hitungan lima barisnya rusak). Mode sempit
+(< 992 px, rel jadi baris mendatar) tidak tersentuh karena blok `@media (max-width:991.98px)` sudah menolkan
+`max-height`/`overflow`-nya.
+
+Terukur 2026-10-19: ambang 992 px tidak bisa dicapai viewport otomatis 831 px, jadi aturan mode lebar disuntik
+sementara lalu dihapus lagi — rel `216 × 256 px` (`max-height` terhitung `256px`, `scrollHeight 508px`), tinggi
+seluruh item seragam `40 px`, **tepat lima** item terlihat penuh (`Data Pribadi, Keuangan, Presensi Harian,
+Presensi Pelajaran, Presensi Kegiatan`), setelah `scrollTop` maksimum yang terlihat adalah lima sisanya
+(`Rapor, Perpustakaan, Computer Based Exam, Muat ulang, Keluar`), dan **0** label yang terpotong elipsis pada
+lebar 216 px. Pada 831 px kondisi lama tetap: `max-height:none`, `flex-direction:row`, klik `Nilai` memuat
+laporannya dan `.active` berpindah, `scrollWidth ≤ innerWidth`, konsol bersih. `CACHE_ASET` → `jibas-aset-v49`.
+
 **Baris identitas "NIS - Nama" di dalam kartu laporan dihapus** (permintaan user 2026-10-19: "tidak usah ada
 hilangkan saja", gambarnya menunjukkan `900001 - Siswa Uji Coba`). Teks itu berasal dari `ShowReportHeader()` di
 `anjungan/infosiswa/infosiswa.class.php` (`<font style='font-size:17px; font-weight:bold; color:#666;'>`), dan
