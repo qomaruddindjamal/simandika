@@ -1065,24 +1065,20 @@ body.anj-iframe {
     margin-top: 0;
 }
 
+/* Label rata kiri mengikuti teks isian (permintaan user 2026-10-19: "#datasiswa buat rata
+   kiri") — karena itu tidak ada lagi pembalik perataan di atas 768 px. */
 #is_profile .anj-label {
     font-size: .82rem;
     font-weight: 600;
     color: var(--jb-text-muted);
     padding-bottom: 0;
+    text-align: left;
 }
 
 /* Label blok (radio/check/kombo) tidak berada di dalam <label class="col-form-label">,
    jadi dapat jarak atas sendiri agar sejajar dengan kotaknya. */
 #is_profile .anj-label-blok {
     padding-top: .45rem;
-}
-
-@media (min-width: 768px) {
-    #is_profile .anj-label {
-        text-align: right;
-        padding-right: .4rem;
-    }
 }
 
 /* Kontrol legacy (.inputbox dari Show*Combo) disamakan tinggi & ukuran hurufnya

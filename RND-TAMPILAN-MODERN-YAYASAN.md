@@ -665,6 +665,15 @@ Presensi Pelajaran, Presensi Kegiatan`), setelah `scrollTop` maksimum yang terli
 lebar 216 px. Pada 831 px kondisi lama tetap: `max-height:none`, `flex-direction:row`, klik `Nilai` memuat
 laporannya dan `.active` berpindah, `scrollWidth ≤ innerWidth`, konsol bersih. `CACHE_ASET` → `jibas-aset-v49`.
 
+**Label form Data Pribadi diratakan kiri** (permintaan user 2026-10-19: "tambahan untuk /#datasiswa buat rata
+kiri"). Aturan `@media (min-width:768px){ #is_profile .anj-label { text-align:right; padding-right:.4rem } }`
+dihapus — bukan ditimpa — dan `text-align: left` menjadi bagian `.anj-label` dasarnya, karena jarak label↔isian
+sudah disediakan gutter grid (`--bs-gutter-x`). Terukur 2026-10-19 di `?cb=kiri1#datasiswa` (SW + cache aset
+dibersihkan, CSS diambil ulang dengan `cache:'reload'`): **50/50** `.anj-label` terhitung `text-align:left` dan
+**0** yang `right`; seluruh label berbagi satu tepi kiri `x=39 px` (himpunan `{39}`), isian pertama `x=416 px`,
+**0** label terpotong (`scrollWidth ≤ clientWidth`), kedua paruh tetap `745 px`, `scrollWidth ≤ innerWidth`,
+konsol bersih. `CACHE_ASET` → `jibas-aset-v50`.
+
 **Baris identitas "NIS - Nama" di dalam kartu laporan dihapus** (permintaan user 2026-10-19: "tidak usah ada
 hilangkan saja", gambarnya menunjukkan `900001 - Siswa Uji Coba`). Teks itu berasal dari `ShowReportHeader()` di
 `anjungan/infosiswa/infosiswa.class.php` (`<font style='font-size:17px; font-weight:bold; color:#666;'>`), dan
