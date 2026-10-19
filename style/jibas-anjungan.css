@@ -1183,6 +1183,15 @@ body.anj-iframe {
     border-bottom: 1px solid var(--jb-border);
 }
 
+/* Ayah & Ibu membagi rata sisa lajur isian: label 3 + dua paruh sama lebar = 12 kolom penuh.
+   Tanpa ini 3+4+4 menyisakan 1/12 kolom kosong di kanan dan tepi Ibu tidak sejajar isian lain. */
+#is_profile .anj-orangtua > .anj-kol-ayah,
+#is_profile .anj-orangtua > .anj-kol-ibu {
+    flex: 1 1 0;
+    width: auto;
+    max-width: none;
+}
+
 @media (min-width: 768px) {
     #is_profile .anj-kol-ibu {
         padding-left: .9rem;

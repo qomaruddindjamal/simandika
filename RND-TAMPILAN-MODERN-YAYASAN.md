@@ -708,6 +708,22 @@ innerWidth`. Mode dua paruh (aturan `col-lg-6` disuntik sementara): paruh `373 p
 ke Februari membangun `#is_tgllahir` dengan **28** opsi tinggi 36 px; konsol bersih. `CACHE_ASET` →
 `jibas-aset-v52`.
 
+**Label dipersempit lagi menjadi 3 : isian 9** (permintaan user 2026-10-19: "kuran(g) ke kiri lagi form nya" —
+isian masih terasa terlalu kanan). Sel ber-`anj-label` dan dua sel kosong penata ruang `col-md-4` → `col-md-3`,
+sel isian `col-md-8` → `col-md-9`; sembilan lajur Ayah/Ibu tetap `col-md-4` pada naskahnya tetapi dibagi rata
+lewat CSS baru `#is_profile .anj-orangtua > .anj-kol-ayah, ... > .anj-kol-ibu { flex:1 1 0; width:auto;
+max-width:none }` — tanpa itu baris orangtua jadi 3+4+4 yang menyisakan 1/12 kolom kosong di kanan. Hitungan
+naskah: **53** sel `col-md-3` + **44** sel `col-md-9` + **18** sel `col-md-4` (Ayah/Ibu), `col-md-6`/`col-md-8`
+= 0, `name="is_` tetap **63 = 63**, `php -l` bersih.
+
+Terukur 2026-10-19 di `?cb=prop39b#datasiswa` (viewport 831 px): lajur label **184 px** (sebelumnya 246) dan
+isian mulai **`x=232`** (sebelumnya 293 → bergeser 61 px ke kiri); `#is_nisn`, `#is_nama`, `#is_berat`,
+`#is_namaayah`, `#is_alamatsiswa` semuanya berbagi tepi kiri `232`, Ibu `512`; **0** label membungkus dua baris
+(dihitung dengan `Range.getClientRects()`, bukan perkiraan tinggi); baris Ayah/Ibu kini menutup penuh lajur
+(Ayah `273`, Ibu `280`, tepi kanan Ibu `777` = tepi kanan baris); `#is_nisn` tetap 352 px (batas 22 rem),
+`scrollWidth ≤ innerWidth`, AJAX tanggal hidup (Februari → 28 opsi, tinggi 36 px), konsol bersih.
+`CACHE_ASET` → `jibas-aset-v53`.
+
 **Baris identitas "NIS - Nama" di dalam kartu laporan dihapus** (permintaan user 2026-10-19: "tidak usah ada
 hilangkan saja", gambarnya menunjukkan `900001 - Siswa Uji Coba`). Teks itu berasal dari `ShowReportHeader()` di
 `anjungan/infosiswa/infosiswa.class.php` (`<font style='font-size:17px; font-weight:bold; color:#666;'>`), dan
