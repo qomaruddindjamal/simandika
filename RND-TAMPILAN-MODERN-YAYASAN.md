@@ -462,6 +462,26 @@ aktif memang Info Siswa) dan setiap kali sesi berubah (login, Keluar — setelah
 panah, tanpa avatar dan tanpa `title`). Tombol ini tetap diperlukan karena seksi Info Siswa tidak ada di baris menu,
 jadi tanpa tombolnya tidak ada jalan kembali ke dasbor.
 
+**Kabar "versi anjungan baru" tidak tampil di anjungan — hanya di shell akademik** (permintaan user 2026-10-19:
+"jangan tampilkan ini di anjungan, tampilkan khusus di akademik"; sebelumnya kabar itu berupa baris `.anj-notice`
+di dalam halaman, lalu sempat dijadikan toast anjungan). Bentuk akhirnya: `script/pwa.js` tetap satu-satunya pendaftar
+service worker dan memanggil titik panggil `window.jbPwaBaru()` bila halaman memasangnya; **hanya** `script/shell.js`
+yang mendefinisikannya, jadi halaman anjungan siswa senyap tanpa perlu percabangan URL. Toast shell `.jb-kabari`
+(`style/jibas-shell.css`) menempel kanan-atas di bawah navbar (`top: calc(var(--jb-navbar-h) + .6rem)`, `z-index: 1080`),
+berikon `bi-arrow-repeat`, beraksi **Muat ulang** (kirim `SKIP_TUNGGU` ke controller lalu `location.reload()`), dan
+hilang sendiri setelah **15 detik** (`setTimeout` 15000 ms + fade 400 ms). Guard `sudahDikabari` membuat kabar hanya
+sekali per umur halaman — dua pembaruan berturut-turut dalam satu sesi halaman hanya memberi satu toast.
+`script/anjungan.js` kembali ke `kabari(pesan)` sederhana (3,8 detik, tanpa opsi ikon/aksi) dan `.anj-kabari-aksi`
+dihapus dari `style/jibas-anjungan.css` karena tidak ada lagi pemakai di anjungan.
+
+Bukti browser 2026-10-19 (metode: naikkan `CACHE_ASET` di `sw.js`, panggil `registration.update()`, amati DOM):
+di `/` (anjungan) siklus worker tetap penuh — `installed@67ms → activating → activated@70ms`, controller ada — dan
+**nol** elemen kabar selama 13,1 detik pengamatan; `typeof window.jbPwaBaru === "undefined"` di halaman itu.
+Di `/tampilan-baru.php` toast muncul **+85 ms** sesudah `update()`, `opacity: 1`, `position: fixed`, kotak terukur
+`top 66 px / right 18 px / lebar 301 px`, teks "Ada versi JIBAS yang baru." dengan tombol "Muat ulang", lalu elemen
+dilepas pada selisih **16.583 ms** (= 15.000 tampil + 400 fade; sisa ±1,2 detik adalah toleransi timer Chrome karena
+tab otomatis tidak melukis frame).
+
 Pengecualian jujur atas anggaran §7: jalur anjungan masih memakai jQuery + library warisan (syarat potongan
 `anjungan/*`), tetapi hanya **1 seksi per muat awal** (dulu 8 permintaan AJAX serentak) dan tanpa TinyMCE,
 bgStretcher, serta jVertTabs, sehingga jumlah request awal turun dan halaman tetap bisa di-cache service worker.

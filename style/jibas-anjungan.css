@@ -481,16 +481,6 @@
     grid-template-columns: 13.5rem minmax(0, 1fr);
 }
 
-.anj-notice {
-    margin-bottom: .8rem;
-    padding: .55rem .8rem;
-    border: 1px solid var(--jb-border);
-    border-left: 4px solid var(--jb-warning);
-    border-radius: .6rem;
-    background: var(--jb-surface);
-    font-size: .85rem;
-}
-
 .anj-card {
     background: var(--jb-surface);
     border: 1px solid var(--jb-border);
@@ -601,10 +591,10 @@
     font-size: .9rem;
 }
 
-/* Kabar singkat (mis. setelah Keluar): mengambang di kanan atas, geser masuk lalu luntur. */
+/* Kabar singkat (toast): mengambang di kanan bawah kepala, geser masuk lalu luntur. */
 .anj-kabari {
     position: fixed;
-    top: 4.6rem;
+    top: calc(var(--anj-topbar-tinggi, 4.6rem) + .6rem);
     right: 1.1rem;
     z-index: 1080;
     display: flex;
@@ -738,11 +728,6 @@
 }
 
 /* ---------- 3c. Dasbor Info Siswa: sidebar laporan ---------- */
-
-/* Kabarnya tampil selebar halaman, bukan hanya di kolom pertama. */
-.anj-notice {
-    grid-column: 1 / -1;
-}
 
 .anj-rail {
     display: none;

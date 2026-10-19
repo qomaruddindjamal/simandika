@@ -1,4 +1,4 @@
-/* JIBAS — interaksi shell: lipat sidebar + tab konten modul. */
+/* JIBAS — interaksi shell: lipat sidebar, tab konten modul, kabar versi baru. */
 (function () {
     'use strict';
 
@@ -98,6 +98,45 @@
             tabs.select(tabBtn.getAttribute('data-jb-tab'));
         }
     });
+
+    /* ---------- kabar versi aplikasi baru (khusus shell akademik) ---------- */
+
+    /* script/pwa.js memanggil window.jbPwaBaru() ketika service worker baru aktif.
+       Hanya halaman shell yang mendefinisikannya, jadi anjungan siswa tetap senyap. */
+    function kabari(pesan) {
+        var el = document.createElement('div');
+        el.className = 'jb-kabari';
+        el.setAttribute('role', 'status');
+        el.innerHTML = '<i class="bi bi-arrow-repeat me-2"></i>';
+        el.appendChild(document.createTextNode(pesan));
+
+        var tombol = document.createElement('button');
+        tombol.type = 'button';
+        tombol.className = 'jb-kabari-aksi';
+        tombol.textContent = 'Muat ulang';
+        tombol.addEventListener('click', function () {
+            if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage('SKIP_TUNGGU');
+            }
+            location.reload();
+        });
+        el.appendChild(tombol);
+
+        document.body.appendChild(el);
+        setTimeout(function () { el.classList.add('jb-kabari-tampil'); }, 20);
+        /* Tampil 15 detik lalu hilang sendiri. */
+        setTimeout(function () {
+            el.classList.remove('jb-kabari-tampil');
+            setTimeout(function () { el.remove(); }, 400);
+        }, 15000);
+    }
+
+    var sudahDikabari = false;
+    window.jbPwaBaru = function () {
+        if (sudahDikabari) return;
+        sudahDikabari = true;
+        kabari('Ada versi JIBAS yang baru.');
+    };
 
     window.jibasShell = { tabs: tabs, setCollapsed: setCollapsed };
 })();

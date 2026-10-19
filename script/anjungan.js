@@ -741,7 +741,7 @@
     }
 
 
-    /* ---------- iframe bertema & pembaruan service worker ---------- */
+    /* ---------- iframe bertema ---------- */
 
     function sediaTemaIframeUlang() {
         var fase = root.getAttribute('data-jibas-phase');
@@ -759,15 +759,9 @@
     new MutationObserver(sediaTemaIframeUlang)
         .observe(root, { attributes: true, attributeFilter: ['data-jibas-phase', 'data-bs-theme'] });
 
-    var tombolMuat = document.querySelector('[data-jb-pwa-reload]');
-    if (tombolMuat) {
-        tombolMuat.addEventListener('click', function () {
-            if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-                navigator.serviceWorker.controller.postMessage('SKIP_TUNGGU');
-            }
-            location.reload();
-        });
-    }
+    /* Kabar versi baru service worker sengaja TIDAK dipasang di anjungan: halaman ini
+       dipakai siswa tanpa login, pembaruan teknis tidak perlu mereka lihat.
+       Toast "versi baru" hanya ada di shell akademik — lihat script/shell.js. */
 
     function mulai() {
         var aktif = document.body.dataset.anjActive || 'beranda';

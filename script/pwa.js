@@ -12,13 +12,21 @@
         navigator.serviceWorker
             .register(src, opts)
             .then(function (reg) {
+                /* Hanya shell akademik yang memasang window.jbPwaBaru (script/shell.js),
+                   jadi anjungan siswa tidak pernah menampilkan kabar versi baru. */
+                var beriKabar = function () {
+                    if (typeof window.jbPwaBaru === 'function') window.jbPwaBaru();
+                };
                 reg.addEventListener('updatefound', function () {
                     var b = reg.installing;
                     if (!b) return;
                     b.addEventListener('statechange', function () {
-                        if (b.state === 'installed' && navigator.serviceWorker.controller) {
-                            var note = document.querySelector('[data-jb-pwa-update]');
-                            if (note) note.hidden = false;
+                        /* sw.js memakai skipWaiting + clients.claim, jadi keadaan 'installed'
+                           sering sudah lewat sebelum halaman sempat melihatnya — 'activated'
+                           ikut dianggap kabar, dan jbPwaBaru sendiri hanya sekali. */
+                        if ((b.state === 'installed' || b.state === 'activated')
+                                && navigator.serviceWorker.controller) {
+                            beriKabar();
                         }
                     });
                 });

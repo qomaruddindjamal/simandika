@@ -277,11 +277,6 @@ $tanggal = $hari[(int)date('w')] . ', ' . (int)date('j') . ' ' . $bulan[(int)dat
 </header>
 
 <main class="anj-main">
-    <div class="anj-notice" data-jb-pwa-update hidden>
-        <i class="bi bi-arrow-repeat me-1"></i>Ada versi anjungan yang baru.
-        <button type="button" class="btn btn-sm btn-link p-0 ms-1" data-jb-pwa-reload>Muat ulang</button>
-    </div>
-
     <!-- Rel sidebar laporan siswa: di luar kartu, ditempel script/anjungan.js dan
          ditahan posisinya saat halaman digulir. -->
     <aside class="anj-rail" aria-label="Laporan siswa"></aside>

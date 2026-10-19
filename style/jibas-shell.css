@@ -209,6 +209,12 @@ body.jb-shell {
 .jb-frame.has-tabs .main-jb { padding-top: .75rem; }
 .jb-content-frame { width: 100%; height: 100%; min-height: 24rem; border: 0; background-color: var(--jb-surface); }
 
+/* ---------- kabar versi aplikasi baru: toast, hilang sendiri setelah 15 detik ---------- */
+.jb-kabari { position: fixed; top: calc(var(--jb-navbar-h) + .6rem); right: 1.1rem; z-index: 1080; display: flex; align-items: center; max-width: min(24rem, 88vw); padding: .6rem 1rem; border: 1px solid var(--jb-border); border-left: 3px solid var(--jb-primary); border-radius: .7rem; background-color: var(--jb-surface); color: var(--jb-text); font-size: .86rem; box-shadow: var(--jb-shadow); opacity: 0; transform: translateY(-.6rem); transition: opacity .25s ease, transform .25s ease; }
+.jb-kabari.jb-kabari-tampil { opacity: 1; transform: translateY(0); }
+.jb-kabari-aksi { flex: 0 0 auto; margin-left: .75rem; border: 0; background: none; padding: 0; color: var(--jb-primary); font-size: .86rem; font-weight: 600; text-decoration: underline; cursor: pointer; }
+.jb-kabari-aksi:hover { text-decoration: none; color: color-mix(in srgb, var(--jb-primary) 75%, var(--jb-text)); }
+
 /* ---------- responsif ---------- */
 @media (max-width: 991.98px) {
     .jb-frame { grid-template-columns: 1fr; grid-template-areas: "brand" "main"; }
