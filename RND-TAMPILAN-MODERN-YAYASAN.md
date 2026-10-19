@@ -401,9 +401,17 @@ sempat berisi nilai awal (`PROFIL`) lagi, sehingga hash dibatalkan menjadi `#dat
 diikat ke `baruDibangun`. (2) `location.hash = slug` di Chrome juga menjalankan penangan **`popstate`** (secara
 sinkron, sebelum `hashchange`), jadi `samakanHash()` di `aktifkan()` harus dikunci pada `push === true` —
 tanpa kunci itu klik laporan mana pun langsung dikembalikan ke `#datasiswa` dan laporannya tidak pernah berganti.
-Teruji setelah perbaikan: cold `/infosiswa/` → `#datasiswa`; klik Keuangan → `#keuangan` + isinya; reload di
-`#keuangan` → tetap Keuangan; Beranda → `/` lalu kembali lewat chip → `#rapor` (laporan terakhir) ; Muat ulang
-mempertahankan hash; Keluar → `/` tanpa hash dan rel dikosongkan; login ulang → `#datasiswa`. Konsol bersih.
+(3) **Jalur pemulihan sesi memaksa laporan pertama.** Klaim "reload di `#keuangan` tetap Keuangan" ternyata salah:
+saat halaman dibuka ulang, `#is_main` belum berisi combo, jadi `pulihkanSesiSiswa()` → `bukaIsiSiswa(nis)` yang
+menyetel `data-src` dengan `reporttype=PROFIL` tetap — dan `CInfoSiswa::ShowReportContent()` (`infosiswa.class.php:38`)
+memang membaca `$_REQUEST['reporttype']` lalu menyimpannya di `$_SESSION['infosiswa.reporttype']`, jadi laporan yang
+diminta hash langsung ditimpa sebelum sidebar sempat dibangun. Perbaikannya satu baris: `bukaIsiSiswa()` memakai
+`tipeDariHash() || 'PROFIL'` untuk nilai `reporttype`. Teruji ulang di browser 2026-10-19 (aset di-cache ulang,
+service worker dilepas dulu supaya `script/anjungan.js` yang baru benar-benar terpakai): cold `/infosiswa/#keuangan`
+→ combo `KEUANGAN`, item aktif "Keuangan", hash `#keuangan`; reload di alamat yang sama → tetap `KEUANGAN`;
+cold `/infosiswa/#nilai` → `NILAI`; `/infosiswa/` tanpa hash → `#datasiswa` + `PROFIL`; klik sidebar `#rapor` → `RAPOR`.
+Sisa kasus lama yang tetap benar: Beranda → `/` lalu kembali lewat chip → laporan terakhir; Muat ulang mempertahankan
+hash; Keluar → `/` tanpa hash dan rel dikosongkan; login ulang → `#datasiswa`. Konsol bersih.
 Node sidebar dipertahankan di rel dan hanya kolomnya yang di-toggle: pindah ke seksi lain memanggil `tampilRel(false)`
 (rel `display:none`, kartu kembali selebar halaman) dan kembali lewat tombol nama memanggil `tampilRel(true)` tanpa
 membangun ulang; `keluarSiswa()` membersihkan rel lewat `kosongkanRel()` karena isi kartu bukan lagi tempat sidebar.

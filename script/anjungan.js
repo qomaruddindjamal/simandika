@@ -283,7 +283,13 @@
     function bukaIsiSiswa(nis) {
         var el = kartu('infosiswa');
         if (!el) return;
-        el.dataset.src = 'infosiswa/infosiswa.content.php?nis=' + encodeURIComponent(nis) + '&reporttype=PROFIL';
+        /* Halaman dibuka langsung pada satu laporan — tautan atau muat ulang di
+           /infosiswa/#keuangan. Jenisnya ikut diminta ke potongan warisan lewat
+           reporttype; memaksa PROFIL di sini membuat laporan itu hilang sebelum
+           sidebar sempat dibangun. */
+        var tipe = tipeDariHash() || 'PROFIL';
+        el.dataset.src = 'infosiswa/infosiswa.content.php?nis=' + encodeURIComponent(nis)
+            + '&reporttype=' + encodeURIComponent(tipe);
         el.dataset.anjTermuat = '';
         el.dataset.anjPulih = '';
         aktifkan('infosiswa', true);
