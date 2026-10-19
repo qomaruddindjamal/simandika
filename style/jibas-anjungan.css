@@ -46,6 +46,14 @@
     border-top-color: transparent;
 }
 
+/* Kartu tab aktif/ suspens ikut tembus pandang saat kepala tergulir. Tanpa ini warnanya
+   yang padat (#e8f2fb di fase Terang) terbaca sebagai kotak putih melayang di atas bar
+   yang sengaja tembus pandang; penanda tab aktif tetap warna primer di teks + garis bawah. */
+.anj-topbar.anj-gulung .anj-nav-link:hover,
+.anj-topbar.anj-gulung .anj-nav-link.active {
+    background: color-mix(in srgb, var(--jb-primary) 18%, transparent);
+}
+
 .anj-shell {
     max-width: 1240px;
     margin: 0 auto;

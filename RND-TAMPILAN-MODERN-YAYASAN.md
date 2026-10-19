@@ -472,6 +472,15 @@ yang sedang aktif (Terang/Senja/Fajar/Gelap ikut), bukan warna baru, sehingga te
 tidak terkirim (sama seperti `requestAnimationFrame`) — kelas diuji dengan mengirim `new Event('scroll')`, dan nilai
 alpha harus dibaca setelah `transition` dimatikan karena nilai terhitung saat transisi berjalan adalah nilai antara.
 
+Sambungan 2026-10-19 (permintaan user: "saat di scroll ada warna putih ... tolong perbaiki agar tidak tampil bg putih
+tersebut"): yang tersisa sebagai kotak putih adalah **kartu tab menu aktif/ suspens**, karena `.anj-nav-link.active`
+memakai `--jb-sidebar-active-bg` yang padat (`#e8f2fb` di fase Terang) sementara barisnya sendiri 70% tembus pandang.
+Aturan baru `.anj-topbar.anj-gulung .anj-nav-link:hover, ... .active` mengganti latarnya menjadi
+`color-mix(in srgb, var(--jb-primary) 18%, transparent)` — penanda tab aktif tetap warna primer pada teks dan garis
+bawah. Di luar keadaan tergulir tab aktif tidak berubah. Ukur di browser: tergulir fase Terang =
+`color(srgb .059 .435 .722 / .18)`, fase Gelap = `color(srgb .29 .659 .91 / .18)`; tanpa gulir tetap
+`rgb(232,242,251)`, dan `backdrop-filter: blur(14px) saturate(1.2)` masih terpasang di `#anjTopbar`.
+
 Tombol **Masuk** di baris identitas ikut menyesuaikan, dan **dipindah ke paling kanan, sesudah dropdown tema**
 (permintaan user 2026-10-19: "taruh di belakang theme saja, taruh samping kanan"). Selama sesi siswa aktif ia menjadi
 pintu dasbor berlabel **nama lengkap siswa** (menggantikan tulisan "Info Siswa") plus **avatar**: bila
