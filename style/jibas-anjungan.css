@@ -1049,6 +1049,160 @@ body.anj-iframe {
     opacity: .7;
 }
 
+/* ---------- 4b. Form Data Pribadi siswa — grid 12 kolom Bootstrap ---------- */
+
+/* Satu isian per baris: label 3 kolom, isian 9 kolom (parent 2/5/5 untuk Ayah & Ibu). */
+#is_profile .anj-form {
+    max-width: 60rem;
+}
+
+#is_profile .anj-form-judul {
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--jb-text);
+    margin: 1.5rem 0 .8rem;
+    padding: .1rem 0 .45rem .6rem;
+    border-left: 3px solid var(--jb-primary);
+    border-bottom: 1px solid var(--jb-border);
+}
+
+#is_profile .anj-form-judul:first-child {
+    margin-top: 0;
+}
+
+#is_profile .anj-label {
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--jb-text-muted);
+    padding-bottom: 0;
+}
+
+/* Label blok (radio/check/kombo) tidak berada di dalam <label class="col-form-label">,
+   jadi dapat jarak atas sendiri agar sejajar dengan kotaknya. */
+#is_profile .anj-label-blok {
+    padding-top: .45rem;
+}
+
+@media (min-width: 768px) {
+    #is_profile .anj-label {
+        text-align: right;
+        padding-right: .4rem;
+    }
+}
+
+/* Kontrol legacy (.inputbox dari Show*Combo) disamakan tinggi & ukuran hurufnya
+   dengan .form-control agar tidak terlihat dua gaya di satu baris. */
+#is_profile .inputbox,
+#is_profile .form-control {
+    font-size: .875rem;
+    line-height: 1.5;
+    padding: .34rem .6rem;
+    border-radius: .5rem;
+    min-height: 2.25rem;
+}
+
+#is_profile .form-control {
+    background: var(--jb-surface);
+    border: 1px solid var(--jb-border);
+    color: var(--jb-text);
+}
+
+/* combo warisan (Show*Combo) satu lajur melebar seperti .form-control */
+#is_profile .inputbox {
+    width: 100%;
+}
+
+#is_profile .form-control:focus,
+#is_profile .inputbox:focus {
+    border-color: var(--jb-primary);
+    box-shadow: 0 0 0 3px var(--jb-ring);
+}
+
+#is_profile input[readonly] {
+    background: var(--jb-surface-2);
+    color: var(--jb-text-muted);
+}
+
+/* isian pendek yang berdampingan dengan satuan: jangan ikut melebar */
+#is_profile .anj-input-kecil {
+    flex: 0 0 auto;
+    width: 5.5rem;
+}
+
+#is_profile .anj-input-sedang {
+    flex: 0 1 auto;
+    width: 15rem;
+    max-width: 100%;
+}
+
+#is_profile .anj-satuan {
+    font-size: .8rem;
+    color: var(--jb-text-muted);
+    white-space: nowrap;
+}
+
+#is_profile .form-check-label,
+#is_profile .anj-alm {
+    font-size: .84rem;
+    color: var(--jb-text);
+}
+
+#is_profile .anj-alm {
+    color: var(--jb-text-muted);
+}
+
+/* combo Tanggal Lahir: Tahun / Bulan / Tanggal rata tinggi, boleh melingkar */
+#is_profile .anj-kombo-tanggal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+}
+
+#is_profile .anj-kombo-tanggal > span {
+    display: contents;
+}
+
+#is_profile .anj-kombo-tanggal select.inputbox {
+    flex: 1 1 6.5rem;
+    min-width: 0;
+    max-width: 9rem;
+    width: auto;
+}
+
+/* Asal Sekolah: jenjang di atas, daftar sekolah di bawahnya */
+#is_profile .anj-kombo-bertingkat {
+    display: grid;
+    gap: .45rem;
+}
+
+/* Blok Ayah & Ibu: satu baris, dua lajur, kepala kolom sebagai pemisah */
+#is_profile .anj-kepala-kol {
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--jb-primary);
+    padding-bottom: .35rem;
+    border-bottom: 1px solid var(--jb-border);
+}
+
+@media (min-width: 768px) {
+    #is_profile .anj-kol-ibu {
+        padding-left: .9rem;
+        border-left: 1px solid var(--jb-border);
+    }
+
+    #is_profile .anj-kol-ayah {
+        padding-right: .5rem;
+    }
+}
+
+#is_profile .anj-tidak-boleh-ubah {
+    display: inline-block;
+    margin-top: .2rem;
+    font-size: .84rem;
+    font-weight: 600;
+    color: var(--jb-danger);
+}
+
 /* ---------- 5. Menu warisan bergambar (pilihan departemen mading / info sekolah) ---------- */
 
 #mad_menu,

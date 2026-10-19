@@ -585,7 +585,9 @@
     }
 
     /* Dropdown "Laporan :" serta tombol LOGOUT/REFRESH warisan digantikan sidebar:
-       elemennya tetap ada (seluruh navigasi warisan membacanya), hanya disembunyikan. */
+       elemennya tetap ada (seluruh navigasi warisan membacanya), hanya disembunyikan.
+       Tombol di dalam form (mis. "Simpan" pada Data Pribadi) ikut ber-class .but, jadi
+       hanya item daftar yang bukan anak dari #is_profile yang boleh disembunyikan. */
     function sembunyikanKontrolLama(main) {
         var combo = comboLaporan(main);
         if (!combo) return;
@@ -593,6 +595,7 @@
         if (teks && teks.nodeType === 3 && /laporan/i.test(teks.nodeValue)) teks.nodeValue = '';
         combo.style.display = 'none';
         [].slice.call(main.querySelectorAll('input.but')).forEach(function (tombol) {
+            if (tombol.closest('#is_profile')) return;
             tombol.style.display = 'none';
         });
     }

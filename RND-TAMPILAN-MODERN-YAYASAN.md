@@ -553,6 +553,53 @@ Di `/tampilan-baru.php` toast muncul **+85 ms** sesudah `update()`, `opacity: 1`
 dilepas pada selisih **16.583 ms** (= 15.000 tampil + 400 fade; sisa ±1,2 detik adalah toleransi timer Chrome karena
 tab otomatis tidak melukis frame).
 
+**Form Data Pribadi siswa ditulis ulang ke grid 12 kolom Bootstrap** (permintaan user 2026-10-19: "buat tampilan 12
+biar rapi", lalu memilih "Tulis ulang form ke Bootstrap" + "Satu isian per baris"). Seluruh `<table border=0>`
+plus `bgcolor="#DBD8F3"/#E9AFCF"` dan kepala `<font style="background-color:#557d1d">` di
+`anjungan/infosiswa/infosiswa.profile.php` diganti `<form class="anj-form">` + `<h3 class="anj-form-judul">` per blok
++ baris `<div class="row g-2 g-md-3">` dengan label `col-12 col-md-3` dan isian `col-12 col-md-9` — 52 baris, 6 judul
+blok, tidak ada lagi `<table>`/`bgcolor` di file itu. Blok Ayah & Ibu memakai `col-md-2` (label) + dua `col-md-5`
+(`.anj-kol-ayah` / `.anj-kol-ibu`, dipisahkan border kiri + kepala kolom `.anj-kepala-kol`), isian pendek berdampingan
+dengan satuan (`km`, `kg`, `orang`) pakai `.anj-input-kecil`/`.anj-input-sedang` + `.anj-satuan` di dalam
+`d-flex flex-wrap gap-2`. Semua `name`, `id`, `maxlength`, `onblur/onfocus="formatRupiah(...)"`, dan pemanggilan
+`Show*Combo()` dipertahankan apa adanya — dibuktikan dengan `diff` daftar `name` versi lama (`git show HEAD:`) vs baru:
+**54 = 54, identik**, jadi `is_Simpan()` yang menyerialisasi `#is_form :input` per `name` tidak berubah perilaku.
+Helper `Show*Combo` di `infosiswa.profile.func.php` TIDAK disentuh (dipakai juga oleh `psb/*`), jadi kontrol warisan
+`.inputbox` dinormalisasi lewat CSS: blok baru **§4b di `style/jibas-anjungan.css`** menyamakan
+`#is_profile .inputbox` dan `#is_profile .form-control` pada `font-size .875rem` / `min-height 2.25rem` / radius
+`.5rem`, melebarkan combo satu lajur (`width:100%`), dan `.anj-kombo-tanggal` = flex dengan `> span { display: contents }`
+sehingga `<select>` hasil AJAX di dalam `#is_divTglLahir*` tetap menjadi item flex dan ikut rata tinggi.
+Sel Asal Sekolah yang dulu ber-`<br>` menjadi `.anj-kombo-bertingkat` (grid dua baris: jenjang lalu daftar sekolah /
+isian "Lainnya").
+
+Bukti browser 2026-10-19 (viewport otomatis 831×785, jadi lajur `col-md-*` aktif; `take_screenshot` tidak tersedia di
+lingkungan ini sehingga pengukuran dilakukan lewat `getBoundingClientRect` + `getComputedStyle` setelah
+`fetch(url,{cache:'reload'})` dan muat ulang potongan): label **semua** baris di `x=39 px` lebar `170 px`, isian
+**semua** baris di `x=210 px` lebar `511 px` (satu garis vertikal rapi), `text-align` label `right`; tinggi
+`#is_nama` 36 px = tinggi `#is_agama` (combo warisan) = tinggi `#is_telponsiswa` 240 px = `#is_newsekolah`;
+tiga combo Tanggal Lahir masing-masing 144 px; dua lajur Ayah/Ibu sama lebar 284 px; `scrollWidth-clientWidth = 0`
+di kartu maupun dokumen (tidak ada overflow horizontal). AJAX tanggal masih hidup: mengubah `#is_blnlahir`
+menjadi Februari membangun ulang `#is_tgllahir` dengan **28** opsi, tinggi 36 px, `class="inputbox"`.
+`is_ValidateInput()` mengembalikan `false` untuk akun uji — penyebabnya data siswa uji yang kosong
+(`is_alamatsiswa`, `is_bahasa`, `is_kodepos`, `is_namaayah`/`is_namaibu`, `is_tmplahir*` semuanya `""`), bukan
+kerusakkan tata letak; seluruh id yang dibaca `infosiswa.profile.js` ada di DOM (yang tadinya tampak hilang —
+`is_departemen` dan `is_kelompok` — memang tidak pernah ada di form lama dan hanya dibaca lalu dibuang oleh
+`infosiswa.profile.save.php`). `CACHE_ASET` dinaikkan ke `jibas-aset-v43`.
+
+Bug ikutan yang ketemu saat pengukuran: `sembunyikanKontrolLama()` di `script/anjungan.js` menyembunyikan
+**semua** `input.but` di dalam `#is_main` (niatnya tombol LOGOUT/REFRESH warisan), sehingga tombol **Simpan**
+form Data Pribadi — yang ber-`class="but"` juga — ikut `display:none`; siswa jadi tidak bisa menyimpan sama sekali
+(kondisi ini sudah ada sebelum bentuk 12 kolom, baru terlihat ketika tombolnya diperiksa). Selektornya dipersempit
+dengan `if (tombol.closest('#is_profile')) return;`. Bukti setelah perbaikan: `LOGOUT` dan `REFRESH` tetap
+`display:none`, sementara `Simpan` `inline-block` 77×32 px pada `x=218` (segaris dengan lajur isian), tanpa
+pesan konsol.
+
+Dua konsekuensi yang perlu diketahui: halaman **lama** `/anjungan/` tidak memuat Bootstrap maupun
+`style/jibas-anjungan.css` (ia hanya memuat `style/style.css` dan aset warisan), jadi di permukaan lama itu form
+terbaca sebagai blok bertumpuk tanpa gaya — masih bisa diisi, hanya tidak rapi; permukaan yang dipakai siswa
+(`data.yaishk.sch.id`) tetap benar. Dan `is_ValidateInput()` masih menutupnya dengan `confirm()` bawaan browser
+serta `Validator.*` memakai `alert()` — tidak diubah di pekerjaan ini karena di luar permintaan tata letak.
+
 Pengecualian jujur atas anggaran §7: jalur anjungan masih memakai jQuery + library warisan (syarat potongan
 `anjungan/*`), tetapi hanya **1 seksi per muat awal** (dulu 8 permintaan AJAX serentak) dan tanpa TinyMCE,
 bgStretcher, serta jVertTabs, sehingga jumlah request awal turun dan halaman tetap bisa di-cache service worker.
