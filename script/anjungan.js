@@ -587,8 +587,16 @@
     /* Dropdown "Laporan :" serta tombol LOGOUT/REFRESH warisan digantikan sidebar:
        elemennya tetap ada (seluruh navigasi warisan membacanya), hanya disembunyikan.
        Tombol di dalam form (mis. "Simpan" pada Data Pribadi) ikut ber-class .but, jadi
-       hanya item daftar yang bukan anak dari #is_profile yang boleh disembunyikan. */
+       hanya item daftar yang bukan anak dari #is_profile yang boleh disembunyikan.
+       Baris identitas "NIS - Nama" (ShowReportHeader) juga disembunyikan: namanya sudah
+       ada di chip kepala, dan di dalam kartu ia hanya mengulang. */
     function sembunyikanKontrolLama(main) {
+        /* Tandanya dibaca lewat regex, bukan pencocokan atribut: setelah disentuh JS,
+           Chrome menulis ulang style menjadi "font-size: 17px" (berspasi). */
+        [].slice.call(main.querySelectorAll('font')).forEach(function (baris) {
+            if (!/font-size:\s*17px/.test(baris.getAttribute('style') || '')) return;
+            baris.style.display = 'none';
+        });
         var combo = comboLaporan(main);
         if (!combo) return;
         var teks = combo.previousSibling;
@@ -598,6 +606,14 @@
             if (tombol.closest('#is_profile')) return;
             tombol.style.display = 'none';
         });
+        /* Baris kepala (identitas + combo + tombol) sudah rata hilang, jadi <br> penata
+           ruang di sel yang sama tidak punya pasangan lagi — dibuang sampai tabel konten. */
+        var sel = combo.parentNode;
+        var anak = [].slice.call(sel.childNodes);
+        for (var i = 0; i < anak.length; i++) {
+            if (anak[i].nodeName === 'TABLE') break;
+            if (anak[i].nodeName === 'BR') sel.removeChild(anak[i]);
+        }
     }
 
     function tandaiAktif(nav, tipe) {

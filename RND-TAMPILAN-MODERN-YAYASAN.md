@@ -608,6 +608,20 @@ orangtua) dan 18 sel `col-md-3` (dua lajur ayah/ibu pada sembilan baris), `php -
 viewport 831 px: label `x=39` lebar `341`, isian `x=380` lebar `341` (682 = lebar kartu, tidak ada overflow),
 Ayah `x=380` dan Ibu `x=551` sama-sama lebar `170`, tombol Simpan `x=388` sejajar lajur isian.
 
+**Baris identitas "NIS - Nama" di dalam kartu laporan dihapus** (permintaan user 2026-10-19: "tidak usah ada
+hilangkan saja", gambarnya menunjukkan `900001 - Siswa Uji Coba`). Teks itu berasal dari `ShowReportHeader()` di
+`anjungan/infosiswa/infosiswa.class.php` (`<font style='font-size:17px; font-weight:bold; color:#666;'>`), dan
+**file warisannya tidak disentuh** — sama seperti combo `#reporttype` dan tombol LOGOUT/REFRESH, penghilangan
+dilakukan di sisi anjungan lewat `sembunyikanKontrolLama()`: `font` dikenali lewat regex
+`/font-size:\s*17px/` pada atribut `style` (bukan pencocokan string `"font-size:17px"`, karena Chrome menulis ulang
+atribut itu menjadi `"font-size: 17px"` begitu elemennya disentuh JS), lalu seluruh `<br>` penata ruang di sel
+kepala yang sama dibuang sampai tabel konten pertama — tanpa baris kepala, `<br>` itu hanya meninggalkan ruang kosong.
+Nama siswa tetap terbaca di chip kepala (`.anj-masuk`), jadi tidak ada informasi yang hilang.
+Terukur 2026-10-19 di `/infosiswa/#datasiswa`: elemen `font` identitas `display:none`, `td` kepala berisi **0** `<br>`,
+judul blok pertama kini `9 px` di bawah tepi pane (sebelumnya `57 px`, dan ±81 px ketika namanya masih tampil),
+tabel konten utuh, combo tetap `none`, konsol bersih; di `#keuangan` struktur sel kepalanya `FONT/SELECT/INPUT/INPUT`
+semua tinggi 0 disusul tabel filter (69 px) — tidak ada yang tumpang tindih. `CACHE_ASET` → `jibas-aset-v47`.
+
 **Tautan "Anjungan" dan tombol "Masuk" di kaki halaman dihapus** (permintaan user 2026-10-19: "hilangkan text pada
 gambar" yang memperlihatkan baris kaki `<a>Anjungan</a> <button>Masuk</button>`). Blok `<span class="anj-foot-links">`
 dilepas dari `include/anjungan-front.php` bersama tiga aturan CSS-nya di `style/jibas-anjungan.css` karena tidak ada
